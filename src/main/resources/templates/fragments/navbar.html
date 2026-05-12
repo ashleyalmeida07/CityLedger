@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+<div th:fragment="navbar">
+    <div data-animation="over-left" class="navbar-absolute w-nav" data-easing2="ease" data-easing="ease"
+        data-collapse="medium" role="banner" data-no-scroll="1" data-duration="400" data-doc-height="1">
+        <div class="nav-container w-container">
+            <div class="nav-menu-wrapper"><a href="/" class="brand w-nav-brand"><img src="/logo.png" loading="lazy"
+                        alt="CityLedger Logo" height="40" class="header-logo" style="object-fit:contain;" /></a>
+                <nav role="navigation" class="nav-menu w-nav-menu">
+                    <div class="tablet-menu"><a href="/" class="brand tablet w-nav-brand"><img src="/logo.png"
+                                loading="lazy" alt="CityLedger Logo" height="40" class="header-logo"
+                                style="object-fit:contain;" /></a>
+                        <div class="close-menu-button w-nav-button"><img
+                                src="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/67a4c8dcc89e958da293d819_close-btn.svg"
+                                loading="lazy" alt="icon" class="nav-close-icon" /></div>
+                    </div>
+                    <div class="menu-wrap">
+                        <a href="/" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Home</a>
+                        
+                        <!-- Public links (before login) -->
+                        <th:block sec:authorize="!isAuthenticated()">
+                            <a href="/#departments" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Departments</a>
+                            <a href="/#live-map" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Live Map</a>
+                        </th:block>
+                        
+                        <!-- CITIZEN links -->
+                        <th:block sec:authorize="hasRole('CITIZEN')">
+                            <a href="/citizen/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Dashboard</a>
+                            <a href="/citizen/report" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Report</a>
+                            <a href="/citizen/complaints" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">My Complaints</a>
+                            <a href="/citizen/track" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Track</a>
+                            <a href="/citizen/map" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Map</a>
+                        </th:block>
+
+                        <!-- OFFICER links -->
+                        <th:block sec:authorize="hasRole('OFFICER')">
+                            <a href="/officer/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Dashboard</a>
+                            <a href="/officer/queue" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Queue</a>
+                            <a href="/officer/alerts" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Alerts</a>
+                        </th:block>
+
+                        <!-- FIELD_WORKER links -->
+                        <th:block sec:authorize="hasRole('FIELD_WORKER')">
+                            <a href="/field-worker/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Dashboard</a>
+                            <a href="/field-worker/tasks" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">My Tasks</a>
+                        </th:block>
+
+                        <!-- ADMIN links -->
+                        <th:block sec:authorize="hasRole('ADMIN')">
+                            <a href="/admin/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Admin</a>
+                            <a href="/citizen/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Citizen View</a>
+                            <a href="/officer/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Officer View</a>
+                            <a href="/field-worker/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Field View</a>
+                        </th:block>
+                        
+                        <div class="hidden-header-button-wrapper"><a href="/login" class="primary-button w-button">Sign In</a></div>
+                    </div>
+                </nav>
+                <div class="menu-button w-nav-button"><img
+                        src="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/67a4c8dcc89e958da293d816_menu-btn.svg"
+                        loading="lazy" alt="icon" height="16" class="image-burger" /></div>
+                <div class="header-button-wrapper" style="display:flex;gap:10px;align-items:center;">
+                    
+                    <!-- Unauthenticated Users -->
+                    <th:block sec:authorize="!isAuthenticated()">
+                        <a href="/login" style="
+                            padding: 9px 22px;
+                            border-radius: 8px;
+                            border: 2px solid #0f3460;
+                            color: #0f3460;
+                            font-weight: 600;
+                            font-size: 0.9rem;
+                            text-decoration: none;
+                            background: transparent;
+                            transition: all 0.2s;
+                        ">Log In</a>
+                        <a href="/signup" class="primary-button w-button" style="padding: 10px 22px;">Sign Up</a>
+                    </th:block>
+
+                    <!-- Authenticated Users -->
+                    <th:block sec:authorize="isAuthenticated()">
+                        <div class="profile-dropdown" style="position: relative; display: inline-block; cursor: pointer;" onclick="document.getElementById('profileDropdown').classList.toggle('show-dropdown')">
+                            <div class="profile-dropdown-trigger" style="display: flex; align-items: center; gap: 10px; color: #0f3460; font-weight: 400; padding: 5px;">
+                                <img th:src="${#authentication.principal.attributes['picture']}" th:data-fallback-name="${#authentication.principal.attributes['name']}" onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent(this.getAttribute('data-fallback-name')) + '&background=0f3460&color=fff'" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid #0f3460; object-fit: cover;">
+                                <span th:text="${#authentication.principal.attributes['name']}">User</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: -2px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div id="profileDropdown" class="profile-dropdown-content" style="position: absolute; right: 0; top: 110%; background-color: white; min-width: 180px; box-shadow: 0px 8px 24px rgba(0,0,0,0.12); border-radius: 12px; z-index: 1000; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s ease; border: 1px solid #f0f0f0;">
+                                <a href="/settings" style="color: #333; padding: 14px 18px; text-decoration: none; display: flex; align-items: center; gap: 10px; font-weight: 600; border-bottom: 1px solid #f0f0f0; transition: background 0.2s; font-size: 0.95rem;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                    Settings
+                                </a>
+                                <form th:action="@{/logout}" method="post" style="margin: 0; padding: 0;">
+                                    <button type="submit" style="color: #e74c3c; padding: 14px 18px; text-decoration: none; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem; background: none; border: none; width: 100%; text-align: left; cursor: pointer;" class="logout-btn">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                        Sign Out
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <style>
+                            .show-dropdown {
+                                opacity: 1 !important;
+                                visibility: visible !important;
+                                transform: translateY(0) !important;
+                            }
+                            .profile-dropdown-content a:hover { background-color: #f8fafc; }
+                            .profile-dropdown-content a:first-child:hover { border-top-left-radius: 12px; border-top-right-radius: 12px; }
+                            .profile-dropdown-content .logout-btn:hover { background-color: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+                        </style>
+                        <script>
+                            window.addEventListener('click', function(e) {
+                                if (!e.target.closest('.profile-dropdown')) {
+                                    var dropdown = document.getElementById('profileDropdown');
+                                    if (dropdown && dropdown.classList.contains('show-dropdown')) {
+                                        dropdown.classList.remove('show-dropdown');
+                                    }
+                                }
+                            });
+                        </script>
+                    </th:block>
+
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+</html>

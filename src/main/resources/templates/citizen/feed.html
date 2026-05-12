@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>CityFeed — CityLedger</title>
+    <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Urbanist:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Lato', sans-serif; background: #f0f2f5; margin: 0; }
+        .feed-body { padding: 100px 5% 80px; max-width: 780px; margin: 0 auto; }
+
+        /* Header */
+        .feed-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .feed-title { font-family: 'Urbanist', sans-serif; font-size: 2rem; font-weight: 900; color: #0f3460; margin: 0; }
+        .feed-subtitle { color: #64748b; font-size: 0.9rem; margin: 4px 0 0; }
+        .report-fab { background: #0f3460; color: white; padding: 11px 22px; border-radius: 10px; font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
+        .report-fab:hover { background: #16213e; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,52,96,0.2); }
+
+        /* GPS bar */
+        .gps-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 16px; font-size: 0.88rem; color: #475569; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+        .gps-bar button { background: #0f3460; color: white; border: none; padding: 5px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: 'Urbanist', sans-serif; }
+        .gps-bar a { color: #0f3460; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 8px; }
+
+        /* Filter bar */
+        .filter-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+        .sort-pills { display: flex; gap: 6px; }
+        .pill { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; font-family: 'Urbanist', sans-serif; text-decoration: none; color: #64748b; border: 2px solid #e2e8f0; background: white; transition: all 0.15s; white-space: nowrap; }
+        .pill:hover, .pill.active { background: #0f3460; color: white; border-color: #0f3460; }
+        .filter-divider { width: 1px; height: 24px; background: #e2e8f0; }
+        .cat-select { border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 0.82rem; font-family: 'Urbanist', sans-serif; color: #374151; cursor: pointer; background: white; }
+        .radius-select { border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 0.82rem; font-family: 'Urbanist', sans-serif; color: #374151; cursor: pointer; background: white; }
+
+        /* Trending */
+        .trending-label { font-family: 'Urbanist', sans-serif; font-weight: 800; font-size: 0.88rem; color: #0f3460; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .trending-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
+        .trending-scroll::-webkit-scrollbar { display: none; }
+        .trending-card { flex-shrink: 0; width: 230px; background: linear-gradient(135deg, #0f3460, #1d4ed8); color: white; border-radius: 14px; padding: 18px; cursor: pointer; text-decoration: none; transition: transform 0.2s; }
+        .trending-card:hover { transform: translateY(-3px); }
+        .tr-rank { font-size: 1.4rem; font-weight: 900; font-family: 'Urbanist', sans-serif; opacity: 0.3; line-height: 1; margin-bottom: 8px; }
+        .tr-cat { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.6; margin-bottom: 6px; }
+        .tr-title { font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 0.9rem; line-height: 1.3; margin-bottom: 10px; }
+        .tr-votes { font-size: 0.8rem; opacity: 0.8; font-weight: 600; }
+
+        /* Feed cards */
+        .feed-card { background: white; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; }
+        .feed-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .sev-strip { width: 5px; flex-shrink: 0; }
+        .sev-CRITICAL .sev-strip { background: #dc2626; }
+        .sev-HIGH .sev-strip { background: #ea580c; }
+        .sev-MEDIUM .sev-strip { background: #ca8a04; }
+        .sev-LOW .sev-strip { background: #2563eb; }
+        .card-body { padding: 18px 20px; flex: 1; min-width: 0; }
+        .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+        .cat-pill { display: inline-flex; align-items: center; gap: 4px; background: #f0f4ff; color: #1d4ed8; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
+        .sev-pill { padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
+        .sev-pill-CRITICAL { background: #fef2f2; color: #dc2626; }
+        .sev-pill-HIGH { background: #fff7ed; color: #ea580c; }
+        .sev-pill-MEDIUM { background: #fefce8; color: #ca8a04; }
+        .sev-pill-LOW { background: #eff6ff; color: #2563eb; }
+        .card-time { font-size: 0.75rem; color: #94a3b8; margin-left: auto; }
+        .card-title { font-family: 'Urbanist', sans-serif; font-weight: 800; font-size: 1.05rem; color: #0f3460; margin-bottom: 6px; text-decoration: none; display: block; line-height: 1.3; }
+        .card-title:hover { text-decoration: underline; }
+        .card-meta { font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px; }
+        .card-meta strong { color: #475569; }
+        .card-desc { font-size: 0.88rem; color: #475569; line-height: 1.55; margin-bottom: 12px; }
+        .card-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
+        .card-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .upvote-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 2px solid #e2e8f0; background: white; color: #374151; font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .upvote-btn:hover { border-color: #16a34a; color: #16a34a; }
+        .upvote-btn.upvoted { background: #16a34a; color: white; border-color: #16a34a; }
+        .comment-link { display: inline-flex; align-items: center; gap: 5px; color: #64748b; font-size: 0.85rem; font-weight: 600; font-family: 'Urbanist', sans-serif; text-decoration: none; padding: 8px 14px; border-radius: 8px; border: 2px solid #e2e8f0; transition: all 0.2s; }
+        .comment-link:hover { border-color: #0f3460; color: #0f3460; }
+        .map-link { display: inline-flex; align-items: center; gap: 5px; color: #64748b; font-size: 0.82rem; font-weight: 600; font-family: 'Urbanist', sans-serif; text-decoration: none; margin-left: auto; }
+        .map-link:hover { color: #0f3460; }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+        .empty-state h3 { font-family: 'Urbanist', sans-serif; font-size: 1.3rem; font-weight: 700; color: #64748b; }
+
+        /* Escalation badge */
+        .esc-badge { background: linear-gradient(135deg, #dc2626, #9f1239); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; font-family: 'Urbanist', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="feed-body">
+        <!-- Header -->
+        <div class="feed-header">
+            <div>
+                <h2 class="feed-title">🏙️ CityFeed</h2>
+                <p class="feed-subtitle">Community-reported civic issues in your area</p>
+            </div>
+            <a href="/citizen/report" class="report-fab">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Report Issue
+            </a>
+        </div>
+
+        <!-- GPS bar -->
+        <div class="gps-bar">
+            <span th:if="${lat != null}">
+                📍 Showing within <strong th:text="${currentRadius}">5</strong>km of your location ·
+                <a th:href="@{/citizen/feed}">Show all</a>
+            </span>
+            <span th:if="${lat == null}" style="flex:1;">
+                📍 Showing all recent complaints &nbsp;
+            </span>
+            <button th:if="${lat == null}" onclick="useMyLocation()" id="gpsBtn">📡 Use My Location</button>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+            <div class="sort-pills">
+                <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='latest',category=${currentCategory})}"
+                   th:classappend="${currentSort == 'latest'} ? ' active' : ''"
+                   class="pill">Latest</a>
+                <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='upvotes',category=${currentCategory})}"
+                   th:classappend="${currentSort == 'upvotes'} ? ' active' : ''"
+                   class="pill">🔥 Most Upvoted</a>
+                <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='critical',category=${currentCategory})}"
+                   th:classappend="${currentSort == 'critical'} ? ' active' : ''"
+                   class="pill">🚨 Critical First</a>
+            </div>
+            <div class="filter-divider"></div>
+            <select class="cat-select" onchange="applyFilter('category', this.value)">
+                <option value="all" th:selected="${currentCategory == 'all'}">All Categories</option>
+                <option value="Pothole"      th:selected="${currentCategory == 'Pothole'}">🕳️ Pothole</option>
+                <option value="Street Lamp"  th:selected="${currentCategory == 'Street Lamp'}">💡 Street Lamp</option>
+                <option value="Garbage"      th:selected="${currentCategory == 'Garbage'}">🗑️ Garbage</option>
+                <option value="Water Leakage" th:selected="${currentCategory == 'Water Leakage'}">💧 Water Leakage</option>
+                <option value="Road Damage"  th:selected="${currentCategory == 'Road Damage'}">🛣️ Road Damage</option>
+                <option value="Tree Fall"    th:selected="${currentCategory == 'Tree Fall'}">🌳 Tree Fall</option>
+                <option value="Noise"        th:selected="${currentCategory == 'Noise'}">🔊 Noise</option>
+                <option value="Stray Animals" th:selected="${currentCategory == 'Stray Animals'}">🐕 Stray Animals</option>
+            </select>
+            <select th:if="${lat != null}" class="radius-select" onchange="applyFilter('radius', this.value)">
+                <option value="1"  th:selected="${currentRadius == 1}">1 km</option>
+                <option value="5"  th:selected="${currentRadius == 5}">5 km</option>
+                <option value="10" th:selected="${currentRadius == 10}">10 km</option>
+            </select>
+        </div>
+
+        <!-- Trending section -->
+        <div th:if="${not #lists.isEmpty(trending)}">
+            <div class="trending-label">🔥 Trending This Week</div>
+            <div class="trending-scroll">
+                <a th:each="c,i : ${trending}"
+                   th:href="@{/citizen/feed/{id}(id=${c.id})}"
+                   class="trending-card">
+                    <div class="tr-rank" th:text="'#' + ${i.count}">1</div>
+                    <div class="tr-cat" th:text="${c.category != null ? c.category : 'General'}">Pothole</div>
+                    <div class="tr-title" th:text="${#strings.abbreviate(c.title, 60)}">Title</div>
+                    <div class="tr-votes">
+                        👍 <span th:text="${c.upvoteCount}">0</span> upvotes ·
+                        <span th:text="${c.location != null ? #strings.abbreviate(c.location, 25) : 'Unknown'}"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Feed -->
+        <div th:each="c : ${feed}" th:classappend="'feed-card sev-' + ${c.severity != null ? c.severity : 'LOW'}">
+            <div class="sev-strip"></div>
+            <div class="card-body">
+                <!-- Top row: category, severity, escalation badge, time -->
+                <div class="card-top">
+                    <span class="cat-pill" th:data-cat="${c.category}" th:text="${c.category != null ? c.category : 'General'}">Pothole</span>
+                    <span th:classappend="'sev-pill sev-pill-' + ${c.severity != null ? c.severity : 'LOW'}"
+                          th:text="${c.severity != null ? c.severity : 'N/A'}"></span>
+                    <span th:if="${c.upvoteCount >= 25}" class="esc-badge">⚡ Community Escalated</span>
+                    <span class="card-time" th:data-time="${c.createdAt}" data-time="">just now</span>
+                </div>
+
+                <!-- Title -->
+                <a class="card-title" th:href="@{/citizen/feed/{id}(id=${c.id})}" th:text="${c.title}">Title</a>
+
+                <!-- Meta -->
+                <div class="card-meta">
+                    Filed by <strong th:text="${c.citizen != null ? c.citizen.name : 'Anonymous'}">Ashley</strong> ·
+                    📍 <span th:text="${c.location != null ? #strings.abbreviate(c.location, 50) : ''}"></span> ·
+                    <span th:classappend="'badge-status-' + ${#strings.toLowerCase(c.status.name())}"
+                          style="font-weight:700;"
+                          th:text="${c.status}">FILED</span>
+                </div>
+
+                <!-- Description -->
+                <div class="card-desc" th:text="${c.aiSummary != null ? #strings.abbreviate(c.aiSummary, 160) : #strings.abbreviate(c.description, 160)}">
+                    Description preview
+                </div>
+
+                <!-- Image thumbnail if media exists -->
+                <div th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}">
+                    <img class="card-img"
+                         th:src="${#strings.split(c.mediaUrl, ',')[0]}"
+                         alt="Complaint photo" loading="lazy"
+                         onerror="this.style.display='none'"/>
+                </div>
+
+                <!-- Actions -->
+                <div class="card-actions">
+                    <button class="upvote-btn"
+                            th:classappend="${upvotedByMe[c.id]} ? ' upvoted' : ''"
+                            th:id="'upvote-' + ${c.id}"
+                            th:data-id="${c.id}"
+                            th:data-upvoted="${upvotedByMe[c.id]}"
+                            onclick="toggleUpvote(this)">
+                        <span th:text="${upvotedByMe[c.id]} ? '✓ Upvoted' : '👍 Upvote'">👍 Upvote</span>
+                        <span class="upvote-count" th:text="${c.upvoteCount}">0</span>
+                    </button>
+                    <a class="comment-link" th:href="@{/citizen/feed/{id}(id=${c.id})}">
+                        💬 <span th:text="${commentCounts[c.id]}">0</span>
+                    </a>
+                    <a class="map-link"
+                       th:if="${c.latitude != null}"
+                       th:href="'https://www.google.com/maps?q=' + ${c.latitude} + ',' + ${c.longitude}"
+                       target="_blank">
+                        📍 Map
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div th:if="${#lists.isEmpty(feed)}" class="empty-state">
+            <div style="font-size:3rem; margin-bottom:16px;">🏙️</div>
+            <h3>No complaints in this area yet</h3>
+            <p>Be the first to report a civic issue in your area.</p>
+            <a href="/citizen/report" class="report-fab" style="display:inline-flex;margin-top:16px;">+ Report an Issue</a>
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=67a4c8dcc89e958da293d681" type="text/javascript"></script>
+    <script>
+        var CSRF_TOKEN  = document.querySelector('meta[name="_csrf"]').content;
+        var CSRF_HEADER = document.querySelector('meta[name="_csrf_header"]').content;
+
+        var catEmojis = {
+            'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️',
+            'Water Leakage':'💧','Road Damage':'🛣️','Tree Fall':'🌳',
+            'Noise':'🔊','Stray Animals':'🐕','Water Supply':'🚰'
+        };
+
+        // Time ago
+        document.querySelectorAll('[data-time]').forEach(function(el) {
+            var raw = el.getAttribute('data-time');
+            if (!raw) return;
+            var d = new Date(raw);
+            var diff = (Date.now() - d.getTime()) / 1000;
+            var s;
+            if (diff < 60) s = 'just now';
+            else if (diff < 3600) s = Math.floor(diff/60) + 'm ago';
+            else if (diff < 86400) s = Math.floor(diff/3600) + 'h ago';
+            else s = Math.floor(diff/86400) + 'd ago';
+            el.textContent = s;
+        });
+
+        // Fix category pills with emoji
+        document.querySelectorAll('.cat-pill[data-cat]').forEach(function(el) {
+            var cat = el.getAttribute('data-cat');
+            var emoji = catEmojis[cat] || '📋';
+            el.textContent = emoji + ' ' + el.textContent;
+        });
+
+        // Upvote AJAX
+        function toggleUpvote(btn) {
+            var id = btn.getAttribute('data-id');
+            btn.disabled = true;
+            fetch('/api/feed/upvote?complaintId=' + id, {
+                method: 'POST',
+                headers: { [CSRF_HEADER]: CSRF_TOKEN }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                btn.classList.toggle('upvoted', data.upvoted);
+                var label = btn.querySelector('span:first-child');
+                label.textContent = data.upvoted ? '✓ Upvoted' : '👍 Upvote';
+                btn.querySelector('.upvote-count').textContent = data.count;
+                btn.setAttribute('data-upvoted', data.upvoted);
+            })
+            .catch(function(e) { console.error('Upvote failed', e); })
+            .finally(function() { btn.disabled = false; });
+        }
+
+        // GPS detect + reload
+        function useMyLocation() {
+            var btn = document.getElementById('gpsBtn');
+            btn.textContent = '⏳ Detecting...';
+            btn.disabled = true;
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var url = new URL(window.location.href);
+                url.searchParams.set('lat', pos.coords.latitude.toFixed(6));
+                url.searchParams.set('lon', pos.coords.longitude.toFixed(6));
+                url.searchParams.set('radius', '5');
+                window.location.href = url.toString();
+            }, function() {
+                btn.textContent = '❌ Location denied';
+                btn.disabled = false;
+            });
+        }
+
+        // Category + radius filter change
+        function applyFilter(param, value) {
+            var url = new URL(window.location.href);
+            url.searchParams.set(param, value);
+            window.location.href = url.toString();
+        }
+    </script>
+</body>
+</html>

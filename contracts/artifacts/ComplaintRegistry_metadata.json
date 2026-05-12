@@ -1,0 +1,346 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "complaintId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "hash",
+						"type": "bytes32"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "filedBy",
+						"type": "address"
+					}
+				],
+				"name": "ComplaintFiled",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "complaintId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "isValid",
+						"type": "bool"
+					}
+				],
+				"name": "ComplaintVerified",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_ids",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "bytes32[]",
+						"name": "_hashes",
+						"type": "bytes32[]"
+					}
+				],
+				"name": "batchFileComplaints",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_complaintId",
+						"type": "uint256"
+					}
+				],
+				"name": "complaintExists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "complaints",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "hash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "filedBy",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "exists",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_complaintId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "_hash",
+						"type": "bytes32"
+					}
+				],
+				"name": "fileComplaint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_complaintId",
+						"type": "uint256"
+					}
+				],
+				"name": "getComplaint",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "hash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "filedBy",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalComplaints",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_complaintId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "_hash",
+						"type": "bytes32"
+					}
+				],
+				"name": "verifyComplaint",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isValid",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"batchFileComplaints(uint256[],bytes32[])": {
+					"params": {
+						"_hashes": "Array of corresponding SHA-256 hashes",
+						"_ids": "Array of complaint IDs"
+					}
+				},
+				"complaintExists(uint256)": {
+					"params": {
+						"_complaintId": "The complaint ID"
+					},
+					"returns": {
+						"_0": "Whether the complaint has been filed"
+					}
+				},
+				"fileComplaint(uint256,bytes32)": {
+					"params": {
+						"_complaintId": "The PostgreSQL complaint ID",
+						"_hash": "SHA-256 hash of (id + title + description + location + timestamp)"
+					}
+				},
+				"getComplaint(uint256)": {
+					"params": {
+						"_complaintId": "The complaint ID"
+					},
+					"returns": {
+						"filedBy": "The wallet that filed it",
+						"hash": "The stored hash",
+						"timestamp": "When it was filed on-chain"
+					}
+				},
+				"transferOwnership(address)": {
+					"params": {
+						"_newOwner": "New owner address"
+					}
+				},
+				"verifyComplaint(uint256,bytes32)": {
+					"params": {
+						"_complaintId": "The complaint ID to verify",
+						"_hash": "The hash to verify against"
+					},
+					"returns": {
+						"isValid": "Whether the hash matches the on-chain record"
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"batchFileComplaints(uint256[],bytes32[])": {
+					"notice": "Batch file multiple complaints in one TX (gas efficient)"
+				},
+				"complaintExists(uint256)": {
+					"notice": "Check if a complaint exists on-chain"
+				},
+				"fileComplaint(uint256,bytes32)": {
+					"notice": "File a complaint hash on-chain"
+				},
+				"getComplaint(uint256)": {
+					"notice": "Get full complaint record"
+				},
+				"transferOwnership(address)": {
+					"notice": "Transfer ownership (e.g. rotate backend wallet)"
+				},
+				"verifyComplaint(uint256,bytes32)": {
+					"notice": "Verify a complaint hash matches what's stored on-chain"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"ComplaintRegistry.sol": "ComplaintRegistry"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"ComplaintRegistry.sol": {
+			"keccak256": "0xe27cdedc25c1fa984a190098bb690df22d7e3b2cc3b020dab8eb57f0d4ca5269",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6ea3f8b052cf7a8f3c12098ef851257ce786282b8f3e63248eb98a0c26e73657",
+				"dweb:/ipfs/QmR85Lv8FUMxnjV5LqhP87A75C2ykoV414DrAcvFHcfk8X"
+			]
+		}
+	},
+	"version": 1
+}
