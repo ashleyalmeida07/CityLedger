@@ -121,15 +121,10 @@ public class FeedService {
             log.info("CityFeed auto-escalated complaint #{} from {} → {} ({} upvotes)",
                     complaint.getId(), oldSeverity, newSeverity, votes);
 
-            // Log escalation on blockchain
+            // Log escalation on blockchain using the existing fileOnChain method
             try {
-                String payload = String.format(
-                        "ESCALATION|id=%d|from=%s|to=%s|trigger=%d_upvotes|ts=%s",
-                        complaint.getId(), oldSeverity, newSeverity, votes,
-                        LocalDateTime.now()
-                );
-                blockchainService.logComplaint(payload);
-                log.info("Blockchain escalation log sent for complaint #{}", complaint.getId());
+                String txHash = blockchainService.fileOnChain(complaint);
+                log.info("Blockchain escalation logged for complaint #{} — TX: {}", complaint.getId(), txHash);
             } catch (Exception e) {
                 log.warn("Blockchain escalation log failed (non-critical): {}", e.getMessage());
             }

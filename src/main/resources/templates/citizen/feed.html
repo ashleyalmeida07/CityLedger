@@ -1,316 +1,322 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>CityFeed — CityLedger</title>
-    <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Urbanist:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Lato', sans-serif; background: #f0f2f5; margin: 0; }
-        .feed-body { padding: 100px 5% 80px; max-width: 780px; margin: 0 auto; }
-
-        /* Header */
-        .feed-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .feed-title { font-family: 'Urbanist', sans-serif; font-size: 2rem; font-weight: 900; color: #0f3460; margin: 0; }
-        .feed-subtitle { color: #64748b; font-size: 0.9rem; margin: 4px 0 0; }
-        .report-fab { background: #0f3460; color: white; padding: 11px 22px; border-radius: 10px; font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
-        .report-fab:hover { background: #16213e; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,52,96,0.2); }
-
-        /* GPS bar */
-        .gps-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 16px; font-size: 0.88rem; color: #475569; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
-        .gps-bar button { background: #0f3460; color: white; border: none; padding: 5px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: 'Urbanist', sans-serif; }
-        .gps-bar a { color: #0f3460; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 8px; }
-
-        /* Filter bar */
-        .filter-bar { background: white; border-radius: 12px; padding: 12px 18px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
-        .sort-pills { display: flex; gap: 6px; }
-        .pill { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; font-family: 'Urbanist', sans-serif; text-decoration: none; color: #64748b; border: 2px solid #e2e8f0; background: white; transition: all 0.15s; white-space: nowrap; }
-        .pill:hover, .pill.active { background: #0f3460; color: white; border-color: #0f3460; }
-        .filter-divider { width: 1px; height: 24px; background: #e2e8f0; }
-        .cat-select { border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 0.82rem; font-family: 'Urbanist', sans-serif; color: #374151; cursor: pointer; background: white; }
-        .radius-select { border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 0.82rem; font-family: 'Urbanist', sans-serif; color: #374151; cursor: pointer; background: white; }
-
-        /* Trending */
-        .trending-label { font-family: 'Urbanist', sans-serif; font-weight: 800; font-size: 0.88rem; color: #0f3460; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-        .trending-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
-        .trending-scroll::-webkit-scrollbar { display: none; }
-        .trending-card { flex-shrink: 0; width: 230px; background: linear-gradient(135deg, #0f3460, #1d4ed8); color: white; border-radius: 14px; padding: 18px; cursor: pointer; text-decoration: none; transition: transform 0.2s; }
-        .trending-card:hover { transform: translateY(-3px); }
-        .tr-rank { font-size: 1.4rem; font-weight: 900; font-family: 'Urbanist', sans-serif; opacity: 0.3; line-height: 1; margin-bottom: 8px; }
-        .tr-cat { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.6; margin-bottom: 6px; }
-        .tr-title { font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 0.9rem; line-height: 1.3; margin-bottom: 10px; }
-        .tr-votes { font-size: 0.8rem; opacity: 0.8; font-weight: 600; }
-
-        /* Feed cards */
-        .feed-card { background: white; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; }
-        .feed-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-        .sev-strip { width: 5px; flex-shrink: 0; }
-        .sev-CRITICAL .sev-strip { background: #dc2626; }
-        .sev-HIGH .sev-strip { background: #ea580c; }
-        .sev-MEDIUM .sev-strip { background: #ca8a04; }
-        .sev-LOW .sev-strip { background: #2563eb; }
-        .card-body { padding: 18px 20px; flex: 1; min-width: 0; }
-        .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-        .cat-pill { display: inline-flex; align-items: center; gap: 4px; background: #f0f4ff; color: #1d4ed8; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
-        .sev-pill { padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
-        .sev-pill-CRITICAL { background: #fef2f2; color: #dc2626; }
-        .sev-pill-HIGH { background: #fff7ed; color: #ea580c; }
-        .sev-pill-MEDIUM { background: #fefce8; color: #ca8a04; }
-        .sev-pill-LOW { background: #eff6ff; color: #2563eb; }
-        .card-time { font-size: 0.75rem; color: #94a3b8; margin-left: auto; }
-        .card-title { font-family: 'Urbanist', sans-serif; font-weight: 800; font-size: 1.05rem; color: #0f3460; margin-bottom: 6px; text-decoration: none; display: block; line-height: 1.3; }
-        .card-title:hover { text-decoration: underline; }
-        .card-meta { font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px; }
-        .card-meta strong { color: #475569; }
-        .card-desc { font-size: 0.88rem; color: #475569; line-height: 1.55; margin-bottom: 12px; }
-        .card-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
-        .card-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .upvote-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 2px solid #e2e8f0; background: white; color: #374151; font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
-        .upvote-btn:hover { border-color: #16a34a; color: #16a34a; }
-        .upvote-btn.upvoted { background: #16a34a; color: white; border-color: #16a34a; }
-        .comment-link { display: inline-flex; align-items: center; gap: 5px; color: #64748b; font-size: 0.85rem; font-weight: 600; font-family: 'Urbanist', sans-serif; text-decoration: none; padding: 8px 14px; border-radius: 8px; border: 2px solid #e2e8f0; transition: all 0.2s; }
-        .comment-link:hover { border-color: #0f3460; color: #0f3460; }
-        .map-link { display: inline-flex; align-items: center; gap: 5px; color: #64748b; font-size: 0.82rem; font-weight: 600; font-family: 'Urbanist', sans-serif; text-decoration: none; margin-left: auto; }
-        .map-link:hover { color: #0f3460; }
-
-        /* Empty state */
-        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
-        .empty-state h3 { font-family: 'Urbanist', sans-serif; font-size: 1.3rem; font-weight: 700; color: #64748b; }
-
-        /* Escalation badge */
-        .esc-badge { background: linear-gradient(135deg, #dc2626, #9f1239); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; font-family: 'Urbanist', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
-    </style>
+<meta charset="utf-8"/>
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<title>CityFeed — CityLedger</title>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;background:#f0f2f5}
+.fb{max-width:1100px;margin:0 auto;padding:100px 24px 80px}
+/* Header */
+.fh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.fh h1{font-family:'Urbanist',sans-serif;font-size:2rem;font-weight:900;color:#0f3460}
+.fh p{color:#64748b;font-size:.88rem;margin-top:4px}
+.fab{background:#0f3460;color:#fff;padding:11px 22px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.2s}
+.fab:hover{background:#16213e;transform:translateY(-1px)}
+/* GPS bar */
+.gbar{background:#fff;border-radius:12px;padding:10px 18px;margin-bottom:16px;font-size:.85rem;color:#475569;display:flex;align-items:center;gap:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.gbar button{background:#0f3460;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif}
+/* Category tabs */
+.cat-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+.cat-tabs::-webkit-scrollbar{display:none}
+.ctab{flex-shrink:0;padding:8px 18px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;transition:.15s;white-space:nowrap}
+.ctab:hover{border-color:#0f3460;color:#0f3460}
+.ctab.active{background:#0f3460;color:#fff;border-color:#0f3460}
+/* Sort bar */
+.sbar{display:flex;gap:8px;align-items:center;margin-bottom:20px}
+.spill{padding:6px 14px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.78rem;text-decoration:none;white-space:nowrap;transition:.15s}
+.spill:hover,.spill.active{background:#0f3460;color:#fff;border-color:#0f3460}
+/* Card grid */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.ccard{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer;transition:.2s;display:flex;flex-direction:column}
+.ccard:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.12)}
+.cbar{height:5px;width:100%}
+.sev-CRITICAL .cbar{background:#dc2626}
+.sev-HIGH .cbar{background:#ea580c}
+.sev-MEDIUM .cbar{background:#ca8a04}
+.sev-LOW .cbar,.sev-null .cbar{background:#2563eb}
+.cbody{padding:18px;flex:1;display:flex;flex-direction:column;gap:8px}
+.cemoji{font-size:1.8rem;line-height:1}
+.ctitle{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#0f3460;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cloc{font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:4px}
+.cbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.sbadge{padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
+.sbadge-CRITICAL{background:#fef2f2;color:#dc2626}
+.sbadge-HIGH{background:#fff7ed;color:#ea580c}
+.sbadge-MEDIUM{background:#fefce8;color:#ca8a04}
+.sbadge-LOW{background:#eff6ff;color:#2563eb}
+.statusb{background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
+.cfoot{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:10px;border-top:1px solid #f8fafc;font-size:.8rem;color:#64748b}
+.cthumb{width:100%;height:120px;object-fit:cover}
+.ctime{margin-left:auto;font-size:.72rem}
+/* Empty */
+.empty{text-align:center;padding:60px 20px;color:#94a3b8;grid-column:1/-1}
+.empty h3{font-family:'Urbanist',sans-serif;font-size:1.2rem;color:#64748b;margin-bottom:8px}
+/* Overlay + Drawer */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998;animation:fadein .2s}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.drawer{position:fixed;top:0;right:0;width:480px;max-width:100vw;height:100vh;background:#fff;z-index:9999;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.15)}
+.drawer.open{transform:translateX(0)}
+.dhead{padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px;position:sticky;top:0;background:#fff;z-index:1}
+.dclose{margin-left:auto;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#94a3b8;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.dclose:hover{background:#f1f5f9}
+.dbody{padding:24px}
+.dcat{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1.05rem;color:#0f3460}
+.dtitle{font-family:'Urbanist',sans-serif;font-weight:900;font-size:1.4rem;color:#0f3460;line-height:1.25;margin-bottom:8px}
+.dmeta{font-size:.82rem;color:#94a3b8;margin-bottom:16px}
+.dmeta strong{color:#475569}
+.ai-card{background:linear-gradient(135deg,#0f3460,#1a1a2e);border-radius:14px;padding:18px 20px;margin-bottom:18px;color:#fff}
+.ai-chip{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.5);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.ai-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-text{font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.6}
+.ddesc{font-size:.9rem;color:#475569;line-height:1.7;margin-bottom:18px}
+.dvote{display:flex;align-items:center;gap:16px;padding:16px 0;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;margin-bottom:20px}
+.vbtn{display:inline-flex;align-items:center;gap:7px;padding:10px 24px;border-radius:8px;border:2px solid #e2e8f0;background:#fff;color:#374151;font-family:'Urbanist',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s}
+.vbtn:hover{border-color:#16a34a;color:#16a34a}
+.vbtn.upvoted{background:#16a34a;color:#fff;border-color:#16a34a}
+.vcnt{font-family:'Urbanist',sans-serif;font-size:1.4rem;font-weight:900;color:#0f3460}
+.vlab{font-size:.75rem;color:#94a3b8}
+.vmaplink{margin-left:auto;color:#0f3460;font-size:.82rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;border:2px solid #e2e8f0;padding:6px 12px;border-radius:6px}
+.coms-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#0f3460;margin-bottom:14px}
+.com{padding:12px 0;border-bottom:1px solid #f8fafc}
+.com:last-of-type{border-bottom:none}
+.cauth{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.cavatar{width:30px;height:30px;border-radius:50%;background:#0f3460;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:'Urbanist',sans-serif;flex-shrink:0}
+.caname{font-weight:700;font-size:.85rem;color:#374151}
+.offb{background:#0f3460;color:#fff;padding:2px 7px;border-radius:4px;font-size:.6rem;font-weight:800;font-family:'Urbanist',sans-serif}
+.ctime2{margin-left:auto;font-size:.72rem;color:#94a3b8}
+.ctext{font-size:.88rem;color:#475569;line-height:1.6;padding-left:38px}
+.cform{margin-top:18px;padding-top:16px;border-top:1px solid #f1f5f9}
+.cinput{width:100%;padding:10px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:.88rem;font-family:'Lato',sans-serif;resize:vertical;min-height:72px;transition:.2s}
+.cinput:focus{outline:none;border-color:#0f3460}
+.csubmit{margin-top:8px;background:#0f3460;color:#fff;border:none;padding:9px 22px;border-radius:8px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer}
+.dthumb{width:100%;border-radius:10px;max-height:200px;object-fit:cover;margin-bottom:16px}
+.dloading{text-align:center;padding:40px;color:#94a3b8}
+.chain-note{font-size:.72rem;color:#94a3b8;margin-top:12px}
+.chain-note a{color:#2563eb;font-weight:700;text-decoration:none}
+@media(max-width:600px){.drawer{width:100vw}.cgrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="fb">
 
-    <div class="feed-body">
-        <!-- Header -->
-        <div class="feed-header">
-            <div>
-                <h2 class="feed-title">🏙️ CityFeed</h2>
-                <p class="feed-subtitle">Community-reported civic issues in your area</p>
-            </div>
-            <a href="/citizen/report" class="report-fab">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Report Issue
-            </a>
-        </div>
-
-        <!-- GPS bar -->
-        <div class="gps-bar">
-            <span th:if="${lat != null}">
-                📍 Showing within <strong th:text="${currentRadius}">5</strong>km of your location ·
-                <a th:href="@{/citizen/feed}">Show all</a>
-            </span>
-            <span th:if="${lat == null}" style="flex:1;">
-                📍 Showing all recent complaints &nbsp;
-            </span>
-            <button th:if="${lat == null}" onclick="useMyLocation()" id="gpsBtn">📡 Use My Location</button>
-        </div>
-
-        <!-- Filter bar -->
-        <div class="filter-bar">
-            <div class="sort-pills">
-                <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='latest',category=${currentCategory})}"
-                   th:classappend="${currentSort == 'latest'} ? ' active' : ''"
-                   class="pill">Latest</a>
-                <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='upvotes',category=${currentCategory})}"
-                   th:classappend="${currentSort == 'upvotes'} ? ' active' : ''"
-                   class="pill">🔥 Most Upvoted</a>
-                <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='critical',category=${currentCategory})}"
-                   th:classappend="${currentSort == 'critical'} ? ' active' : ''"
-                   class="pill">🚨 Critical First</a>
-            </div>
-            <div class="filter-divider"></div>
-            <select class="cat-select" onchange="applyFilter('category', this.value)">
-                <option value="all" th:selected="${currentCategory == 'all'}">All Categories</option>
-                <option value="Pothole"      th:selected="${currentCategory == 'Pothole'}">🕳️ Pothole</option>
-                <option value="Street Lamp"  th:selected="${currentCategory == 'Street Lamp'}">💡 Street Lamp</option>
-                <option value="Garbage"      th:selected="${currentCategory == 'Garbage'}">🗑️ Garbage</option>
-                <option value="Water Leakage" th:selected="${currentCategory == 'Water Leakage'}">💧 Water Leakage</option>
-                <option value="Road Damage"  th:selected="${currentCategory == 'Road Damage'}">🛣️ Road Damage</option>
-                <option value="Tree Fall"    th:selected="${currentCategory == 'Tree Fall'}">🌳 Tree Fall</option>
-                <option value="Noise"        th:selected="${currentCategory == 'Noise'}">🔊 Noise</option>
-                <option value="Stray Animals" th:selected="${currentCategory == 'Stray Animals'}">🐕 Stray Animals</option>
-            </select>
-            <select th:if="${lat != null}" class="radius-select" onchange="applyFilter('radius', this.value)">
-                <option value="1"  th:selected="${currentRadius == 1}">1 km</option>
-                <option value="5"  th:selected="${currentRadius == 5}">5 km</option>
-                <option value="10" th:selected="${currentRadius == 10}">10 km</option>
-            </select>
-        </div>
-
-        <!-- Trending section -->
-        <div th:if="${not #lists.isEmpty(trending)}">
-            <div class="trending-label">🔥 Trending This Week</div>
-            <div class="trending-scroll">
-                <a th:each="c,i : ${trending}"
-                   th:href="@{/citizen/feed/{id}(id=${c.id})}"
-                   class="trending-card">
-                    <div class="tr-rank" th:text="'#' + ${i.count}">1</div>
-                    <div class="tr-cat" th:text="${c.category != null ? c.category : 'General'}">Pothole</div>
-                    <div class="tr-title" th:text="${#strings.abbreviate(c.title, 60)}">Title</div>
-                    <div class="tr-votes">
-                        👍 <span th:text="${c.upvoteCount}">0</span> upvotes ·
-                        <span th:text="${c.location != null ? #strings.abbreviate(c.location, 25) : 'Unknown'}"></span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- Feed -->
-        <div th:each="c : ${feed}" th:classappend="'feed-card sev-' + ${c.severity != null ? c.severity : 'LOW'}">
-            <div class="sev-strip"></div>
-            <div class="card-body">
-                <!-- Top row: category, severity, escalation badge, time -->
-                <div class="card-top">
-                    <span class="cat-pill" th:data-cat="${c.category}" th:text="${c.category != null ? c.category : 'General'}">Pothole</span>
-                    <span th:classappend="'sev-pill sev-pill-' + ${c.severity != null ? c.severity : 'LOW'}"
-                          th:text="${c.severity != null ? c.severity : 'N/A'}"></span>
-                    <span th:if="${c.upvoteCount >= 25}" class="esc-badge">⚡ Community Escalated</span>
-                    <span class="card-time" th:data-time="${c.createdAt}" data-time="">just now</span>
-                </div>
-
-                <!-- Title -->
-                <a class="card-title" th:href="@{/citizen/feed/{id}(id=${c.id})}" th:text="${c.title}">Title</a>
-
-                <!-- Meta -->
-                <div class="card-meta">
-                    Filed by <strong th:text="${c.citizen != null ? c.citizen.name : 'Anonymous'}">Ashley</strong> ·
-                    📍 <span th:text="${c.location != null ? #strings.abbreviate(c.location, 50) : ''}"></span> ·
-                    <span th:classappend="'badge-status-' + ${#strings.toLowerCase(c.status.name())}"
-                          style="font-weight:700;"
-                          th:text="${c.status}">FILED</span>
-                </div>
-
-                <!-- Description -->
-                <div class="card-desc" th:text="${c.aiSummary != null ? #strings.abbreviate(c.aiSummary, 160) : #strings.abbreviate(c.description, 160)}">
-                    Description preview
-                </div>
-
-                <!-- Image thumbnail if media exists -->
-                <div th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}">
-                    <img class="card-img"
-                         th:src="${#strings.split(c.mediaUrl, ',')[0]}"
-                         alt="Complaint photo" loading="lazy"
-                         onerror="this.style.display='none'"/>
-                </div>
-
-                <!-- Actions -->
-                <div class="card-actions">
-                    <button class="upvote-btn"
-                            th:classappend="${upvotedByMe[c.id]} ? ' upvoted' : ''"
-                            th:id="'upvote-' + ${c.id}"
-                            th:data-id="${c.id}"
-                            th:data-upvoted="${upvotedByMe[c.id]}"
-                            onclick="toggleUpvote(this)">
-                        <span th:text="${upvotedByMe[c.id]} ? '✓ Upvoted' : '👍 Upvote'">👍 Upvote</span>
-                        <span class="upvote-count" th:text="${c.upvoteCount}">0</span>
-                    </button>
-                    <a class="comment-link" th:href="@{/citizen/feed/{id}(id=${c.id})}">
-                        💬 <span th:text="${commentCounts[c.id]}">0</span>
-                    </a>
-                    <a class="map-link"
-                       th:if="${c.latitude != null}"
-                       th:href="'https://www.google.com/maps?q=' + ${c.latitude} + ',' + ${c.longitude}"
-                       target="_blank">
-                        📍 Map
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Empty state -->
-        <div th:if="${#lists.isEmpty(feed)}" class="empty-state">
-            <div style="font-size:3rem; margin-bottom:16px;">🏙️</div>
-            <h3>No complaints in this area yet</h3>
-            <p>Be the first to report a civic issue in your area.</p>
-            <a href="/citizen/report" class="report-fab" style="display:inline-flex;margin-top:16px;">+ Report an Issue</a>
-        </div>
-
+  <!-- Header -->
+  <div class="fh">
+    <div>
+      <h1>🏙️ CityFeed</h1>
+      <p>Community-reported civic issues · AI-sorted by category</p>
     </div>
+    <a href="/citizen/report" class="fab">+ Report Issue</a>
+  </div>
 
-    <div th:replace="~{fragments/footer :: footer}"></div>
-    <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=67a4c8dcc89e958da293d681" type="text/javascript"></script>
-    <script>
-        var CSRF_TOKEN  = document.querySelector('meta[name="_csrf"]').content;
-        var CSRF_HEADER = document.querySelector('meta[name="_csrf_header"]').content;
+  <!-- GPS bar -->
+  <div class="gbar">
+    <span th:if="${lat != null}">📍 Showing within <strong th:text="${currentRadius}">5</strong>km · <a href="/citizen/feed" style="color:#0f3460;font-weight:700;text-decoration:none">Show all</a></span>
+    <span th:if="${lat == null}" style="flex:1">📍 Showing all recent complaints</span>
+    <button th:if="${lat == null}" onclick="useGPS()" id="gpsBtn">📡 Use My Location</button>
+  </div>
 
-        var catEmojis = {
-            'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️',
-            'Water Leakage':'💧','Road Damage':'🛣️','Tree Fall':'🌳',
-            'Noise':'🔊','Stray Animals':'🐕','Water Supply':'🚰'
-        };
+  <!-- Category tabs -->
+  <div class="cat-tabs">
+    <button class="ctab active" onclick="filterTab(this,'all')">All</button>
+    <button class="ctab" onclick="filterTab(this,'Pothole')">🕳️ Pothole</button>
+    <button class="ctab" onclick="filterTab(this,'Garbage')">🗑️ Garbage</button>
+    <button class="ctab" onclick="filterTab(this,'Street Lamp')">💡 Street Lamp</button>
+    <button class="ctab" onclick="filterTab(this,'Water')">💧 Water</button>
+    <button class="ctab" onclick="filterTab(this,'Road Damage')">🛣️ Road</button>
+    <button class="ctab" onclick="filterTab(this,'other')">📋 Other</button>
+  </div>
 
-        // Time ago
-        document.querySelectorAll('[data-time]').forEach(function(el) {
-            var raw = el.getAttribute('data-time');
-            if (!raw) return;
-            var d = new Date(raw);
-            var diff = (Date.now() - d.getTime()) / 1000;
-            var s;
-            if (diff < 60) s = 'just now';
-            else if (diff < 3600) s = Math.floor(diff/60) + 'm ago';
-            else if (diff < 86400) s = Math.floor(diff/3600) + 'h ago';
-            else s = Math.floor(diff/86400) + 'd ago';
-            el.textContent = s;
-        });
+  <!-- Sort bar -->
+  <div class="sbar">
+    <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='latest',category=${currentCategory})}"
+       th:classappend="${currentSort=='latest'}?' active':''" class="spill">Latest</a>
+    <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='upvotes',category=${currentCategory})}"
+       th:classappend="${currentSort=='upvotes'}?' active':''" class="spill">🔥 Most Upvoted</a>
+    <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='critical',category=${currentCategory})}"
+       th:classappend="${currentSort=='critical'}?' active':''" class="spill">🚨 Critical First</a>
+  </div>
 
-        // Fix category pills with emoji
-        document.querySelectorAll('.cat-pill[data-cat]').forEach(function(el) {
-            var cat = el.getAttribute('data-cat');
-            var emoji = catEmojis[cat] || '📋';
-            el.textContent = emoji + ' ' + el.textContent;
-        });
+  <!-- Card grid -->
+  <div class="cgrid" id="grid">
+    <div th:if="${#lists.isEmpty(feed)}" class="empty">
+      <h3>No complaints yet</h3>
+      <p>Be the first to report a civic issue.</p>
+    </div>
+    <div th:each="c : ${feed}"
+         th:classappend="'ccard sev-' + ${c.severity}"
+         th:data-category="${c.category}"
+         th:data-id="${c.id}"
+         th:data-upvoted="${upvotedByMe[c.id]}"
+         th:data-votes="${c.upvoteCount}"
+         onclick="openDrawer(this.dataset.id)">
+      <div class="cbar"></div>
+      <div th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}">
+        <img class="cthumb" th:src="${#strings.split(c.mediaUrl,',')[0]}" alt="" onerror="this.style.display='none'" loading="lazy"/>
+      </div>
+      <div class="cbody">
+        <div class="cemoji" th:data-cat="${c.category}">📋</div>
+        <div class="ctitle" th:text="${c.title}">Title</div>
+        <div class="cloc">📍 <span th:text="${c.location != null ? #strings.abbreviate(c.location,45) : ''}"></span></div>
+        <div class="cbadges">
+          <span class="sbadge" th:classappend="'sbadge-'+${c.severity}" th:text="${c.severity}">MED</span>
+          <span class="statusb" th:text="${c.status}">FILED</span>
+        </div>
+        <div class="cfoot">
+          <span>👍 <span class="vcount" th:text="${c.upvoteCount}">0</span></span>
+          <span>💬 <span th:text="${commentCounts[c.id]}">0</span></span>
+          <span class="ctime" th:data-time="${c.createdAt}"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Upvote AJAX
-        function toggleUpvote(btn) {
-            var id = btn.getAttribute('data-id');
-            btn.disabled = true;
-            fetch('/api/feed/upvote?complaintId=' + id, {
-                method: 'POST',
-                headers: { [CSRF_HEADER]: CSRF_TOKEN }
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                btn.classList.toggle('upvoted', data.upvoted);
-                var label = btn.querySelector('span:first-child');
-                label.textContent = data.upvoted ? '✓ Upvoted' : '👍 Upvote';
-                btn.querySelector('.upvote-count').textContent = data.count;
-                btn.setAttribute('data-upvoted', data.upvoted);
-            })
-            .catch(function(e) { console.error('Upvote failed', e); })
-            .finally(function() { btn.disabled = false; });
-        }
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 
-        // GPS detect + reload
-        function useMyLocation() {
-            var btn = document.getElementById('gpsBtn');
-            btn.textContent = '⏳ Detecting...';
-            btn.disabled = true;
-            navigator.geolocation.getCurrentPosition(function(pos) {
-                var url = new URL(window.location.href);
-                url.searchParams.set('lat', pos.coords.latitude.toFixed(6));
-                url.searchParams.set('lon', pos.coords.longitude.toFixed(6));
-                url.searchParams.set('radius', '5');
-                window.location.href = url.toString();
-            }, function() {
-                btn.textContent = '❌ Location denied';
-                btn.disabled = false;
-            });
-        }
+<!-- Drawer -->
+<div class="drawer" id="drawer">
+  <div class="dhead">
+    <span id="dCatEmoji" style="font-size:1.5rem">📋</span>
+    <span class="dcat" id="dCat">Category</span>
+    <button class="dclose" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="dbody" id="dBody">
+    <div class="dloading">Loading…</div>
+  </div>
+</div>
 
-        // Category + radius filter change
-        function applyFilter(param, value) {
-            var url = new URL(window.location.href);
-            url.searchParams.set(param, value);
-            window.location.href = url.toString();
-        }
-    </script>
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+var CSRF = document.querySelector('meta[name="_csrf"]').content;
+var CHEAD = document.querySelector('meta[name="_csrf_header"]').content;
+var EMOJIS = {'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️','Water Leakage':'💧','Water Supply':'🚰','Road Damage':'🛣️','Tree Fall':'🌳','Noise':'🔊','Stray Animals':'🐕'};
+var MAJOR = ['Pothole','Garbage','Street Lamp','Water Leakage','Water Supply','Road Damage'];
+
+// Emoji enrichment
+document.querySelectorAll('.cemoji[data-cat]').forEach(function(el){el.textContent=EMOJIS[el.dataset.cat]||'📋';});
+
+// Time ago
+function timeAgo(str){if(!str)return'';var d=new Date(str),s=(Date.now()-d)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+document.querySelectorAll('[data-time]').forEach(function(el){el.textContent=timeAgo(el.dataset.time);});
+
+// Category tab filter
+function filterTab(btn,filter){
+  document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.ccard').forEach(function(c){
+    var cat=c.dataset.category||'';
+    var show=false;
+    if(filter==='all'){show=true;}
+    else if(filter==='Water'){show=cat==='Water Leakage'||cat==='Water Supply';}
+    else if(filter==='other'){show=!MAJOR.includes(cat);}
+    else{show=cat===filter;}
+    c.style.display=show?'':'none';
+  });
+}
+
+// GPS
+function useGPS(){
+  var btn=document.getElementById('gpsBtn');btn.textContent='⏳…';btn.disabled=true;
+  navigator.geolocation.getCurrentPosition(function(p){
+    var u=new URL(location.href);u.searchParams.set('lat',p.coords.latitude.toFixed(6));u.searchParams.set('lon',p.coords.longitude.toFixed(6));u.searchParams.set('radius','5');location.href=u;
+  },function(){btn.textContent='❌ Denied';btn.disabled=false;});
+}
+
+// Drawer
+var currentId=null;
+function openDrawer(id){
+  currentId=id;
+  document.getElementById('overlay').style.display='block';
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('dBody').innerHTML='<div class="dloading">Loading…</div>';
+  fetch('/api/feed/detail?id='+id,{headers:{[CHEAD]:CSRF}})
+  .then(function(r){return r.json();})
+  .then(function(d){renderDrawer(d);})
+  .catch(function(){document.getElementById('dBody').innerHTML='<p style="color:red;padding:20px">Failed to load.</p>';});
+}
+
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').style.display='none';
+  currentId=null;
+}
+
+function renderDrawer(d){
+  var emoji=EMOJIS[d.category]||'📋';
+  document.getElementById('dCatEmoji').textContent=emoji;
+  document.getElementById('dCat').textContent=d.category;
+
+  var sevCls={'CRITICAL':'#dc2626','HIGH':'#ea580c','MEDIUM':'#ca8a04','LOW':'#2563eb'};
+  var sc=sevCls[d.severity]||'#2563eb';
+
+  var media='';
+  if(d.mediaUrl){d.mediaUrl.split(',').forEach(function(u){u=u.trim();if(u)media+='<img class="dthumb" src="'+u+'" onerror="this.style.display=\'none\'" loading="lazy"/>';});}
+
+  var ai=d.aiSummary?'<div class="ai-card"><div class="ai-chip"><span class="ai-dot"></span>AI Summary — Llama 3.3</div><div class="ai-text">'+esc(d.aiSummary)+'</div>'+(d.aiReason?'<div style="font-size:.78rem;color:rgba(255,255,255,.5);font-style:italic;margin-top:8px">"'+esc(d.aiReason)+'"</div>':'')+'</div>':'';
+
+  var upBtn='<button class="vbtn'+(d.upvotedByMe?' upvoted':'')+'" id="dVBtn" onclick="drawerUpvote('+d.id+')">'+(d.upvotedByMe?'✓ Upvoted':'👍 Upvote')+'</button>';
+  var mapLink=d.latitude?'<a class="vmaplink" href="https://www.google.com/maps?q='+d.latitude+','+d.longitude+'" target="_blank">📍 Map</a>':'';
+
+  var chain=d.blockchainHash?'<div class="chain-note">⛓️ On-chain: <a href="https://sepolia.etherscan.io/tx/'+d.blockchainHash+'" target="_blank">View TX</a></div>':'';
+
+  var comHtml='';
+  (d.comments||[]).forEach(function(c){
+    comHtml+='<div class="com"><div class="cauth"><div class="cavatar">'+esc(c.author.charAt(0).toUpperCase())+'</div><span class="caname">'+esc(c.author)+'</span>'+(c.official?'<span class="offb">🏛️ Official</span>':'')+'<span class="ctime2">'+c.time+'</span></div><div class="ctext">'+esc(c.text)+'</div></div>';
+  });
+
+  document.getElementById('dBody').innerHTML=
+    '<div style="height:4px;background:'+sc+';border-radius:4px;margin-bottom:20px"></div>'+
+    '<div class="dtitle">'+esc(d.title)+'</div>'+
+    '<div class="dmeta">Filed by <strong>'+esc(d.citizenName)+'</strong> · 📍 '+esc(d.location)+'</div>'+
+    media+ai+
+    '<div class="ddesc" id="dDesc">'+esc(d.description)+'</div>'+
+    '<div class="dvote">'+upBtn+'<div><div class="vcnt" id="dVCnt">'+d.upvoteCount+'</div><div class="vlab">upvotes</div></div>'+mapLink+'</div>'+
+    chain+
+    '<div class="coms-title">💬 Comments ('+((d.comments||[]).length)+')</div>'+
+    (comHtml||'<p style="color:#94a3b8;font-size:.88rem;padding:8px 0">No comments yet.</p>')+
+    '<div class="cform"><textarea class="cinput" id="dComInput" placeholder="Add a comment…" maxlength="500"></textarea><br/><button class="csubmit" onclick="drawerComment('+d.id+')">Post Comment</button></div>';
+}
+
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function drawerUpvote(id){
+  var btn=document.getElementById('dVBtn');if(!btn)return;btn.disabled=true;
+  fetch('/api/feed/upvote?complaintId='+id,{method:'POST',headers:{[CHEAD]:CSRF}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    btn.className='vbtn'+(d.upvoted?' upvoted':'');
+    btn.textContent=d.upvoted?'✓ Upvoted':'👍 Upvote';
+    document.getElementById('dVCnt').textContent=d.count;
+    // Update grid card too
+    var card=document.querySelector('.ccard[data-id="'+id+'"]');
+    if(card){card.querySelector('.vcount').textContent=d.count;}
+  })
+  .finally(function(){btn.disabled=false;});
+}
+
+function drawerComment(id){
+  var inp=document.getElementById('dComInput');if(!inp)return;
+  var txt=inp.value.trim();if(!txt)return;
+  var p=new URLSearchParams({complaintId:id,text:txt});
+  fetch('/api/feed/comment?'+p,{method:'POST',headers:{[CHEAD]:CSRF}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.error){alert(d.error);return;}
+    var cform=document.querySelector('.cform');
+    var div=document.createElement('div');div.className='com';
+    div.innerHTML='<div class="cauth"><div class="cavatar">'+d.author.charAt(0).toUpperCase()+'</div><span class="caname">'+esc(d.author)+'</span>'+(d.official?'<span class="offb">🏛️ Official</span>':'')+'<span class="ctime2">just now</span></div><div class="ctext">'+esc(d.text)+'</div>';
+    cform.parentNode.insertBefore(div,cform);
+    inp.value='';
+  });
+}
+</script>
 </body>
 </html>
