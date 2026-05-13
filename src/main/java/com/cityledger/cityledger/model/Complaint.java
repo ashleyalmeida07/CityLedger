@@ -75,6 +75,10 @@ public class Complaint {
     @Column(columnDefinition = "TEXT")
     private String aiSummary;
 
+    // Structured answers from the guided wizard (JSON)
+    @Column(columnDefinition = "TEXT")
+    private String guidedAnswers;
+
     // Community upvote count — drives auto-escalation via CityFeed
     @Builder.Default
     @Column(nullable = false, columnDefinition = "integer default 0")

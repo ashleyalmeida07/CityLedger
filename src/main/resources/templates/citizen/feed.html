@@ -5,6 +5,7 @@
 <meta name="_csrf" th:content="${_csrf.token}"/>
 <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <title>CityFeed — CityLedger</title>
+<link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -30,28 +31,44 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 .spill{padding:6px 14px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.78rem;text-decoration:none;white-space:nowrap;transition:.15s}
 .spill:hover,.spill.active{background:#0f3460;color:#fff;border-color:#0f3460}
 /* Card grid */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.ccard{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer;transition:.2s;display:flex;flex-direction:column}
-.ccard:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.12)}
-.cbar{height:5px;width:100%}
-.sev-CRITICAL .cbar{background:#dc2626}
-.sev-HIGH .cbar{background:#ea580c}
-.sev-MEDIUM .cbar{background:#ca8a04}
-.sev-LOW .cbar,.sev-null .cbar{background:#2563eb}
-.cbody{padding:18px;flex:1;display:flex;flex-direction:column;gap:8px}
-.cemoji{font-size:1.8rem;line-height:1}
-.ctitle{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#0f3460;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cloc{font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:4px}
-.cbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.sbadge{padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
-.sbadge-CRITICAL{background:#fef2f2;color:#dc2626}
-.sbadge-HIGH{background:#fff7ed;color:#ea580c}
-.sbadge-MEDIUM{background:#fefce8;color:#ca8a04}
-.sbadge-LOW{background:#eff6ff;color:#2563eb}
-.statusb{background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
-.cfoot{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:10px;border-top:1px solid #f8fafc;font-size:.8rem;color:#64748b}
-.cthumb{width:100%;height:120px;object-fit:cover}
-.ctime{margin-left:auto;font-size:.72rem}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+/* Product-style card */
+.ccard{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);cursor:pointer;transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0}
+.ccard:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
+/* Image zone */
+.cimg-wrap{position:relative;width:100%;height:200px;overflow:hidden;flex-shrink:0}
+.cimg-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.ccard:hover .cimg-wrap img{transform:scale(1.04)}
+.cimg-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.sev-CRITICAL .cimg-placeholder{background:linear-gradient(135deg,#fef2f2,#fecaca)}
+.sev-HIGH .cimg-placeholder{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
+.sev-MEDIUM .cimg-placeholder{background:linear-gradient(135deg,#fefce8,#fde68a)}
+.sev-LOW .cimg-placeholder,.sev-null .cimg-placeholder{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
+/* Floating buttons on image */
+.img-btn-tr{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:.2s;z-index:2}
+.img-btn-tr:hover{background:#fff;transform:scale(1.1)}
+.img-btn-tr.upvoted{background:#ef4444;color:#fff}
+.img-btn-br{position:absolute;bottom:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(15,52,96,.88);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:.2s;z-index:2;text-decoration:none}
+.img-btn-br:hover{background:#0f3460;transform:scale(1.1)}
+/* Severity badge on image top-left */
+.img-sev{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px);z-index:2}
+.sev-CRITICAL .img-sev{background:rgba(220,38,38,.85);color:#fff}
+.sev-HIGH .img-sev{background:rgba(234,88,12,.85);color:#fff}
+.sev-MEDIUM .img-sev{background:rgba(202,138,4,.85);color:#fff}
+.sev-LOW .img-sev,.sev-null .img-sev{background:rgba(37,99,235,.85);color:#fff}
+/* Card body */
+.cbody{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
+.ctitle{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:2px}
+.crating{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#94a3b8}
+.cstars{display:flex;gap:1px}
+.cstar{width:12px;height:12px;color:#e2e8f0}
+.cstar.filled{color:#f59e0b}
+.cvote-cnt{color:#374151;font-weight:700;font-size:.78rem}
+.cloc{font-size:.82rem;color:#0f3460;font-weight:700;margin-top:2px}
+.cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
+.cstatus{background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
+.cviews{display:flex;align-items:center;gap:4px;font-size:.78rem;color:#94a3b8}
+.ctime{font-size:.72rem;color:#94a3b8}
 /* Empty */
 .empty{text-align:center;padding:60px 20px;color:#94a3b8;grid-column:1/-1}
 .empty h3{font-family:'Urbanist',sans-serif;font-size:1.2rem;color:#64748b;margin-bottom:8px}
@@ -149,28 +166,69 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
       <p>Be the first to report a civic issue.</p>
     </div>
     <div th:each="c : ${feed}"
-         th:classappend="'ccard sev-' + ${c.severity}"
+         th:classappend="'ccard sev-' + ${c.severity != null ? c.severity : 'LOW'}"
          th:data-category="${c.category}"
          th:data-id="${c.id}"
          th:data-upvoted="${upvotedByMe[c.id]}"
-         th:data-votes="${c.upvoteCount}"
-         onclick="openDrawer(this.dataset.id)">
-      <div class="cbar"></div>
-      <div th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}">
-        <img class="cthumb" th:src="${#strings.split(c.mediaUrl,',')[0]}" alt="" onerror="this.style.display='none'" loading="lazy"/>
+         th:data-votes="${c.upvoteCount}">
+
+      <!-- Image zone -->
+      <div class="cimg-wrap" onclick="openDrawer(this.closest('.ccard').dataset.id)">
+        <!-- Has photo -->
+        <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}"
+             th:src="${#strings.split(c.mediaUrl,',')[0]}"
+             alt="Complaint photo" loading="lazy"
+             onerror="this.style.display='none'"/>
+        <!-- No photo placeholder -->
+        <div th:if="${c.mediaUrl == null or c.mediaUrl.isBlank()}"
+             class="cimg-placeholder cemoji" th:data-cat="${c.category}">📋</div>
+
+        <!-- Severity badge top-left -->
+        <span class="img-sev" th:text="${c.severity != null ? c.severity : 'LOW'}"></span>
+
+        <!-- Upvote heart btn top-right -->
+        <button class="img-btn-tr"
+                th:classappend="${upvotedByMe[c.id]} ? ' upvoted' : ''"
+                th:data-id="${c.id}"
+                th:title="${upvotedByMe[c.id]} ? 'Remove upvote' : 'Upvote'"
+                onclick="event.stopPropagation();quickUpvote(this)">
+          <span th:text="${upvotedByMe[c.id]} ? '❤️' : '🤍'">🤍</span>
+        </button>
+
+        <!-- Map btn bottom-right (only if GPS exists) -->
+        <a th:if="${c.latitude != null}"
+           class="img-btn-br"
+           th:href="'https://www.google.com/maps?q='+${c.latitude}+','+${c.longitude}"
+           target="_blank"
+           onclick="event.stopPropagation()"
+           title="View on map">📍</a>
       </div>
-      <div class="cbody">
-        <div class="cemoji" th:data-cat="${c.category}">📋</div>
-        <div class="ctitle" th:text="${c.title}">Title</div>
-        <div class="cloc">📍 <span th:text="${c.location != null ? #strings.abbreviate(c.location,45) : ''}"></span></div>
-        <div class="cbadges">
-          <span class="sbadge" th:classappend="'sbadge-'+${c.severity}" th:text="${c.severity}">MED</span>
-          <span class="statusb" th:text="${c.status}">FILED</span>
+
+      <!-- Card body -->
+      <div class="cbody" onclick="openDrawer(this.closest('.ccard').dataset.id)">
+        <div class="ctitle" th:text="${c.title}">Complaint Title</div>
+
+        <!-- Stars = upvote score (max 5 filled = 25+ votes) -->
+        <div class="crating">
+          <div class="cstars" th:data-votes="${c.upvoteCount}">
+            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <span class="cvote-cnt" th:text="${c.upvoteCount}">0</span>
+          <span th:text="'(' + ${commentCounts[c.id]} + ' comments)'"></span>
         </div>
+
+        <div class="cloc" th:text="${c.location != null ? #strings.abbreviate(c.location,40) : 'Unknown location'}">Location</div>
+
         <div class="cfoot">
-          <span>👍 <span class="vcount" th:text="${c.upvoteCount}">0</span></span>
-          <span>💬 <span th:text="${commentCounts[c.id]}">0</span></span>
-          <span class="ctime" th:data-time="${c.createdAt}"></span>
+          <span class="cstatus" th:text="${c.status}">FILED</span>
+          <div class="cviews">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span th:text="${c.upvoteCount}">0</span>
+          </div>
         </div>
       </div>
     </div>
@@ -200,8 +258,37 @@ var CHEAD = document.querySelector('meta[name="_csrf_header"]').content;
 var EMOJIS = {'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️','Water Leakage':'💧','Water Supply':'🚰','Road Damage':'🛣️','Tree Fall':'🌳','Noise':'🔊','Stray Animals':'🐕'};
 var MAJOR = ['Pothole','Garbage','Street Lamp','Water Leakage','Water Supply','Road Damage'];
 
-// Emoji enrichment
+// Emoji enrichment for placeholders
 document.querySelectorAll('.cemoji[data-cat]').forEach(function(el){el.textContent=EMOJIS[el.dataset.cat]||'📋';});
+
+// Star fill: 1 star per 5 upvotes (max 5)
+document.querySelectorAll('.cstars[data-votes]').forEach(function(wrap){
+  var v=parseInt(wrap.dataset.votes)||0;
+  var filled=Math.min(5,Math.ceil(v/5));
+  wrap.querySelectorAll('.cstar').forEach(function(s,i){if(i<filled)s.classList.add('filled');});
+});
+
+// Quick upvote from card heart button
+function quickUpvote(btn){
+  btn.disabled=true;
+  var id=btn.dataset.id;
+  fetch('/api/feed/upvote?complaintId='+id,{method:'POST',headers:{[CHEAD]:CSRF}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    btn.classList.toggle('upvoted',d.upvoted);
+    btn.querySelector('span').textContent=d.upvoted?'❤️':'🤍';
+    // Update vote count + stars in card body
+    var card=btn.closest('.ccard');
+    if(card){
+      card.querySelector('.cvote-cnt').textContent=d.count;
+      card.querySelector('.cviews span').textContent=d.count;
+      var stars=card.querySelectorAll('.cstar');
+      var filled=Math.min(5,Math.ceil(d.count/5));
+      stars.forEach(function(s,i){s.classList.toggle('filled',i<filled);});
+    }
+  })
+  .finally(function(){btn.disabled=false;});
+}
 
 // Time ago
 function timeAgo(str){if(!str)return'';var d=new Date(str),s=(Date.now()-d)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}

@@ -235,8 +235,63 @@ public class AIService {
         return raw;
     }
 
+    /**
+     * Feature 4: Smart Categorization from structured wizard data.
+     * Citizen already picked the category — AI just assigns severity + generates clean summary.
+     */
+    public StructuredResult categorizeFromStructured(String category, String guidedAnswersJson,
+                                                      String extraNote, String location) {
+        String prompt = """
+                You are a civic complaint analyst for CityLedger, an Indian municipal system.
+
+                A citizen has reported an issue using a guided form. The category is already selected by the citizen.
+                Your job is to:
+                1. Assign a SEVERITY based on the structured answers
+                2. Write a CLEAN 2-3 sentence summary suitable for a municipal officer
+                3. Provide a short reason for the severity
+
+                Respond with EXACTLY this JSON (no markdown, no extra text):
+                {"severity": "...", "summary": "...", "reason": "..."}
+
+                SEVERITY must be ONE of: LOW, MEDIUM, HIGH, CRITICAL
+                SUMMARY must be a professional 2-3 sentence description of the issue for an officer.
+                REASON must be a single sentence explaining why you chose that severity.
+
+                Category: %s
+                Structured Answers: %s
+                Additional Note: %s
+                Location: %s
+
+                Respond ONLY with the JSON object.
+                """.formatted(category, guidedAnswersJson,
+                extraNote != null ? extraNote : "none", location);
+
+        try {
+            String response = callLLM(prompt);
+            String json = extractJson(response);
+            JsonNode node = objectMapper.readTree(json);
+
+            String severity = node.get("severity").asText().toUpperCase();
+            String summary = node.get("summary").asText();
+            String reason = node.get("reason").asText();
+
+            List<String> validSeverities = List.of("LOW", "MEDIUM", "HIGH", "CRITICAL");
+            if (!validSeverities.contains(severity)) severity = "MEDIUM";
+
+            log.info("Structured AI: {} / {} — {}", category, severity, reason);
+            return new StructuredResult(category, severity, summary, reason);
+
+        } catch (Exception e) {
+            log.error("Structured AI categorization failed: {}", e.getMessage());
+            return new StructuredResult(category, "MEDIUM",
+                    "A " + category.toLowerCase() + " issue has been reported at " + location + ".",
+                    "AI classification unavailable — defaulted");
+        }
+    }
+
     // ── Result records ──
 
     public record AICategorization(String category, String severity, String reason) {}
     public record DuplicateCheckResult(boolean isDuplicate, Long duplicateOfId, String reason) {}
+    public record StructuredResult(String category, String severity, String summary, String reason) {}
 }

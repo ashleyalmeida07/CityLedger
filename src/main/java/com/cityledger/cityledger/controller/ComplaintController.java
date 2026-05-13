@@ -49,21 +49,41 @@ public class ComplaintController {
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
             @RequestParam(required = false) List<MultipartFile> media,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String guidedAnswers,
+            @RequestParam(required = false) String extraNote,
             Authentication authentication) {
 
-        // Resolve citizen from JWT/session
+        // Resolve citizen
         String email = authentication.getName();
         AppUser citizen = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found in database"));
 
-        // ── Feature 1: AI Category + Severity Assignment (via NVIDIA Llama 3.3) ──
-        AIService.AICategorization aiResult = aiService.categorizeComplaint(title, description, location);
-        String category = aiResult.category();
-        String severity = aiResult.severity();
-        String aiReason = aiResult.reason();
-        log.info("AI classified: {} / {} — {}", category, severity, aiReason);
+        // ── AI Classification ──
+        String finalCategory;
+        String severity;
+        String aiReason;
+        String aiSummary = null;
 
-        // 1. Save complaint to PostgreSQL
+        if (category != null && !category.isBlank() && guidedAnswers != null && !guidedAnswers.isBlank()) {
+            // Wizard mode: citizen picked category + structured answers
+            AIService.StructuredResult result = aiService.categorizeFromStructured(
+                    category, guidedAnswers, extraNote, location);
+            finalCategory = result.category();
+            severity = result.severity();
+            aiReason = result.reason();
+            aiSummary = result.summary();
+            log.info("Wizard AI: {} / {} — {}", finalCategory, severity, aiReason);
+        } else {
+            // Legacy mode: free-text submission
+            AIService.AICategorization aiResult = aiService.categorizeComplaint(title, description, location);
+            finalCategory = aiResult.category();
+            severity = aiResult.severity();
+            aiReason = aiResult.reason();
+            log.info("Legacy AI: {} / {} — {}", finalCategory, severity, aiReason);
+        }
+
+        // Build complaint
         Complaint newComplaint = Complaint.builder()
                 .citizen(citizen)
                 .title(title)
@@ -71,9 +91,11 @@ public class ComplaintController {
                 .location(location)
                 .latitude(latitude)
                 .longitude(longitude)
-                .category(category)
+                .category(finalCategory)
                 .severity(severity)
                 .aiReason(aiReason)
+                .aiSummary(aiSummary)
+                .guidedAnswers(guidedAnswers)
                 .status(ComplaintStatus.FILED)
                 .filedAt(LocalDateTime.now())
                 .build();
@@ -127,11 +149,11 @@ public class ComplaintController {
 
         // 5. Persist everything back to DB
         complaintRepository.save(saved);
-        log.info("Complaint #{} complete — Category: {}, Severity: {}, TX: {}", saved.getId(), category, severity, txHash);
+        log.info("Complaint #{} complete — Category: {}, Severity: {}, TX: {}", saved.getId(), finalCategory, severity, txHash);
 
         return "redirect:/citizen/report?success=true&id=" + saved.getId()
                 + "&hash=" + txHash
-                + "&category=" + URLEncoder.encode(category, StandardCharsets.UTF_8)
+                + "&category=" + URLEncoder.encode(finalCategory, StandardCharsets.UTF_8)
                 + "&severity=" + severity
                 + "&reason=" + URLEncoder.encode(aiReason, StandardCharsets.UTF_8)
                 + (saved.getDuplicateOfId() != null ? "&duplicateOf=" + saved.getDuplicateOfId() : "");

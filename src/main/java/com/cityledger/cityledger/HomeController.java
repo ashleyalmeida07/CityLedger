@@ -146,6 +146,17 @@ public class HomeController {
         return "officer/queue";
     }
 
+    @GetMapping("/officer/complaint/{id}")
+    public String officerComplaintDetail(@PathVariable Long id, @AuthenticationPrincipal OAuth2User principal, Model model) {
+        if (principal == null) return "redirect:/login";
+        Complaint complaint = complaintRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Complaint not found"));
+        model.addAttribute("complaint", complaint);
+        model.addAttribute("fieldWorkers", userRepository.findByRole(Role.FIELD_WORKER));
+        model.addAttribute("user", principal);
+        return "officer/complaint-detail";
+    }
+
     @PostMapping("/officer/queue/assign")
     public String assignComplaint(@RequestParam Long complaintId, @RequestParam Long workerId) {
         Complaint complaint = complaintRepository.findById(complaintId)
