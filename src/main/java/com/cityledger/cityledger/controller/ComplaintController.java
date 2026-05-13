@@ -152,10 +152,10 @@ public class ComplaintController {
         log.info("Complaint #{} complete — Category: {}, Severity: {}, TX: {}", saved.getId(), finalCategory, severity, txHash);
 
         return "redirect:/citizen/report?success=true&id=" + saved.getId()
-                + "&hash=" + txHash
-                + "&category=" + URLEncoder.encode(finalCategory, StandardCharsets.UTF_8)
-                + "&severity=" + severity
-                + "&reason=" + URLEncoder.encode(aiReason, StandardCharsets.UTF_8)
+                + "&hash=" + (txHash != null ? txHash : "")
+                + "&category=" + (finalCategory != null ? URLEncoder.encode(finalCategory, StandardCharsets.UTF_8) : "")
+                + "&severity=" + (severity != null ? severity : "")
+                + "&reason=" + (aiReason != null ? URLEncoder.encode(aiReason, StandardCharsets.UTF_8) : "")
                 + (saved.getDuplicateOfId() != null ? "&duplicateOf=" + saved.getDuplicateOfId() : "");
     }
 

@@ -209,8 +209,9 @@
                         </select>
                         <button type="submit">Assign</button>
                     </form>
-                    <div th:if="${c.status == null or c.status.name() != 'FILED'}" class="qworker" style="display:flex;align-items:center;gap:6px;">
-                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <div class="qmeta-row" th:if="${c.status == null or c.status.name() != 'FILED'}">
+                        <div style="display:flex;align-items:center;gap:4px;color:#64748b;font-size:.78rem;font-weight:600">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                          <span th:text="${c.assignedWorker != null ? c.assignedWorker.name : 'Unassigned'}"></span>
                     </div>
                 </div>

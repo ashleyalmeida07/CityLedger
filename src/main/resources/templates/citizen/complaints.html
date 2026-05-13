@@ -89,7 +89,7 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     <span th:text="${!#strings.isEmpty(c.location) ? #strings.abbreviate(c.location,40) : 'Location unknown'}"></span>
                 </div>
-                <div class="comp-date" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}"></div>
+                <div class="comp-date" th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}"></div>
                 <div class="comp-foot">
                     <span class="comp-status" th:classappend="'status-' + ${c.status}" th:text="${c.status}">FILED</span>
                     <span style="font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
