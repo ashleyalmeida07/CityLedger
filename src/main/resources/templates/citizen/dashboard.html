@@ -118,7 +118,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Report New Issue
             </a>
-            <a href="/citizen/complaints" class="action-btn">
+            <a href="/citizen/reports" class="action-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                 My Reports
             </a>
@@ -126,9 +126,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
                 City Feed
             </a>
-            <a href="/citizen/track" class="action-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                Track Report
+            <a href="/citizen/map" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                Map
             </a>
         </div>
 
@@ -179,7 +179,7 @@
                             </td>
                             <td th:text="${#temporals.format(complaint.createdAt, 'MMM dd, yyyy')}">Date</td>
                             <td>
-                                <a th:href="@{/citizen/track(id=${complaint.id})}" style="color:#0f3460;font-weight:700;text-decoration:none">Track →</a>
+                                <a th:href="@{/citizen/reports(id=${complaint.id})}" style="color:#0f3460;font-weight:700;text-decoration:none">View →</a>
                             </td>
                         </tr>
                     </tbody>

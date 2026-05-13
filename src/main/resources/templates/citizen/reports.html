@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>My Reports — CityLedger</title>
+    <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Lato',sans-serif;background:#f8fafc}
+        .db{max-width:1400px;margin:0 auto;padding:100px 24px 80px}
+        
+        /* Header */
+        .pg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:20px}
+        .pg-head h2{font-family:'Urbanist',sans-serif;font-size:2.5rem;font-weight:900;color:#0f3460;margin-bottom:8px}
+        .pg-head p{color:#64748b;font-size:0.95rem;margin-top:4px}
+        .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;font-weight:600;font-size:0.9rem;margin-bottom:20px;transition:color 0.2s}
+        .back-link:hover{color:#0f3460}
+        .fab{background:#0f3460;color:#fff;padding:12px 24px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s}
+        .fab:hover{background:#16213e;transform:translateY(-2px)}
+        
+        /* Stats Bar */
+        .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+        .stat-mini{background:white;border-radius:8px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid #f0f0f0}
+        .stat-mini .value{font-family:'Urbanist',sans-serif;font-size:2rem;font-weight:900;color:#0f3460;margin-bottom:4px}
+        .stat-mini .label{color:#64748b;font-size:0.85rem;font-weight:600}
+        
+        /* Filter Tabs */
+        .filter-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+        .filter-tab{padding:10px 20px;border-radius:6px;border:2px solid #e2e8f0;background:white;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s}
+        .filter-tab:hover{border-color:#0f3460;color:#0f3460}
+        .filter-tab.active{background:#0f3460;color:white;border-color:#0f3460}
+        
+        /* Card Grid */
+        .comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px}
+        .comp-card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);transition:all 0.25s;display:flex;flex-direction:column;border:1px solid #f0f0f0;text-decoration:none;color:inherit;min-height:320px;cursor:pointer}
+        .comp-card:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,0.12)}
+        
+        /* Image Section */
+        .comp-img{position:relative;width:100%;height:220px;overflow:hidden;flex-shrink:0;background:#f8fafc;display:flex;align-items:center;justify-content:center}
+        .comp-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+        .comp-card:hover .comp-img img{transform:scale(1.06)}
+        .comp-img-ph{font-family:'Urbanist',sans-serif;font-weight:800;font-size:0.9rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:10px 16px;background:rgba(255,255,255,0.9);border-radius:6px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center}
+        
+        /* Severity Backgrounds */
+        .sev-CRITICAL .comp-img{background:linear-gradient(135deg,#fef2f2,#fecaca)}
+        .sev-HIGH .comp-img{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
+        .sev-MEDIUM .comp-img{background:linear-gradient(135deg,#fefce8,#fde68a)}
+        .sev-LOW .comp-img,.sev-none .comp-img{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
+        
+        /* Badges on Image */
+        .img-sev{position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:4px;font-size:0.7rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px);z-index:2}
+        .sev-CRITICAL .img-sev{background:rgba(220,38,38,0.9);color:#fff}
+        .sev-HIGH .img-sev{background:rgba(234,88,12,0.9);color:#fff}
+        .sev-MEDIUM .img-sev{background:rgba(202,138,4,0.9);color:#fff}
+        .sev-LOW .img-sev,.sev-none .img-sev{background:rgba(37,99,235,0.9);color:#fff}
+        .img-id{position:absolute;top:12px;right:12px;background:rgba(15,52,96,0.9);color:#fff;padding:5px 12px;border-radius:4px;font-size:0.7rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px)}
+        
+        /* Card Body */
+        .comp-body{padding:20px;flex:1;display:flex;flex-direction:column;gap:10px;background:#ffffff}
+        .comp-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1.1rem;color:#1e293b;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px}
+        .comp-cat{font-size:0.85rem;color:#0f3460;font-weight:700;display:flex;align-items:center;gap:6px}
+        .comp-loc{font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px}
+        .comp-date{font-size:0.75rem;color:#94a3b8}
+        
+        /* Footer */
+        .comp-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid #f0f0f0}
+        .comp-status{padding:5px 12px;border-radius:4px;font-size:0.75rem;font-weight:700;font-family:'Urbanist',sans-serif}
+        .status-FILED{background:#fef3c7;color:#92400e}
+        .status-IN_PROGRESS{background:#dbeafe;color:#1e40af}
+        .status-RESOLVED{background:#d1fae5;color:#065f46}
+        .status-REJECTED{background:#f3f4f6;color:#6b7280}
+        
+        /* Empty State */
+        .empty{text-align:center;padding:100px 20px;color:#94a3b8;grid-column:1/-1}
+        .empty svg{margin-bottom:20px;opacity:0.3}
+        .empty h3{font-family:'Urbanist',sans-serif;font-size:1.4rem;color:#64748b;margin-bottom:12px;font-weight:800}
+        .empty p{font-size:0.95rem;margin-bottom:24px}
+        .empty a{display:inline-block;background:#0f3460;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-family:'Urbanist',sans-serif;transition:all 0.2s}
+        .empty a:hover{background:#16213e;transform:translateY(-2px)}
+        
+        /* Modal Overlay */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(4px);padding:20px;overflow-y:auto}
+        .modal-overlay.active{display:flex}
+        .modal-content{background:white;border-radius:8px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,0.3);animation:modalIn 0.3s ease}
+        @keyframes modalIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+        
+        /* Modal Header */
+        .modal-header{padding:32px;border-bottom:2px solid #f0f0f0;position:sticky;top:0;background:white;z-index:1}
+        .modal-header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+        .modal-title{font-family:'Urbanist',sans-serif;font-size:1.8rem;font-weight:900;color:#0f3460;margin-bottom:8px;line-height:1.3}
+        .modal-close{background:none;border:none;font-size:2rem;color:#94a3b8;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all 0.2s}
+        .modal-close:hover{background:#f1f5f9;color:#0f3460}
+        .modal-badges{display:flex;gap:10px;flex-wrap:wrap}
+        .modal-badge{padding:8px 16px;border-radius:4px;font-size:0.85rem;font-weight:700;font-family:'Urbanist',sans-serif}
+        .badge-status-FILED{background:#fef3c7;color:#92400e}
+        .badge-status-IN_PROGRESS{background:#dbeafe;color:#1e40af}
+        .badge-status-RESOLVED{background:#d1fae5;color:#065f46}
+        .badge-severity-LOW{background:#dbeafe;color:#1e40af}
+        .badge-severity-MEDIUM{background:#fef3c7;color:#92400e}
+        .badge-severity-HIGH{background:#fed7aa;color:#c2410c}
+        .badge-severity-CRITICAL{background:#fee2e2;color:#dc2626}
+        
+        /* Modal Body */
+        .modal-body{padding:32px}
+        .detail-section{margin-bottom:32px}
+        .detail-section h3{font-family:'Urbanist',sans-serif;font-size:1.2rem;font-weight:800;color:#0f3460;margin-bottom:16px}
+        .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:24px}
+        .detail-item{background:#f8fafc;padding:16px;border-radius:6px;border:1px solid #e2e8f0}
+        .detail-label{font-size:0.8rem;color:#64748b;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+        .detail-value{font-size:1rem;color:#1a1a2e;font-weight:700;word-break:break-word}
+        
+        /* Timeline */
+        .timeline{position:relative;padding:0;list-style:none;margin:24px 0}
+        .timeline::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:3px;background:#e2e8f0}
+        .timeline-step{position:relative;padding:0 0 32px 56px}
+        .timeline-step:last-child{padding-bottom:0}
+        .timeline-dot{position:absolute;left:10px;top:4px;width:24px;height:24px;border-radius:4px;border:3px solid #e2e8f0;background:white;display:flex;align-items:center;justify-content:center;z-index:1}
+        .timeline-dot.active{border-color:#0f3460;background:#0f3460}
+        .timeline-dot.active svg{display:block}
+        .timeline-dot svg{display:none}
+        .timeline-step h4{margin:0 0 4px;font-family:'Urbanist',sans-serif;font-weight:700;color:#1a1a2e;font-size:1.05rem}
+        .timeline-step .ts{font-size:0.85rem;color:#94a3b8}
+        .timeline-step.done h4{color:#10b981}
+        .timeline-step.current h4{color:#0f3460}
+        
+        /* Media Gallery */
+        .media-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+        .media-item{border-radius:6px;overflow:hidden;border:2px solid #e2e8f0;cursor:pointer;transition:all 0.2s}
+        .media-item:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+        .media-item img{width:100%;height:150px;object-fit:cover;display:block}
+        
+        /* AI Analysis Box */
+        .ai-analysis{background:linear-gradient(135deg,#0f3460,#1a1a2e);border-radius:6px;padding:24px;color:white;margin-bottom:24px}
+        .ai-analysis h4{font-family:'Urbanist',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+        .ai-analysis p{line-height:1.6;color:rgba(255,255,255,0.9)}
+        .ai-chip{display:inline-block;background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:4px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-top:8px}
+        
+        /* Blockchain Badge */
+        .blockchain-badge{display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;border:2px solid #bbf7d0;padding:12px 16px;border-radius:6px;font-size:0.85rem;font-weight:700;color:#166534}
+        .blockchain-badge svg{flex-shrink:0}
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="db">
+    <a href="/citizen/dashboard" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Back to Dashboard
+    </a>
+    
+    <div class="pg-head">
+        <div>
+            <h2>My Reports</h2>
+            <p>All civic issues you've reported · Track status and updates</p>
+        </div>
+        <a href="/citizen/report" class="fab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Report New Issue
+        </a>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
+        <div class="stat-mini">
+            <div class="value" th:text="${totalComplaints != null ? totalComplaints : 0}">0</div>
+            <div class="label">Total Reports</div>
+        </div>
+        <div class="stat-mini">
+            <div class="value" th:text="${openComplaints != null ? openComplaints : 0}">0</div>
+            <div class="label">Pending</div>
+        </div>
+        <div class="stat-mini">
+            <div class="value" th:text="${inProgressComplaints != null ? inProgressComplaints : 0}">0</div>
+            <div class="label">In Progress</div>
+        </div>
+        <div class="stat-mini">
+            <div class="value" th:text="${resolvedComplaints != null ? resolvedComplaints : 0}">0</div>
+            <div class="label">Resolved</div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
+        <button class="filter-tab active" onclick="filterStatus(this, 'all')">All</button>
+        <button class="filter-tab" onclick="filterStatus(this, 'FILED')">Pending</button>
+        <button class="filter-tab" onclick="filterStatus(this, 'IN_PROGRESS')">In Progress</button>
+        <button class="filter-tab" onclick="filterStatus(this, 'RESOLVED')">Resolved</button>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="comp-grid" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
+        <div th:each="c : ${complaints}"
+           th:class="|comp-card sev-${c.severity != null ? c.severity : 'LOW'}|"
+           th:data-id="${c.id}"
+           th:data-status="${c.status}"
+           onclick="openDetailModal(this.dataset.id)">
+            <div class="comp-img">
+                <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}"
+                     th:src="${#strings.split(c.mediaUrl,',')[0]}"
+                     alt="Photo" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.comp-img-ph').style.display='flex';"/>
+                <div th:class="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'comp-img-ph' : 'comp-img-ph'}"
+                     th:style="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'display:none;' : 'display:flex;'}">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
+                <span class="img-sev" th:text="${c.severity != null ? c.severity : 'LOW'}">LOW</span>
+                <span class="img-id" th:text="|#CL-${c.id}|">#CL-0</span>
+            </div>
+            <div class="comp-body">
+                <div class="comp-title" th:text="${c.title != null ? c.title : 'Untitled Report'}">Title</div>
+                <div class="comp-cat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span th:text="${c.category != null ? c.category : 'General'}">General</span>
+                </div>
+                <div class="comp-loc">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span th:text="${c.location != null ? #strings.abbreviate(c.location,45) : 'Location not specified'}">Location</span>
+                </div>
+                <div class="comp-date" th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}">Date</div>
+                <div class="comp-date" th:if="${c.createdAt == null and c.filedAt != null}" th:text="${#temporals.format(c.filedAt,'MMM dd, yyyy')}">Date</div>
+                <div class="comp-foot">
+                    <span class="comp-status" th:classappend="|status-${c.status != null ? c.status : 'FILED'}|" th:text="${c.status != null ? c.status : 'FILED'}">FILED</span>
+                    <span style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                        <span th:text="${c.upvoteCount != null ? c.upvoteCount : 0}">0</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${complaints == null or #lists.isEmpty(complaints)}" class="empty">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <h3>No reports filed yet</h3>
+        <p>Start making a difference by reporting your first civic issue</p>
+        <a href="/citizen/report">Report an Issue</a>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeDetailModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-header-top">
+                <div style="flex:1">
+                    <div style="font-size:0.9rem;color:#64748b;margin-bottom:8px;font-weight:600" id="modalId">#CL-0</div>
+                    <h2 class="modal-title" id="modalTitle">Loading...</h2>
+                </div>
+                <button class="modal-close" onclick="closeDetailModal()">×</button>
+            </div>
+            <div class="modal-badges" id="modalBadges"></div>
+        </div>
+        
+        <div class="modal-body">
+            <div id="modalContent">
+                <div style="text-align:center;padding:40px;color:#94a3b8">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                    <p style="margin-top:16px">Loading details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+function filterStatus(btn, status) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.comp-card').forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function openDetailModal(id) {
+    const modal = document.getElementById('detailModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Reset content
+    document.getElementById('modalTitle').textContent = 'Loading...';
+    document.getElementById('modalId').textContent = '#CL-' + id;
+    document.getElementById('modalBadges').innerHTML = '';
+    document.getElementById('modalContent').innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><p style="margin-top:16px">Loading details...</p></div>';
+    
+    // Fetch details
+    fetch('/api/citizen/complaint/' + id)
+        .then(r => r.json())
+        .then(data => renderDetailModal(data))
+        .catch(err => {
+            document.getElementById('modalContent').innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626"><p>Failed to load details</p></div>';
+        });
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function renderDetailModal(data) {
+    document.getElementById('modalTitle').textContent = data.title || 'Untitled Report';
+    
+    // Badges
+    let badges = '';
+    badges += '<span class="modal-badge badge-status-' + data.status + '">' + data.status + '</span>';
+    if (data.severity) {
+        badges += '<span class="modal-badge badge-severity-' + data.severity + '">' + data.severity + '</span>';
+    }
+    if (data.category) {
+        badges += '<span class="modal-badge" style="background:#eff6ff;color:#1e40af">' + data.category + '</span>';
+    }
+    document.getElementById('modalBadges').innerHTML = badges;
+    
+    // Content
+    let html = '';
+    
+    // AI Analysis
+    if (data.aiSummary || data.aiReason) {
+        html += '<div class="ai-analysis">';
+        html += '<h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c-.11.46-.22.92-.35 1.36a9.96 9.96 0 0 1 3.52 1.83l1.2-.7a2 2 0 1 1 2 3.46l-1.2.7a9.98 9.98 0 0 1 .58 3.35 11.23 11.23 0 0 1-.58 3.35l1.2.7a2 2 0 1 1-2 3.46l-1.2-.7a9.96 9.96 0 0 1-3.52 1.83c.13.44.24.9.35 1.36a2 2 0 1 1-3.9 0c.11-.46.22-.92.35-1.36a9.96 9.96 0 0 1-3.52-1.83l-1.2.7a2 2 0 1 1-2-3.46l1.2-.7a9.98 9.98 0 0 1-.58-3.35c0-1.15.2-2.28.58-3.35l-1.2-.7a2 2 0 1 1 2-3.46l1.2.7a9.96 9.96 0 0 1 3.52-1.83c-.13-.44-.24-.9-.35-1.36A2 2 0 0 1 12 2z"></path><circle cx="12" cy="12" r="3"></circle></svg> AI Analysis</h4>';
+        html += '<p>' + (data.aiSummary || data.aiReason || '') + '</p>';
+        html += '<span class="ai-chip">Powered by Llama 3.3 70B</span>';
+        html += '</div>';
+    }
+    
+    // Details Grid
+    html += '<div class="detail-section"><h3>Report Details</h3><div class="detail-grid">';
+    html += '<div class="detail-item"><div class="detail-label">Location</div><div class="detail-value">' + (data.location || 'Not specified') + '</div></div>';
+    html += '<div class="detail-item"><div class="detail-label">Filed On</div><div class="detail-value">' + formatDate(data.createdAt) + '</div></div>';
+    html += '<div class="detail-item"><div class="detail-label">Upvotes</div><div class="detail-value">' + (data.upvoteCount || 0) + '</div></div>';
+    if (data.assignedWorker) {
+        html += '<div class="detail-item"><div class="detail-label">Assigned To</div><div class="detail-value">' + data.assignedWorker.name + '</div></div>';
+    }
+    html += '</div></div>';
+    
+    // Description
+    if (data.description) {
+        html += '<div class="detail-section"><h3>Description</h3><p style="line-height:1.6;color:#475569">' + data.description + '</p></div>';
+    }
+    
+    // Media
+    if (data.mediaUrl) {
+        const urls = data.mediaUrl.split(',');
+        html += '<div class="detail-section"><h3>Photos & Videos</h3><div class="media-gallery">';
+        urls.forEach(url => {
+            html += '<div class="media-item"><img src="' + url.trim() + '" alt="Evidence" loading="lazy" onerror="this.parentElement.style.display=\'none\'"/></div>';
+        });
+        html += '</div></div>';
+    }
+    
+    // Timeline
+    html += '<div class="detail-section"><h3>Status Timeline</h3><div class="timeline">';
+    
+    // FILED
+    html += '<div class="timeline-step done">';
+    html += '<div class="timeline-dot active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>';
+    html += '<h4>Filed</h4>';
+    html += '<div class="ts">' + formatDate(data.createdAt) + ' — Citizen</div>';
+    html += '</div>';
+    
+    // ASSIGNED
+    const isAssigned = data.assignedWorker != null;
+    html += '<div class="timeline-step' + (isAssigned ? ' done' : '') + '">';
+    html += '<div class="timeline-dot' + (isAssigned ? ' active' : '') + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>';
+    html += '<h4>Assigned</h4>';
+    html += '<div class="ts">' + (isAssigned ? 'Assigned to ' + data.assignedWorker.name : 'Waiting for officer assignment') + '</div>';
+    html += '</div>';
+    
+    // IN PROGRESS
+    const isInProgress = data.status === 'IN_PROGRESS' || data.status === 'RESOLVED';
+    html += '<div class="timeline-step' + (isInProgress ? ' done' : '') + (data.status === 'IN_PROGRESS' ? ' current' : '') + '">';
+    html += '<div class="timeline-dot' + (isInProgress ? ' active' : '') + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>';
+    html += '<h4>In Progress</h4>';
+    html += '<div class="ts">Field worker is on-site</div>';
+    html += '</div>';
+    
+    // RESOLVED
+    const isResolved = data.status === 'RESOLVED';
+    html += '<div class="timeline-step' + (isResolved ? ' done' : '') + '">';
+    html += '<div class="timeline-dot' + (isResolved ? ' active' : '') + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>';
+    html += '<h4>Resolved</h4>';
+    html += '<div class="ts">' + (isResolved ? formatDate(data.updatedAt) : 'Pending resolution') + '</div>';
+    html += '</div>';
+    
+    html += '</div></div>';
+    
+    // Blockchain
+    if (data.blockchainHash) {
+        html += '<div class="blockchain-badge">';
+        html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>';
+        html += 'Blockchain Verified — TX: ' + data.blockchainHash.substring(0, 16) + '...';
+        html += '</div>';
+    }
+    
+    document.getElementById('modalContent').innerHTML = html;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// Check if we need to open a specific report on page load
+const urlParams = new URLSearchParams(window.location.search);
+const reportId = urlParams.get('id');
+if (reportId) {
+    setTimeout(() => openDetailModal(reportId), 500);
+}
+</script>
+</body>
+</html>

@@ -201,16 +201,16 @@ function submitWizard(){
   progOv.style.display='flex';
 
   progOv.innerHTML = 
-    '<div class="scard" style="text-align:center;max-width:420px;padding:40px;width:90%">' +
-    '<div style="width:64px;height:64px;margin:0 auto 20px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center">' +
-    '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>' +
+    '<div class="scard" style="text-align:center;max-width:380px;padding:32px;width:90%;background:white;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.12)">' +
+    '<div style="width:56px;height:56px;margin:0 auto 20px;background:#0f3460;border-radius:8px;display:flex;align-items:center;justify-content:center">' +
+    '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 11.08V12a10 10 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>' +
     '</div>' +
-    '<h3 style="font-family:\'Urbanist\',sans-serif;font-size:1.6rem;font-weight:900;color:#0f3460;margin-bottom:12px">Submitting Your Report</h3>' +
-    '<p id="progText" style="color:#64748b;font-size:1rem;margin-bottom:28px;font-weight:600">Uploading data & media...</p>' +
-    '<div style="width:100%;height:10px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:16px">' +
-    '<div id="progBar" style="height:100%;width:15%;background:linear-gradient(90deg,#667eea,#764ba2);transition:width 0.6s ease-in-out;border-radius:10px"></div>' +
+    '<h3 style="font-family:\'Urbanist\',sans-serif;font-size:1.4rem;font-weight:800;color:#0f3460;margin-bottom:10px">Submitting Report</h3>' +
+    '<p id="progText" style="color:#64748b;font-size:0.9rem;margin-bottom:24px;font-weight:600">Processing your submission...</p>' +
+    '<div style="width:100%;height:6px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin-bottom:12px">' +
+    '<div id="progBar" style="height:100%;width:15%;background:#0f3460;transition:width 0.5s ease;border-radius:6px"></div>' +
     '</div>' +
-    '<p style="font-size:0.85rem;color:#94a3b8">Please wait, this may take a few moments...</p>' +
+    '<p style="font-size:0.8rem;color:#94a3b8">This will only take a moment</p>' +
     '</div>';
   document.body.appendChild(progOv);
 
@@ -218,24 +218,24 @@ function submitWizard(){
 
   setTimeout(function(){
       if(document.getElementById('progText')) {
-          document.getElementById('progText').textContent = 'AI analyzing and categorizing...';
+          document.getElementById('progText').textContent = 'Analyzing with AI...';
           document.getElementById('progBar').style.width = '40%';
       }
-  }, 1000);
+  }, 800);
 
   setTimeout(function(){
       if(document.getElementById('progText')) {
-          document.getElementById('progText').textContent = 'Checking for duplicates...';
-          document.getElementById('progBar').style.width = '60%';
+          document.getElementById('progText').textContent = 'Checking duplicates...';
+          document.getElementById('progBar').style.width = '65%';
       }
-  }, 2500);
+  }, 2000);
 
   setTimeout(function(){
       if(document.getElementById('progText')) {
-          document.getElementById('progText').textContent = 'Recording on blockchain...';
-          document.getElementById('progBar').style.width = '85%';
+          document.getElementById('progText').textContent = 'Recording to blockchain...';
+          document.getElementById('progBar').style.width = '90%';
       }
-  }, 4000);
+  }, 3500);
 
   fetch('/citizen/report', {
     method: 'POST',
@@ -244,29 +244,29 @@ function submitWizard(){
   }).then(function(res){
      if(res.type === 'opaqueredirect' || (res.ok && res.url && res.url.includes('success=true'))) {
         if(document.getElementById('progText')) {
-            document.getElementById('progText').textContent = 'Report submitted successfully!';
+            document.getElementById('progText').textContent = 'Success!';
             document.getElementById('progBar').style.width = '100%';
-            document.getElementById('progBar').style.background = 'linear-gradient(90deg,#10b981,#059669)';
+            document.getElementById('progBar').style.background = '#16a34a';
         }
         
         setTimeout(function() {
             progOv.remove();
             window.location.href = res.url || '/citizen/report?success=true';
-        }, 1000);
+        }, 800);
      } else if(res.redirected) {
         setTimeout(function() {
             progOv.remove();
             window.location.href = res.url;
-        }, 1000);
+        }, 800);
      } else {
         progOv.remove();
-        toast('error','Submission Failed','Something went wrong. Please try again.');
+        toast('error','Failed','Unable to submit. Please try again.');
         btn.disabled=false;
         btn.textContent='Submit Report';
      }
   }).catch(function(e){
      progOv.remove();
-     toast('error','Network Error','Unable to submit report: ' + e.toString());
+     toast('error','Error','Unable to submit report: ' + e.toString());
      btn.disabled=false;
      btn.textContent='Submit Report';
   });
