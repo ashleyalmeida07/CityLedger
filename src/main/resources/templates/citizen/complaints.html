@@ -17,12 +17,12 @@
         .fab{background:#0f3460;color:#fff;padding:10px 20px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.88rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
         .fab:hover{background:#16213e}
         .comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-        .comp-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0;text-decoration:none;color:inherit}
-        .comp-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.11)}
-        .comp-img{position:relative;width:100%;height:160px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);display:flex;align-items:center;justify-content:center}
+        .comp-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:.22s;display:flex;flex-direction:column;border:1px solid #e2e8f0;text-decoration:none;color:inherit;min-height:280px}
+        .comp-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+        .comp-img{position:relative;width:100%;height:160px;overflow:hidden;flex-shrink:0;background:#f8fafc;display:flex;align-items:center;justify-content:center}
         .comp-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-        .comp-card:hover .comp-img img{transform:scale(1.04)}
-        .comp-img-ph{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.85rem;color:#64748b;text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;background:rgba(255,255,255,.7);border-radius:6px;border:1px solid #cbd5e1}
+        .comp-card:hover .comp-img img{transform:scale(1.05)}
+        .comp-img-ph{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.85rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;background:rgba(255,255,255,.8);border-radius:8px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center}
         .sev-CRITICAL .comp-img{background:linear-gradient(135deg,#fef2f2,#fecaca)}
         .sev-HIGH .comp-img{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
         .sev-MEDIUM .comp-img{background:linear-gradient(135deg,#fefce8,#fde68a)}
@@ -33,8 +33,8 @@
         .sev-MEDIUM .img-sev{background:rgba(202,138,4,.85);color:#fff}
         .sev-LOW .img-sev,.sev-none .img-sev{background:rgba(37,99,235,.85);color:#fff}
         .img-id{position:absolute;top:10px;right:10px;background:rgba(15,52,96,.82);color:#fff;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px)}
-        .comp-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
-        .comp-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.98rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .comp-body{padding:18px;flex:1;display:flex;flex-direction:column;gap:8px;background:#ffffff;z-index:1}
+        .comp-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1.05rem;color:#1e293b;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:2px}
         .comp-cat{font-size:.8rem;color:#0f3460;font-weight:700;display:flex;align-items:center;gap:5px;margin-top:2px}
         .comp-loc{font-size:.78rem;color:#94a3b8}
         .comp-date{font-size:.72rem;color:#94a3b8}
@@ -70,11 +70,8 @@
                      th:src="${#strings.split(c.mediaUrl,',')[0]}"
                      alt="Photo" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
                 <div th:if="${c.mediaUrl == null or c.mediaUrl == 'null' or #strings.isEmpty(c.mediaUrl)}"
-                     class="comp-img-ph cat-emoji" th:data-cat="${c.category}">
-                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </div>
-                <div class="comp-img-ph cat-emoji" style="display:none;" th:data-cat="${c.category}">
-                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                     class="comp-img-ph">
+                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
                 <span class="img-sev" th:text="${!#strings.isEmpty(c.severity) ? c.severity : 'LOW'}"></span>
                 <span class="img-id" th:text="'#CL-' + ${c.id}"></span>

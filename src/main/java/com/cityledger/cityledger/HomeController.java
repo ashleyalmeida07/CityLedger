@@ -1,5 +1,6 @@
 package com.cityledger.cityledger;
 
+import com.cityledger.cityledger.dto.ComplaintWithReportCount;
 import com.cityledger.cityledger.model.AppUser;
 import com.cityledger.cityledger.model.Complaint;
 import com.cityledger.cityledger.model.ComplaintStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -140,7 +142,25 @@ public class HomeController {
     @GetMapping("/officer/queue")
     public String officerQueue(@AuthenticationPrincipal OAuth2User principal, Model model) {
         if (principal == null) return "redirect:/login";
-        model.addAttribute("complaints", complaintRepository.findAllByOrderByCreatedAtDesc());
+        List<Complaint> allComplaints = complaintRepository.findAllByOrderByCreatedAtDesc();
+
+        // Get all original complaints (duplicateOfId is null)
+        List<Complaint> originalComplaints = allComplaints.stream()
+                .filter(c -> c.getDuplicateOfId() == null)
+                .toList();
+
+        // Map each original complaint to include report count (original + duplicates)
+        List<ComplaintWithReportCount> complaintQueue = originalComplaints.stream()
+                .map(original -> {
+                    long duplicateCount = allComplaints.stream()
+                            .filter(c -> original.getId().equals(c.getDuplicateOfId()))
+                            .count();
+                    long totalReporters = 1 + duplicateCount; // Original reporter + duplicates
+                    return new ComplaintWithReportCount(original, totalReporters);
+                })
+                .collect(Collectors.toList());
+
+        model.addAttribute("complaints", complaintQueue);
         model.addAttribute("fieldWorkers", userRepository.findByRole(Role.FIELD_WORKER));
         model.addAttribute("user", principal);
         return "officer/queue";
