@@ -61,12 +61,12 @@
             <a th:each="t : ${tasks}" th:href="@{/field-worker/task/{id}(id=${t.id})}" class="task-card">
                 <div th:class="'cat-icon cat-' + (${t.category != null ? t.category : 'default'})">
                     <span th:switch="${t.category}">
-                        <span th:case="'Roads'">🛣️</span>
-                        <span th:case="'Water'">💧</span>
-                        <span th:case="'Garbage'">🗑️</span>
-                        <span th:case="'Electricity'">⚡</span>
-                        <span th:case="'Sewage'">🔧</span>
-                        <span th:case="*">📋</span>
+                        <span th:case="'Roads'">️</span>
+                        <span th:case="'Water'"></span>
+                        <span th:case="'Garbage'">️</span>
+                        <span th:case="'Electricity'"></span>
+                        <span th:case="'Sewage'"></span>
+                        <span th:case="*"></span>
                     </span>
                 </div>
                 <div class="task-info">

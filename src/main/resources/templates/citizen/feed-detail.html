@@ -110,7 +110,7 @@
                     <span class="sev-badge" th:classappend="'sev-badge-' + ${complaint.severity != null ? complaint.severity : 'LOW'}"
                           th:text="${complaint.severity != null ? complaint.severity : 'N/A'}"></span>
                     <span class="status-badge" th:text="${complaint.status}">FILED</span>
-                    <span th:if="${complaint.upvoteCount >= 25}" class="esc-badge">⚡ Community Escalated</span>
+                    <span th:if="${complaint.upvoteCount >= 25}" class="esc-badge"> Community Escalated</span>
                     <span class="cl-id" th:text="'#CL-' + ${complaint.id}"></span>
                 </div>
 
@@ -119,7 +119,7 @@
                 <div class="detail-meta">
                     Filed by <strong th:text="${complaint.citizen != null ? complaint.citizen.name : 'Anonymous'}"></strong> ·
                     <span data-time="" th:data-time="${complaint.createdAt}">recently</span> ·
-                    📍 <span th:text="${complaint.location}"></span>
+                     <span th:text="${complaint.location}"></span>
                 </div>
 
                 <!-- AI Summary -->
@@ -150,7 +150,7 @@
                             th:id="'upvote-' + ${complaint.id}"
                             th:data-id="${complaint.id}"
                             onclick="toggleUpvote(this)">
-                        <span th:text="${upvotedByMe} ? '✓ Upvoted' : '👍 Upvote'">👍 Upvote</span>
+                        <span th:text="${upvotedByMe} ? ' Upvoted' : ' Upvote'"> Upvote</span>
                     </button>
                     <div>
                         <div class="vote-count" id="voteCount" th:text="${complaint.upvoteCount}">0</div>
@@ -159,9 +159,9 @@
                     <a th:if="${complaint.latitude != null}"
                        class="map-btn"
                        th:href="'https://www.google.com/maps?q=' + ${complaint.latitude} + ',' + ${complaint.longitude}"
-                       target="_blank">📍 View on Map</a>
+                       target="_blank"> View on Map</a>
                     <div class="blockchain-note" th:if="${complaint.blockchainHash != null}">
-                        ⛓️ On-chain verified<br/>
+                        ️ On-chain verified<br/>
                         <a th:href="'https://sepolia.etherscan.io/tx/' + ${complaint.blockchainHash}" target="_blank">View TX</a>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
 
         <!-- Comments -->
         <div class="comments-section">
-            <div class="comments-title" th:text="'💬 Comments (' + ${#lists.size(comments)} + ')'">Comments</div>
+            <div class="comments-title" th:text="' Comments (' + ${#lists.size(comments)} + ')'">Comments</div>
 
             <div th:if="${#lists.isEmpty(comments)}" style="color:#94a3b8;font-size:0.9rem;padding:20px 0;">
                 No comments yet. Be the first to comment!
@@ -180,7 +180,7 @@
                 <div class="comment-author">
                     <div class="author-avatar" th:text="${cm.citizen.name.substring(0,1).toUpperCase()}">A</div>
                     <span class="author-name" th:text="${cm.citizen.name}">Citizen</span>
-                    <span th:if="${cm.official}" class="official-badge">🏛️ Official</span>
+                    <span th:if="${cm.official}" class="official-badge">️ Official</span>
                     <span class="comment-time" th:data-time="${cm.createdAt}">recently</span>
                 </div>
                 <div class="comment-text" th:text="${cm.text}">Comment text</div>
@@ -201,15 +201,15 @@
         var COMPLAINT_ID = /*[[${complaint.id}]]*/ 0;
 
         var catEmojis = {
-            'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️',
-            'Water Leakage':'💧','Road Damage':'🛣️','Tree Fall':'🌳',
-            'Noise':'🔊','Stray Animals':'🐕','Water Supply':'🚰'
+            'Pothole':'️','Street Lamp':'','Garbage':'️',
+            'Water Leakage':'','Road Damage':'️','Tree Fall':'',
+            'Noise':'','Stray Animals':'','Water Supply':''
         };
 
         // Emoji badge
         document.querySelectorAll('.cat-badge[data-cat]').forEach(function(el) {
             var cat = el.getAttribute('data-cat');
-            el.textContent = (catEmojis[cat] || '📋') + ' ' + el.textContent;
+            el.textContent = (catEmojis[cat] || '') + ' ' + el.textContent;
         });
 
         // Time ago
@@ -237,7 +237,7 @@
             .then(r => r.json())
             .then(data => {
                 btn.classList.toggle('upvoted', data.upvoted);
-                btn.querySelector('span').textContent = data.upvoted ? '✓ Upvoted' : '👍 Upvote';
+                btn.querySelector('span').textContent = data.upvoted ? ' Upvoted' : ' Upvote';
                 document.getElementById('voteCount').textContent = data.count;
             })
             .finally(() => { btn.disabled = false; });
@@ -266,7 +266,7 @@
                     '<div class="comment-author">' +
                     '<div class="author-avatar">' + data.author.charAt(0).toUpperCase() + '</div>' +
                     '<span class="author-name">' + data.author + '</span>' +
-                    (data.official ? '<span class="official-badge">🏛️ Official</span>' : '') +
+                    (data.official ? '<span class="official-badge">️ Official</span>' : '') +
                     '<span class="comment-time">just now</span>' +
                     '</div>' +
                     '<div class="comment-text">' + data.text + '</div>';
@@ -279,7 +279,7 @@
                 // Update count
                 var titleEl = section.querySelector('.comments-title');
                 var count = section.querySelectorAll('.comment').length;
-                titleEl.textContent = '💬 Comments (' + count + ')';
+                titleEl.textContent = ' Comments (' + count + ')';
             })
             .catch(e => console.error('Comment failed', e));
         }

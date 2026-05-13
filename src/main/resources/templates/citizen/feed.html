@@ -31,19 +31,20 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 .spill{padding:6px 14px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.78rem;text-decoration:none;white-space:nowrap;transition:.15s}
 .spill:hover,.spill.active{background:#0f3460;color:#fff;border-color:#0f3460}
 /* Card grid */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
 /* Product-style card */
-.ccard{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);cursor:pointer;transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0}
-.ccard:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
+.feed-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);cursor:pointer;transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0}
+.feed-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
 /* Image zone */
-.cimg-wrap{position:relative;width:100%;height:200px;overflow:hidden;flex-shrink:0}
-.cimg-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.ccard:hover .cimg-wrap img{transform:scale(1.04)}
-.cimg-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
-.sev-CRITICAL .cimg-placeholder{background:linear-gradient(135deg,#fef2f2,#fecaca)}
-.sev-HIGH .cimg-placeholder{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
-.sev-MEDIUM .cimg-placeholder{background:linear-gradient(135deg,#fefce8,#fde68a)}
-.sev-LOW .cimg-placeholder,.sev-null .cimg-placeholder{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
+.feed-img-wrap{position:relative;width:100%;height:200px;overflow:hidden;flex-shrink:0}
+.feed-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.feed-card:hover .feed-img-wrap img{transform:scale(1.04)}
+.feed-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f1f5f9,#e2e8f0)}
+.feed-cat-badge{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.9rem;color:#475569;text-transform:uppercase;letter-spacing:.5px;padding:8px 16px;background:rgba(255,255,255,.7);border-radius:6px;border:1px solid #cbd5e1}
+.sev-CRITICAL .feed-img-ph{background:linear-gradient(135deg,#fef2f2,#fecaca)}
+.sev-HIGH .feed-img-ph{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
+.sev-MEDIUM .feed-img-ph{background:linear-gradient(135deg,#fefce8,#fde68a)}
+.sev-LOW .feed-img-ph,.sev-null .feed-img-ph{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
 /* Floating buttons on image */
 .img-btn-tr{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:.2s;z-index:2}
 .img-btn-tr:hover{background:#fff;transform:scale(1.1)}
@@ -57,17 +58,17 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 .sev-MEDIUM .img-sev{background:rgba(202,138,4,.85);color:#fff}
 .sev-LOW .img-sev,.sev-null .img-sev{background:rgba(37,99,235,.85);color:#fff}
 /* Card body */
-.cbody{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
-.ctitle{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:2px}
-.crating{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#94a3b8}
-.cstars{display:flex;gap:1px}
-.cstar{width:12px;height:12px;color:#e2e8f0}
-.cstar.filled{color:#f59e0b}
-.cvote-cnt{color:#374151;font-weight:700;font-size:.78rem}
-.cloc{font-size:.82rem;color:#0f3460;font-weight:700;margin-top:2px}
-.cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
-.cstatus{background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
-.cviews{display:flex;align-items:center;gap:4px;font-size:.78rem;color:#94a3b8}
+.feed-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
+.feed-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:2px}
+.feed-rating{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#94a3b8}
+.feed-stars{display:flex;gap:1px}
+.feed-star{width:12px;height:12px;color:#e2e8f0}
+.feed-star.filled{color:#f59e0b}
+.feed-vote-cnt{color:#374151;font-weight:700;font-size:.78rem}
+.feed-loc{font-size:.82rem;color:#0f3460;font-weight:700;margin-top:2px}
+.feed-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
+.feed-status{background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
+.feed-views{display:flex;align-items:center;gap:4px;font-size:.78rem;color:#94a3b8}
 .ctime{font-size:.72rem;color:#94a3b8}
 /* Empty */
 .empty{text-align:center;padding:60px 20px;color:#94a3b8;grid-column:1/-1}
@@ -115,7 +116,7 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 .dloading{text-align:center;padding:40px;color:#94a3b8}
 .chain-note{font-size:.72rem;color:#94a3b8;margin-top:12px}
 .chain-note a{color:#2563eb;font-weight:700;text-decoration:none}
-@media(max-width:600px){.drawer{width:100vw}.cgrid{grid-template-columns:1fr}}
+@media(max-width:600px){.drawer{width:100vw}.feed-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -125,7 +126,7 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
   <!-- Header -->
   <div class="fh">
     <div>
-      <h1>🏙️ CityFeed</h1>
+      <h1>CityFeed</h1>
       <p>Community-reported civic issues · AI-sorted by category</p>
     </div>
     <a href="/citizen/report" class="fab">+ Report Issue</a>
@@ -133,20 +134,19 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 
   <!-- GPS bar -->
   <div class="gbar">
-    <span th:if="${lat != null}">📍 Showing within <strong th:text="${currentRadius}">5</strong>km · <a href="/citizen/feed" style="color:#0f3460;font-weight:700;text-decoration:none">Show all</a></span>
-    <span th:if="${lat == null}" style="flex:1">📍 Showing all recent complaints</span>
-    <button th:if="${lat == null}" onclick="useGPS()" id="gpsBtn">📡 Use My Location</button>
+    <span th:if="${lat != null}">Showing within <strong th:text="${currentRadius}">5</strong>km · <a href="/citizen/feed" style="color:#0f3460;font-weight:700;text-decoration:none">Show all</a></span>
+    <span th:if="${lat == null}" style="flex:1">Showing all recent complaints</span>
+    <button th:if="${lat == null}" onclick="useGPS()" id="gpsBtn">Use My Location</button>
   </div>
 
-  <!-- Category tabs -->
   <div class="cat-tabs">
     <button class="ctab active" onclick="filterTab(this,'all')">All</button>
-    <button class="ctab" onclick="filterTab(this,'Pothole')">🕳️ Pothole</button>
-    <button class="ctab" onclick="filterTab(this,'Garbage')">🗑️ Garbage</button>
-    <button class="ctab" onclick="filterTab(this,'Street Lamp')">💡 Street Lamp</button>
-    <button class="ctab" onclick="filterTab(this,'Water')">💧 Water</button>
-    <button class="ctab" onclick="filterTab(this,'Road Damage')">🛣️ Road</button>
-    <button class="ctab" onclick="filterTab(this,'other')">📋 Other</button>
+    <button class="ctab" onclick="filterTab(this,'Pothole')">Pothole</button>
+    <button class="ctab" onclick="filterTab(this,'Garbage')">Garbage</button>
+    <button class="ctab" onclick="filterTab(this,'Street Lamp')">Street Lamp</button>
+    <button class="ctab" onclick="filterTab(this,'Water')">Water</button>
+    <button class="ctab" onclick="filterTab(this,'Road Damage')">Road</button>
+    <button class="ctab" onclick="filterTab(this,'other')">Other</button>
   </div>
 
   <!-- Sort bar -->
@@ -154,78 +154,63 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
     <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='latest',category=${currentCategory})}"
        th:classappend="${currentSort=='latest'}?' active':''" class="spill">Latest</a>
     <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='upvotes',category=${currentCategory})}"
-       th:classappend="${currentSort=='upvotes'}?' active':''" class="spill">🔥 Most Upvoted</a>
+       th:classappend="${currentSort=='upvotes'}?' active':''" class="spill">Most Upvoted</a>
     <a th:href="@{/citizen/feed(lat=${lat},lon=${lon},radius=${currentRadius},sort='critical',category=${currentCategory})}"
-       th:classappend="${currentSort=='critical'}?' active':''" class="spill">🚨 Critical First</a>
+       th:classappend="${currentSort=='critical'}?' active':''" class="spill">Critical First</a>
   </div>
 
   <!-- Card grid -->
-  <div class="cgrid" id="grid">
+  <div class="feed-grid" id="grid">
     <div th:if="${#lists.isEmpty(feed)}" class="empty">
       <h3>No complaints yet</h3>
       <p>Be the first to report a civic issue.</p>
     </div>
     <div th:each="c : ${feed}"
-         th:classappend="'ccard sev-' + ${c.severity != null ? c.severity : 'LOW'}"
+         th:class="'feed-card sev-' + ${c.severity != null ? c.severity : 'LOW'}"
          th:data-category="${c.category}"
          th:data-id="${c.id}"
-         th:data-upvoted="${upvotedByMe[c.id]}"
+         th:data-upvoted="${upvotedByMe != null and upvotedByMe[c.id] != null ? upvotedByMe[c.id] : false}"
          th:data-votes="${c.upvoteCount}">
 
-      <!-- Image zone -->
-      <div class="cimg-wrap" onclick="openDrawer(this.closest('.ccard').dataset.id)">
-        <!-- Has photo -->
-        <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}"
-             th:src="${#strings.split(c.mediaUrl,',')[0]}"
-             alt="Complaint photo" loading="lazy"
-             onerror="this.style.display='none'"/>
-        <!-- No photo placeholder -->
-        <div th:if="${c.mediaUrl == null or c.mediaUrl.isBlank()}"
-             class="cimg-placeholder cemoji" th:data-cat="${c.category}">📋</div>
-
+      <!-- Category + Severity banner or Image -->
+      <div class="feed-img-wrap" onclick="location.href='/citizen/feed/' + this.closest('.feed-card').dataset.id">
+        <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}" th:src="${#strings.arraySplit(c.mediaUrl, ',')[0]}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="feed-img-ph" th:style="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'display:none;' : 'display:flex;'}" th:data-cat="${c.category}">
+          <div class="feed-cat-badge" th:text="${c.category != null ? c.category : 'General'}">Category</div>
+        </div>
         <!-- Severity badge top-left -->
         <span class="img-sev" th:text="${c.severity != null ? c.severity : 'LOW'}"></span>
-
-        <!-- Upvote heart btn top-right -->
+        <!-- Upvote btn top-right -->
         <button class="img-btn-tr"
-                th:classappend="${upvotedByMe[c.id]} ? ' upvoted' : ''"
+                th:class="'img-btn-tr' + (${upvotedByMe != null and upvotedByMe[c.id] != null and upvotedByMe[c.id]} ? ' upvoted' : '')"
                 th:data-id="${c.id}"
-                th:title="${upvotedByMe[c.id]} ? 'Remove upvote' : 'Upvote'"
                 onclick="event.stopPropagation();quickUpvote(this)">
-          <span th:text="${upvotedByMe[c.id]} ? '❤️' : '🤍'">🤍</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
         </button>
-
-        <!-- Map btn bottom-right (only if GPS exists) -->
-        <a th:if="${c.latitude != null}"
-           class="img-btn-br"
-           th:href="'https://www.google.com/maps?q='+${c.latitude}+','+${c.longitude}"
-           target="_blank"
-           onclick="event.stopPropagation()"
-           title="View on map">📍</a>
       </div>
 
       <!-- Card body -->
-      <div class="cbody" onclick="openDrawer(this.closest('.ccard').dataset.id)">
-        <div class="ctitle" th:text="${c.title}">Complaint Title</div>
+      <div class="feed-body" onclick="location.href='/citizen/feed/' + this.closest('.feed-card').dataset.id">
+        <div class="feed-title" th:text="${c.title}">Complaint Title</div>
 
         <!-- Stars = upvote score (max 5 filled = 25+ votes) -->
-        <div class="crating">
-          <div class="cstars" th:data-votes="${c.upvoteCount}">
-            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="cstar" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <div class="feed-rating">
+          <div class="feed-stars" th:data-votes="${c.upvoteCount}">
+            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
-          <span class="cvote-cnt" th:text="${c.upvoteCount}">0</span>
-          <span th:text="'(' + ${commentCounts[c.id]} + ' comments)'"></span>
+          <span class="feed-vote-cnt" th:text="${c.upvoteCount}">0</span>
+          <span th:text="'(' + ${commentCounts != null and commentCounts[c.id] != null ? commentCounts[c.id] : 0} + ' comments)'"></span>
         </div>
 
-        <div class="cloc" th:text="${c.location != null ? #strings.abbreviate(c.location,40) : 'Unknown location'}">Location</div>
+        <div class="feed-loc" th:text="${c.location != null ? #strings.abbreviate(c.location,40) : 'Unknown location'}">Location</div>
 
-        <div class="cfoot">
-          <span class="cstatus" th:text="${c.status}">FILED</span>
-          <div class="cviews">
+        <div class="feed-foot">
+          <span class="feed-status" th:text="${c.status}">FILED</span>
+          <div class="feed-views">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             <span th:text="${c.upvoteCount}">0</span>
           </div>
@@ -241,9 +226,8 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 <!-- Drawer -->
 <div class="drawer" id="drawer">
   <div class="dhead">
-    <span id="dCatEmoji" style="font-size:1.5rem">📋</span>
     <span class="dcat" id="dCat">Category</span>
-    <button class="dclose" onclick="closeDrawer()">✕</button>
+    <button class="dclose" onclick="closeDrawer()"></button>
   </div>
   <div class="dbody" id="dBody">
     <div class="dloading">Loading…</div>
@@ -255,17 +239,17 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 <script>
 var CSRF = document.querySelector('meta[name="_csrf"]').content;
 var CHEAD = document.querySelector('meta[name="_csrf_header"]').content;
-var EMOJIS = {'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️','Water Leakage':'💧','Water Supply':'🚰','Road Damage':'🛣️','Tree Fall':'🌳','Noise':'🔊','Stray Animals':'🐕'};
+var EMOJIS = {'Pothole':'️','Street Lamp':'','Garbage':'️','Water Leakage':'','Water Supply':'','Road Damage':'️','Tree Fall':'','Noise':'','Stray Animals':''};
 var MAJOR = ['Pothole','Garbage','Street Lamp','Water Leakage','Water Supply','Road Damage'];
 
 // Emoji enrichment for placeholders
-document.querySelectorAll('.cemoji[data-cat]').forEach(function(el){el.textContent=EMOJIS[el.dataset.cat]||'📋';});
+document.querySelectorAll('.feed-img-ph[data-cat]').forEach(function(el){el.textContent=EMOJIS[el.dataset.cat]||'';});
 
 // Star fill: 1 star per 5 upvotes (max 5)
-document.querySelectorAll('.cstars[data-votes]').forEach(function(wrap){
+document.querySelectorAll('.feed-stars[data-votes]').forEach(function(wrap){
   var v=parseInt(wrap.dataset.votes)||0;
   var filled=Math.min(5,Math.ceil(v/5));
-  wrap.querySelectorAll('.cstar').forEach(function(s,i){if(i<filled)s.classList.add('filled');});
+  wrap.querySelectorAll('.feed-star').forEach(function(s,i){if(i<filled)s.classList.add('filled');});
 });
 
 // Quick upvote from card heart button
@@ -276,13 +260,13 @@ function quickUpvote(btn){
   .then(function(r){return r.json();})
   .then(function(d){
     btn.classList.toggle('upvoted',d.upvoted);
-    btn.querySelector('span').textContent=d.upvoted?'❤️':'🤍';
+    btn.querySelector('svg').style.fill = d.upvoted ? '#ef4444' : 'currentColor';
     // Update vote count + stars in card body
-    var card=btn.closest('.ccard');
+    var card=btn.closest('.feed-card');
     if(card){
-      card.querySelector('.cvote-cnt').textContent=d.count;
-      card.querySelector('.cviews span').textContent=d.count;
-      var stars=card.querySelectorAll('.cstar');
+      card.querySelector('.feed-vote-cnt').textContent=d.count;
+      card.querySelector('.feed-views span').textContent=d.count;
+      var stars=card.querySelectorAll('.feed-star');
       var filled=Math.min(5,Math.ceil(d.count/5));
       stars.forEach(function(s,i){s.classList.toggle('filled',i<filled);});
     }
@@ -298,7 +282,7 @@ document.querySelectorAll('[data-time]').forEach(function(el){el.textContent=tim
 function filterTab(btn,filter){
   document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active');});
   btn.classList.add('active');
-  document.querySelectorAll('.ccard').forEach(function(c){
+  document.querySelectorAll('.feed-card').forEach(function(c){
     var cat=c.dataset.category||'';
     var show=false;
     if(filter==='all'){show=true;}
@@ -314,7 +298,7 @@ function useGPS(){
   var btn=document.getElementById('gpsBtn');btn.textContent='⏳…';btn.disabled=true;
   navigator.geolocation.getCurrentPosition(function(p){
     var u=new URL(location.href);u.searchParams.set('lat',p.coords.latitude.toFixed(6));u.searchParams.set('lon',p.coords.longitude.toFixed(6));u.searchParams.set('radius','5');location.href=u;
-  },function(){btn.textContent='❌ Denied';btn.disabled=false;});
+  },function(){btn.textContent=' Denied';btn.disabled=false;});
 }
 
 // Drawer
@@ -337,7 +321,7 @@ function closeDrawer(){
 }
 
 function renderDrawer(d){
-  var emoji=EMOJIS[d.category]||'📋';
+  var emoji=EMOJIS[d.category]||'';
   document.getElementById('dCatEmoji').textContent=emoji;
   document.getElementById('dCat').textContent=d.category;
 
@@ -349,25 +333,25 @@ function renderDrawer(d){
 
   var ai=d.aiSummary?'<div class="ai-card"><div class="ai-chip"><span class="ai-dot"></span>AI Summary — Llama 3.3</div><div class="ai-text">'+esc(d.aiSummary)+'</div>'+(d.aiReason?'<div style="font-size:.78rem;color:rgba(255,255,255,.5);font-style:italic;margin-top:8px">"'+esc(d.aiReason)+'"</div>':'')+'</div>':'';
 
-  var upBtn='<button class="vbtn'+(d.upvotedByMe?' upvoted':'')+'" id="dVBtn" onclick="drawerUpvote('+d.id+')">'+(d.upvotedByMe?'✓ Upvoted':'👍 Upvote')+'</button>';
-  var mapLink=d.latitude?'<a class="vmaplink" href="https://www.google.com/maps?q='+d.latitude+','+d.longitude+'" target="_blank">📍 Map</a>':'';
+  var upBtn='<button class="vbtn'+(d.upvotedByMe?' upvoted':'')+'" id="dVBtn" onclick="drawerUpvote('+d.id+')">'+(d.upvotedByMe?' Upvoted':' Upvote')+'</button>';
+  var mapLink=d.latitude?'<a class="vmaplink" href="https://www.google.com/maps?q='+d.latitude+','+d.longitude+'" target="_blank"> Map</a>':'';
 
-  var chain=d.blockchainHash?'<div class="chain-note">⛓️ On-chain: <a href="https://sepolia.etherscan.io/tx/'+d.blockchainHash+'" target="_blank">View TX</a></div>':'';
+  var chain=d.blockchainHash?'<div class="chain-note">️ On-chain: <a href="https://sepolia.etherscan.io/tx/'+d.blockchainHash+'" target="_blank">View TX</a></div>':'';
 
   var comHtml='';
   (d.comments||[]).forEach(function(c){
-    comHtml+='<div class="com"><div class="cauth"><div class="cavatar">'+esc(c.author.charAt(0).toUpperCase())+'</div><span class="caname">'+esc(c.author)+'</span>'+(c.official?'<span class="offb">🏛️ Official</span>':'')+'<span class="ctime2">'+c.time+'</span></div><div class="ctext">'+esc(c.text)+'</div></div>';
+    comHtml+='<div class="com"><div class="cauth"><div class="cavatar">'+esc(c.author.charAt(0).toUpperCase())+'</div><span class="caname">'+esc(c.author)+'</span>'+(c.official?'<span class="offb">️ Official</span>':'')+'<span class="ctime2">'+c.time+'</span></div><div class="ctext">'+esc(c.text)+'</div></div>';
   });
 
   document.getElementById('dBody').innerHTML=
     '<div style="height:4px;background:'+sc+';border-radius:4px;margin-bottom:20px"></div>'+
     '<div class="dtitle">'+esc(d.title)+'</div>'+
-    '<div class="dmeta">Filed by <strong>'+esc(d.citizenName)+'</strong> · 📍 '+esc(d.location)+'</div>'+
+    '<div class="dmeta">Filed by <strong>'+esc(d.citizenName)+'</strong> ·  '+esc(d.location)+'</div>'+
     media+ai+
     '<div class="ddesc" id="dDesc">'+esc(d.description)+'</div>'+
     '<div class="dvote">'+upBtn+'<div><div class="vcnt" id="dVCnt">'+d.upvoteCount+'</div><div class="vlab">upvotes</div></div>'+mapLink+'</div>'+
     chain+
-    '<div class="coms-title">💬 Comments ('+((d.comments||[]).length)+')</div>'+
+    '<div class="coms-title"> Comments ('+((d.comments||[]).length)+')</div>'+
     (comHtml||'<p style="color:#94a3b8;font-size:.88rem;padding:8px 0">No comments yet.</p>')+
     '<div class="cform"><textarea class="cinput" id="dComInput" placeholder="Add a comment…" maxlength="500"></textarea><br/><button class="csubmit" onclick="drawerComment('+d.id+')">Post Comment</button></div>';
 }
@@ -380,10 +364,10 @@ function drawerUpvote(id){
   .then(function(r){return r.json();})
   .then(function(d){
     btn.className='vbtn'+(d.upvoted?' upvoted':'');
-    btn.textContent=d.upvoted?'✓ Upvoted':'👍 Upvote';
+    btn.textContent=d.upvoted?' Upvoted':' Upvote';
     document.getElementById('dVCnt').textContent=d.count;
     // Update grid card too
-    var card=document.querySelector('.ccard[data-id="'+id+'"]');
+    var card=document.querySelector('.feed-card[data-id="'+id+'"]');
     if(card){card.querySelector('.vcount').textContent=d.count;}
   })
   .finally(function(){btn.disabled=false;});
@@ -399,7 +383,7 @@ function drawerComment(id){
     if(d.error){alert(d.error);return;}
     var cform=document.querySelector('.cform');
     var div=document.createElement('div');div.className='com';
-    div.innerHTML='<div class="cauth"><div class="cavatar">'+d.author.charAt(0).toUpperCase()+'</div><span class="caname">'+esc(d.author)+'</span>'+(d.official?'<span class="offb">🏛️ Official</span>':'')+'<span class="ctime2">just now</span></div><div class="ctext">'+esc(d.text)+'</div>';
+    div.innerHTML='<div class="cauth"><div class="cavatar">'+d.author.charAt(0).toUpperCase()+'</div><span class="caname">'+esc(d.author)+'</span>'+(d.official?'<span class="offb">️ Official</span>':'')+'<span class="ctime2">just now</span></div><div class="ctext">'+esc(d.text)+'</div>';
     cform.parentNode.insertBefore(div,cform);
     inp.value='';
   });
@@ -407,3 +391,6 @@ function drawerComment(id){
 </script>
 </body>
 </html>
+
+
+

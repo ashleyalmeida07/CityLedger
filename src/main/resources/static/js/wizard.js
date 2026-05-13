@@ -110,7 +110,7 @@ function buildPreviewTitle(){
   document.getElementById('hiddenExtraNote').value=extra;
   // Show preview
   var prevHtml='<div class="prev-cat">'+picked+'</div>';
-  prevHtml+='<div class="prev-loc">📍 '+loc+'</div>';
+  prevHtml+='<div class="prev-loc" style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> '+loc+'</div>';
   prevHtml+='<div class="prev-answers">';
   for(var k in answers)prevHtml+='<div class="prev-row"><span class="prev-q">'+k+'</span><span class="prev-a">'+answers[k]+'</span></div>';
   prevHtml+='</div>';
@@ -120,52 +120,132 @@ function buildPreviewTitle(){
 
 function captureGPS(){
   var btn=document.getElementById('gpsBtn');
-  btn.textContent='⏳ Detecting...';btn.disabled=true;
-  if(!navigator.geolocation){btn.textContent='❌ Not supported';return;}
+  btn.textContent='Detecting...';btn.disabled=true;
+  if(!navigator.geolocation){btn.textContent='Not supported';return;}
   navigator.geolocation.getCurrentPosition(function(p){
     var lat=p.coords.latitude,lon=p.coords.longitude;
     document.getElementById('latitude').value=lat;
     document.getElementById('longitude').value=lon;
     document.getElementById('location').value=lat.toFixed(6)+', '+lon.toFixed(6);
-    btn.textContent='✅ GPS Captured';btn.style.borderColor='#16a34a';btn.style.color='#16a34a';
+    document.getElementById('locationDisplay').value=lat.toFixed(6)+', '+lon.toFixed(6);
+    btn.textContent='GPS Captured';btn.style.borderColor='#16a34a';btn.style.color='#16a34a';
     // reverse geocode
     fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json')
     .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.display_name)document.getElementById('location').value=d.display_name;})
+    .then(function(d){if(d&&d.display_name){document.getElementById('locationDisplay').value=d.display_name;document.getElementById('location').value=d.display_name;}})
     .catch(function(){});
-  },function(){btn.textContent='❌ Denied';btn.disabled=false;},{enableHighAccuracy:true,timeout:10000});
+  },function(){btn.textContent='Denied';btn.disabled=false;},{enableHighAccuracy:true,timeout:10000});
 }
 
 // File preview
 function handleFiles(input){
-  var preview=document.getElementById('filePreview');
-  preview.innerHTML='';
+  var fprev = document.getElementById('filePreview');
+  fprev.innerHTML = '';
   if(!input.files.length)return;
   for(var i=0;i<input.files.length;i++){
     var f=input.files[i];
-    if(f.size>10*1024*1024){toast('error','Too Large',f.name+' exceeds 10MB');input.value='';return;}
+    if(f.size>10*1024*1024){toast('error','Too Large',f.name+' exceeds 10MB');input.value='';fprev.innerHTML='';return;}
     if(f.type.startsWith('image/')){
-      var r=new FileReader();
-      r.onload=function(e){var img=document.createElement('img');img.src=e.target.result;preview.appendChild(img);};
-      r.readAsDataURL(f);
+      var img = document.createElement('img');
+      img.src = URL.createObjectURL(f);
+      fprev.appendChild(img);
+    } else if(f.type.startsWith('video/')){
+      var vid = document.createElement('video');
+      vid.src = URL.createObjectURL(f);
+      vid.style.width = '80px';
+      vid.style.height = '80px';
+      vid.style.objectFit = 'cover';
+      vid.style.borderRadius = '8px';
+      vid.style.border = '2px solid #e2e8f0';
+      fprev.appendChild(vid);
     }
   }
 }
 
-// Toast
+// Toast — uses id="tc" as container
 function toast(type,title,msg){
-  var c=document.getElementById('toast-container');if(!c)return;
+  var c=document.getElementById('tc');if(!c)return;
   var t=document.createElement('div');t.className='toast toast-'+type;
-  t.innerHTML='<div class="toast-body"><strong>'+title+'</strong><br><small>'+msg+'</small></div><button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer">✕</button>';
+  t.innerHTML='<div class="toast-body"><strong>'+title+'</strong><br><small>'+msg+'</small></div><button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;margin-left:auto">x</button>';
   c.appendChild(t);
   setTimeout(function(){if(t.parentElement)t.remove();},4000);
 }
 
 // Submit
 function submitWizard(){
-  var lat=document.getElementById('latitude').value;
-  if(!lat){toast('warning','Location Required','Please capture GPS or enter location.');return;}
-  document.getElementById('submitBtn').disabled=true;
-  document.getElementById('submitBtn').textContent='⏳ AI Processing...';
-  document.getElementById('wizardForm').submit();
+  var loc=document.getElementById('location').value;
+  if(!loc){toast('warning','Location Required','Please capture GPS or enter location.');return;}
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.textContent='Processing...';
+
+  var progOv = document.createElement('div');
+  progOv.className='sov';
+  progOv.style.display='flex';
+
+  progOv.innerHTML = 
+    '<div class="scard" style="text-align:center;max-width:380px;padding:40px;width:90%">' +
+    '<h3 style="font-family:\'Urbanist\',sans-serif;font-size:1.5rem;font-weight:900;color:#0f3460;margin-bottom:8px">Submitting Report</h3>' +
+    '<p id="progText" style="color:#64748b;font-size:0.95rem;margin-bottom:28px">Uploading data & media...</p>' +
+    '<div style="width:100%;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-bottom:12px">' +
+    '<div id="progBar" style="height:100%;width:15%;background:#0f3460;transition:width 0.6s ease-in-out;border-radius:4px"></div>' +
+    '</div>' +
+    '</div>';
+  document.body.appendChild(progOv);
+
+  var fd = new FormData(document.getElementById('wizardForm'));
+
+  setTimeout(function(){
+      if(document.getElementById('progText')) {
+          document.getElementById('progText').textContent = 'AI categorizing issue...';
+          document.getElementById('progBar').style.width = '45%';
+      }
+  }, 1200);
+
+  setTimeout(function(){
+      if(document.getElementById('progText')) {
+          document.getElementById('progText').textContent = 'Recording on blockchain...';
+          document.getElementById('progBar').style.width = '80%';
+      }
+  }, 3500);
+
+  fetch('/citizen/report', {
+    method: 'POST',
+    body: fd,
+    redirect: 'follow'
+  }).then(function(res){
+     if(res.ok && res.url.includes('success=true')) {
+        if(document.getElementById('progText')) {
+            document.getElementById('progText').textContent = 'Finalizing...';
+            document.getElementById('progBar').style.width = '100%';
+            document.getElementById('progBar').style.background = '#16a34a';
+        }
+        res.text().then(function(html) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(html, 'text/html');
+            var successOverlay = doc.getElementById('sov');
+            
+            setTimeout(function() {
+                progOv.remove();
+                if (successOverlay) {
+                    document.body.appendChild(successOverlay);
+                    successOverlay.style.display = 'flex';
+                    toast('success', 'Success', 'Report submitted successfully!');
+                } else {
+                    window.location.href = res.url; // fallback
+                }
+            }, 600);
+        });
+     } else {
+        progOv.remove();
+        toast('error','Submission Failed','Something went wrong.');
+        btn.disabled=false;
+        btn.textContent='Submit Report';
+     }
+  }).catch(function(e){
+     progOv.remove();
+     toast('error','Network Error',e.toString());
+     btn.disabled=false;
+     btn.textContent='Submit Report';
+  });
 }

@@ -154,11 +154,11 @@
                 <!-- Preset examples -->
                 <div class="pg-presets">
                     <span style="font-size:0.75rem;color:rgba(255,255,255,0.35);font-family:'Urbanist',sans-serif;align-self:center;">Quick examples →</span>
-                    <button class="preset-btn" onclick="loadPreset(0)">🕳️ Pothole</button>
-                    <button class="preset-btn" onclick="loadPreset(1)">🗑️ Garbage</button>
-                    <button class="preset-btn" onclick="loadPreset(2)">💡 Street Lamp</button>
-                    <button class="preset-btn" onclick="loadPreset(3)">💧 Water Leak</button>
-                    <button class="preset-btn" onclick="loadPreset(4)">🐕 Stray Animals</button>
+                    <button class="preset-btn" onclick="loadPreset(0)">️ Pothole</button>
+                    <button class="preset-btn" onclick="loadPreset(1)">️ Garbage</button>
+                    <button class="preset-btn" onclick="loadPreset(2)"> Street Lamp</button>
+                    <button class="preset-btn" onclick="loadPreset(3)"> Water Leak</button>
+                    <button class="preset-btn" onclick="loadPreset(4)"> Stray Animals</button>
                 </div>
 
                 <textarea class="pg-textarea" id="demoDesc" placeholder="e.g. There is a huge pothole on MG Road near the bus stop. A bike already fell because of it..." oninput="updateChar()"></textarea>
@@ -205,37 +205,37 @@
             <p class="section-subtitle">From the moment you hit "Submit", AI is immediately at work — before the complaint even reaches the database.</p>
             <div class="pipeline">
                 <div class="pipe-step">
-                    <div class="pipe-icon pipe-icon-blue">📝</div>
+                    <div class="pipe-icon pipe-icon-blue"></div>
                     <div class="pipe-label">Citizen Submits</div>
                     <div class="pipe-sub">Title + Description + Location</div>
                 </div>
                 <div class="pipe-arrow">→</div>
                 <div class="pipe-step">
-                    <div class="pipe-icon pipe-icon-dark">🤖</div>
+                    <div class="pipe-icon pipe-icon-dark"></div>
                     <div class="pipe-label">Llama 3.3 70B</div>
                     <div class="pipe-sub">Reads complaint text</div>
                 </div>
                 <div class="pipe-arrow">→</div>
                 <div class="pipe-step">
-                    <div class="pipe-icon pipe-icon-amber">🏷️</div>
+                    <div class="pipe-icon pipe-icon-amber">️</div>
                     <div class="pipe-label">Auto-Classify</div>
                     <div class="pipe-sub">Category + Severity</div>
                 </div>
                 <div class="pipe-arrow">→</div>
                 <div class="pipe-step">
-                    <div class="pipe-icon pipe-icon-amber">🔍</div>
+                    <div class="pipe-icon pipe-icon-amber"></div>
                     <div class="pipe-label">Duplicate Check</div>
                     <div class="pipe-sub">500m radius search</div>
                 </div>
                 <div class="pipe-arrow">→</div>
                 <div class="pipe-step">
-                    <div class="pipe-icon pipe-icon-green">💾</div>
+                    <div class="pipe-icon pipe-icon-green"></div>
                     <div class="pipe-label">Saved to DB</div>
                     <div class="pipe-sub">With AI metadata</div>
                 </div>
                 <div class="pipe-arrow">→</div>
                 <div class="pipe-step">
-                    <div class="pipe-icon pipe-icon-blue">⛓️</div>
+                    <div class="pipe-icon pipe-icon-blue">️</div>
                     <div class="pipe-label">Blockchain</div>
                     <div class="pipe-sub">SHA-256 → Sepolia</div>
                 </div>
@@ -256,8 +256,8 @@
                 <div>
                     <div class="ex-label">AI Output (Llama 3.3)</div>
                     <div class="ex-output">
-                        <div class="ex-badge ex-badge-cat">🏷️ Category: Pothole</div>
-                        <div class="ex-badge ex-badge-high">⚠ Severity: HIGH</div>
+                        <div class="ex-badge ex-badge-cat">️ Category: Pothole</div>
+                        <div class="ex-badge ex-badge-high"> Severity: HIGH</div>
                         <div class="ex-reason">"Risk of accidents reported with confirmed injury — immediate road repair needed"</div>
                     </div>
                 </div>
@@ -271,7 +271,7 @@
         <div class="features-grid">
             <div class="feat-card">
                 <div class="feat-num">01</div>
-                <div class="feat-title">🏷️ Auto Category &amp; Severity</div>
+                <div class="feat-title">️ Auto Category &amp; Severity</div>
                 <div class="feat-desc">Every complaint is automatically assigned a category and severity level the moment it's submitted — no officer input required.</div>
                 <ul class="feat-steps">
                     <li><div class="step-dot">1</div> Citizen submits complaint title, description &amp; location</li>
@@ -284,20 +284,20 @@
             </div>
             <div class="feat-card">
                 <div class="feat-num">02</div>
-                <div class="feat-title">🔍 Duplicate Complaint Detector</div>
+                <div class="feat-title"> Duplicate Complaint Detector</div>
                 <div class="feat-desc">AI checks if a newly filed complaint is semantically similar to an existing open complaint within a 500-metre radius.</div>
                 <ul class="feat-steps">
                     <li><div class="step-dot">1</div> Submission GPS coordinates are used to query the database</li>
                     <li><div class="step-dot">2</div> All OPEN complaints within ~500m radius are retrieved</li>
                     <li><div class="step-dot">3</div> Llama 3.3 compares new complaint to the existing list</li>
                     <li><div class="step-dot">4</div> If semantic match is found → duplicateOfId is set</li>
-                    <li><div class="step-dot">5</div> Officer queue shows ⚠ Dup badge on the new complaint</li>
+                    <li><div class="step-dot">5</div> Officer queue shows  Dup badge on the new complaint</li>
                     <li><div class="step-dot">6</div> Citizen sees a warning on the success screen</li>
                 </ul>
             </div>
             <div class="feat-card">
                 <div class="feat-num">03</div>
-                <div class="feat-title">📝 Officer Summary Generator</div>
+                <div class="feat-title"> Officer Summary Generator</div>
                 <div class="feat-desc">Officers can instantly read a plain-English AI summary of any complaint without reading the full description, saving triage time.</div>
                 <ul class="feat-steps">
                     <li><div class="step-dot">1</div> Officer clicks a complaint title in the queue</div></li>
@@ -346,14 +346,14 @@
             <div class="section-title">AI-Recognized Categories</div>
             <p class="section-subtitle">Llama 3.3 classifies every complaint into one of these 8 civic issue types based on the description text.</p>
             <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                <span style="background:#dbeafe;color:#1d4ed8;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">🕳️ Pothole</span>
-                <span style="background:#dcfce7;color:#16a34a;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">💡 Street Lamp</span>
-                <span style="background:#fef3c7;color:#92400e;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">🗑️ Garbage</span>
-                <span style="background:#e0f2fe;color:#0369a1;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">💧 Water Leakage</span>
-                <span style="background:#fce7f3;color:#9d174d;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">🛣️ Road Damage</span>
-                <span style="background:#f3f4f6;color:#374151;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">🌳 Tree Fall</span>
-                <span style="background:#fff7ed;color:#c2410c;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">🔊 Noise</span>
-                <span style="background:#fef2f2;color:#b91c1c;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">🐕 Stray Animals</span>
+                <span style="background:#dbeafe;color:#1d4ed8;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">️ Pothole</span>
+                <span style="background:#dcfce7;color:#16a34a;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;"> Street Lamp</span>
+                <span style="background:#fef3c7;color:#92400e;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">️ Garbage</span>
+                <span style="background:#e0f2fe;color:#0369a1;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;"> Water Leakage</span>
+                <span style="background:#fce7f3;color:#9d174d;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;">️ Road Damage</span>
+                <span style="background:#f3f4f6;color:#374151;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;"> Tree Fall</span>
+                <span style="background:#fff7ed;color:#c2410c;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;"> Noise</span>
+                <span style="background:#fef2f2;color:#b91c1c;padding:10px 20px;border-radius:10px;font-weight:700;font-family:'Urbanist',sans-serif;font-size:0.9rem;"> Stray Animals</span>
             </div>
         </div>
 

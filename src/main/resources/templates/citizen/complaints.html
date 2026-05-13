@@ -16,30 +16,30 @@
         .back-link:hover{color:#0f3460}
         .fab{background:#0f3460;color:#fff;padding:10px 20px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.88rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
         .fab:hover{background:#16213e}
-        .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-        .ccard{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0;text-decoration:none;color:inherit}
-        .ccard:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
-        .cimg{position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0}
-        .cimg img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-        .ccard:hover .cimg img{transform:scale(1.04)}
-        .cimg-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
-        .sev-CRITICAL .cimg-ph{background:linear-gradient(135deg,#fef2f2,#fecaca)}
-        .sev-HIGH .cimg-ph{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
-        .sev-MEDIUM .cimg-ph{background:linear-gradient(135deg,#fefce8,#fde68a)}
-        .sev-LOW .cimg-ph,.sev-none .cimg-ph{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
+        .comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+        .comp-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0;text-decoration:none;color:inherit}
+        .comp-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.11)}
+        .comp-img{position:relative;width:100%;height:160px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);display:flex;align-items:center;justify-content:center}
+        .comp-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+        .comp-card:hover .comp-img img{transform:scale(1.04)}
+        .comp-img-ph{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.85rem;color:#64748b;text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;background:rgba(255,255,255,.7);border-radius:6px;border:1px solid #cbd5e1}
+        .sev-CRITICAL .comp-img{background:linear-gradient(135deg,#fef2f2,#fecaca)}
+        .sev-HIGH .comp-img{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
+        .sev-MEDIUM .comp-img{background:linear-gradient(135deg,#fefce8,#fde68a)}
+        .sev-LOW .comp-img,.sev-none .comp-img{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
         .img-sev{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px);z-index:2}
         .sev-CRITICAL .img-sev{background:rgba(220,38,38,.85);color:#fff}
         .sev-HIGH .img-sev{background:rgba(234,88,12,.85);color:#fff}
         .sev-MEDIUM .img-sev{background:rgba(202,138,4,.85);color:#fff}
         .sev-LOW .img-sev,.sev-none .img-sev{background:rgba(37,99,235,.85);color:#fff}
         .img-id{position:absolute;top:10px;right:10px;background:rgba(15,52,96,.82);color:#fff;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px)}
-        .cbody{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
-        .ctitle{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.98rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-        .ccat{font-size:.8rem;color:#0f3460;font-weight:700;display:flex;align-items:center;gap:5px;margin-top:2px}
-        .cloc{font-size:.78rem;color:#94a3b8}
-        .cdate{font-size:.72rem;color:#94a3b8}
-        .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
-        .cstatus{padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
+        .comp-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
+        .comp-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.98rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .comp-cat{font-size:.8rem;color:#0f3460;font-weight:700;display:flex;align-items:center;gap:5px;margin-top:2px}
+        .comp-loc{font-size:.78rem;color:#94a3b8}
+        .comp-date{font-size:.72rem;color:#94a3b8}
+        .comp-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
+        .comp-status{padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
         .status-FILED{background:#eff6ff;color:#2563eb}
         .status-IN_PROGRESS{background:#fefce8;color:#ca8a04}
         .status-RESOLVED{background:#f0fdf4;color:#16a34a}
@@ -61,37 +61,37 @@
         <a href="/citizen/report" class="fab">+ Report Issue</a>
     </div>
 
-    <div class="cgrid" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
+    <div class="comp-grid" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
         <a th:each="c : ${complaints}"
            th:href="@{/citizen/track(id=${c.id})}"
-           th:class="'ccard sev-' + ${!#strings.isEmpty(c.severity) ? #strings.toUpperCase(#strings.trim(c.severity)) : 'LOW'}">
-            <div class="cimg">
+           th:class="'comp-card sev-' + ${!#strings.isEmpty(c.severity) ? #strings.toUpperCase(#strings.trim(c.severity)) : 'LOW'}">
+            <div class="comp-img">
                 <img th:if="${c.mediaUrl != null and c.mediaUrl != 'null' and !#strings.isEmpty(c.mediaUrl)}"
                      th:src="${#strings.split(c.mediaUrl,',')[0]}"
                      alt="Photo" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
                 <div th:if="${c.mediaUrl == null or c.mediaUrl == 'null' or #strings.isEmpty(c.mediaUrl)}"
-                     class="cimg-ph cat-emoji" th:data-cat="${c.category}">
+                     class="comp-img-ph cat-emoji" th:data-cat="${c.category}">
                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
-                <div class="cimg-ph cat-emoji" style="display:none;" th:data-cat="${c.category}">
+                <div class="comp-img-ph cat-emoji" style="display:none;" th:data-cat="${c.category}">
                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
                 <span class="img-sev" th:text="${!#strings.isEmpty(c.severity) ? c.severity : 'LOW'}"></span>
                 <span class="img-id" th:text="'#CL-' + ${c.id}"></span>
             </div>
-            <div class="cbody">
-                <div class="ctitle" th:text="${!#strings.isEmpty(c.title) ? c.title : 'Untitled Issue'}">Title</div>
-                <div class="ccat">
+            <div class="comp-body">
+                <div class="comp-title" th:text="${!#strings.isEmpty(c.title) ? c.title : 'Untitled Issue'}">Title</div>
+                <div class="comp-cat">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                     <span th:text="${!#strings.isEmpty(c.category) ? c.category : 'General'}"></span>
                 </div>
-                <div class="cloc" style="display:flex;align-items:center;gap:4px;">
+                <div class="comp-loc" style="display:flex;align-items:center;gap:4px;">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     <span th:text="${!#strings.isEmpty(c.location) ? #strings.abbreviate(c.location,40) : 'Location unknown'}"></span>
                 </div>
-                <div class="cdate" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}"></div>
-                <div class="cfoot">
-                    <span class="cstatus" th:classappend="'status-' + ${c.status}" th:text="${c.status}">FILED</span>
+                <div class="comp-date" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}"></div>
+                <div class="comp-foot">
+                    <span class="comp-status" th:classappend="'status-' + ${c.status}" th:text="${c.status}">FILED</span>
                     <span style="font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
                         <span th:text="${c.upvoteCount}">0</span>
@@ -111,9 +111,8 @@
     </div>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
-<script>
-var E={'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️','Water Leakage':'💧','Water Supply':'🚰','Road Damage':'🛣️','Tree Fall':'🌳','Noise':'🔊','Stray Animals':'🐕'};
-document.querySelectorAll('.cat-emoji[data-cat]').forEach(function(el){el.textContent=E[el.dataset.cat]||'📋';});
-</script>
 </body>
 </html>
+
+
+

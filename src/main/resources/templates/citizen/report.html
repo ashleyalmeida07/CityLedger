@@ -243,28 +243,28 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5;min-height:100vh}
     <h3>Complaint Filed</h3>
     <p style="color:#64748b;font-size:.95rem;margin-bottom:24px">Saved, AI-classified &amp; recorded on the blockchain.</p>
     <div style="background:#f8fafc;border-radius:12px;padding:16px;text-align:left">
-      <div class="srow"><span class="slabel">Complaint ID</span><span class="sval">#CL-<span th:text="${param.id}">—</span></span></div>
-      <div class="srow"><span class="slabel">Category</span><span class="sval" th:text="${param.category}">—</span></div>
-      <div class="srow"><span class="slabel">Severity</span><span class="sval" th:text="${param.severity}">—</span></div>
+      <div class="srow"><span class="slabel">Complaint ID</span><span class="sval">#CL-<span th:text="${param.id != null ? param.id[0] : ''}">—</span></span></div>
+      <div class="srow"><span class="slabel">Category</span><span class="sval" th:text="${param.category != null ? param.category[0] : ''}">—</span></div>
+      <div class="srow"><span class="slabel">Severity</span><span class="sval" th:text="${param.severity != null ? param.severity[0] : ''}">—</span></div>
       <div class="srow"><span class="slabel">SLA</span><span class="sval">48 hours</span></div>
     </div>
     <div class="ai-result">
       <div class="ai-chip"><span class="aidot"></span>AI Analysis — Llama 3.3 70B</div>
       <div class="ai-badges">
-        <span class="ai-b ai-b-cat" th:text="${param.category}">—</span>
-        <span class="ai-b ai-b-sev" th:text="${param.severity}">—</span>
+        <span class="ai-b ai-b-cat" th:text="${param.category != null ? param.category[0] : ''}">—</span>
+        <span class="ai-b ai-b-sev" th:text="${param.severity != null ? param.severity[0] : ''}">—</span>
       </div>
-      <div class="ai-reason" th:text="${param.reason}"></div>
+      <div class="ai-reason" th:text="${param.reason != null ? param.reason[0] : ''}"></div>
     </div>
     <div class="sbtn-row">
       <a href="/citizen/dashboard" class="sbtn sbtn-p">Dashboard</a>
-      <a th:href="'/citizen/track?id='+${param.id}" class="sbtn sbtn-s">Track</a>
+      <a th:href="${param.id != null ? '/citizen/track?id=' + param.id[0] : '#'}" class="sbtn sbtn-s">Track</a>
     </div>
   </div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-<script src="/js/wizard.js"></script>
+<script src="/js/wizard.js?v=3"></script>
 <script>
 // show success overlay on load
 if(document.getElementById('sov'))document.getElementById('sov').style.display='flex';
