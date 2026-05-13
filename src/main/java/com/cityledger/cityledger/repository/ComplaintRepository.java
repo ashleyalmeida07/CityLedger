@@ -49,5 +49,8 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     // Fallback: all complaints sorted by upvotes
     List<Complaint> findTop50ByOrderByUpvoteCountDescCreatedAtDesc();
+    
+    // Count duplicates of a specific complaint
+    long countByDuplicateOfId(Long duplicateOfId);
 }
 

@@ -2,114 +2,192 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title>My Complaints — CityLedger</title>
+    <title>My Reports — CityLedger</title>
     <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family:Lato:wght@400;700&display=swap" rel="stylesheet"/>
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Lato',sans-serif;background:#f0f2f5}
-        .db{max-width:1100px;margin:0 auto;padding:100px 24px 80px}
-        .pg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-        .pg-head h2{font-family:'Urbanist',sans-serif;font-size:2rem;font-weight:900;color:#0f3460}
-        .pg-head p{color:#64748b;font-size:.88rem;margin-top:4px}
-        .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;font-weight:600;font-size:.88rem;margin-bottom:20px}
+        body{font-family:'Lato',sans-serif;background:#f8fafc}
+        .db{max-width:1400px;margin:0 auto;padding:100px 24px 80px}
+        
+        /* Header */
+        .pg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:20px}
+        .pg-head h2{font-family:'Urbanist',sans-serif;font-size:2.5rem;font-weight:900;color:#0f3460;margin-bottom:8px}
+        .pg-head p{color:#64748b;font-size:0.95rem;margin-top:4px}
+        .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;font-weight:600;font-size:0.9rem;margin-bottom:20px;transition:color 0.2s}
         .back-link:hover{color:#0f3460}
-        .fab{background:#0f3460;color:#fff;padding:10px 20px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.88rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-        .fab:hover{background:#16213e}
-        .comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-        .comp-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:.22s;display:flex;flex-direction:column;border:1px solid #e2e8f0;text-decoration:none;color:inherit;min-height:280px}
-        .comp-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
-        .comp-img{position:relative;width:100%;height:160px;overflow:hidden;flex-shrink:0;background:#f8fafc;display:flex;align-items:center;justify-content:center}
+        .fab{background:#0f3460;color:#fff;padding:12px 24px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s}
+        .fab:hover{background:#16213e;transform:translateY(-2px)}
+        
+        /* Stats Bar */
+        .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+        .stat-mini{background:white;border-radius:8px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid #f0f0f0}
+        .stat-mini .value{font-family:'Urbanist',sans-serif;font-size:2rem;font-weight:900;color:#0f3460;margin-bottom:4px}
+        .stat-mini .label{color:#64748b;font-size:0.85rem;font-weight:600}
+        
+        /* Filter Tabs */
+        .filter-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+        .filter-tab{padding:10px 20px;border-radius:6px;border:2px solid #e2e8f0;background:white;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s}
+        .filter-tab:hover{border-color:#0f3460;color:#0f3460}
+        .filter-tab.active{background:#0f3460;color:white;border-color:#0f3460}
+        
+        /* Card Grid */
+        .comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+        .comp-card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);transition:all 0.25s;display:flex;flex-direction:column;border:1px solid #f0f0f0;text-decoration:none;color:inherit;min-height:320px;cursor:pointer}
+        .comp-card:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,0.12)}
+        
+        /* Image Section */
+        .comp-img{position:relative;width:100%;height:180px;overflow:hidden;flex-shrink:0;background:#f8fafc;display:flex;align-items:center;justify-content:center}
         .comp-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-        .comp-card:hover .comp-img img{transform:scale(1.05)}
-        .comp-img-ph{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.85rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;background:rgba(255,255,255,.8);border-radius:8px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center}
+        .comp-card:hover .comp-img img{transform:scale(1.06)}
+        .comp-img-ph{font-family:'Urbanist',sans-serif;font-weight:800;font-size:0.9rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;padding:10px 16px;background:rgba(255,255,255,0.9);border-radius:6px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center}
+        
+        /* Severity Backgrounds */
         .sev-CRITICAL .comp-img{background:linear-gradient(135deg,#fef2f2,#fecaca)}
         .sev-HIGH .comp-img{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
         .sev-MEDIUM .comp-img{background:linear-gradient(135deg,#fefce8,#fde68a)}
         .sev-LOW .comp-img,.sev-none .comp-img{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
-        .img-sev{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px);z-index:2}
-        .sev-CRITICAL .img-sev{background:rgba(220,38,38,.85);color:#fff}
-        .sev-HIGH .img-sev{background:rgba(234,88,12,.85);color:#fff}
-        .sev-MEDIUM .img-sev{background:rgba(202,138,4,.85);color:#fff}
-        .sev-LOW .img-sev,.sev-none .img-sev{background:rgba(37,99,235,.85);color:#fff}
-        .img-id{position:absolute;top:10px;right:10px;background:rgba(15,52,96,.82);color:#fff;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px)}
-        .comp-body{padding:18px;flex:1;display:flex;flex-direction:column;gap:8px;background:#ffffff;z-index:1}
-        .comp-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1.05rem;color:#1e293b;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:2px}
-        .comp-cat{font-size:.8rem;color:#0f3460;font-weight:700;display:flex;align-items:center;gap:5px;margin-top:2px}
-        .comp-loc{font-size:.78rem;color:#94a3b8}
-        .comp-date{font-size:.72rem;color:#94a3b8}
-        .comp-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
-        .comp-status{padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
-        .status-FILED{background:#eff6ff;color:#2563eb}
-        .status-IN_PROGRESS{background:#fefce8;color:#ca8a04}
-        .status-RESOLVED{background:#f0fdf4;color:#16a34a}
-        .status-REJECTED{background:#f1f5f9;color:#64748b}
-        .empty{text-align:center;padding:80px 20px;color:#94a3b8}
-        .empty h3{font-family:'Urbanist',sans-serif;font-size:1.2rem;color:#64748b;margin-bottom:8px}
-        .empty a{display:inline-block;margin-top:16px;background:#0f3460;color:#fff;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-family:'Urbanist',sans-serif}
+        
+        /* Badges on Image */
+        .img-sev{position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:4px;font-size:0.7rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px);z-index:2}
+        .sev-CRITICAL .img-sev{background:rgba(220,38,38,0.9);color:#fff}
+        .sev-HIGH .img-sev{background:rgba(234,88,12,0.9);color:#fff}
+        .sev-MEDIUM .img-sev{background:rgba(202,138,4,0.9);color:#fff}
+        .sev-LOW .img-sev,.sev-none .img-sev{background:rgba(37,99,235,0.9);color:#fff}
+        .img-id{position:absolute;top:12px;right:12px;background:rgba(15,52,96,0.9);color:#fff;padding:5px 12px;border-radius:4px;font-size:0.7rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px)}
+        
+        /* Card Body */
+        .comp-body{padding:20px;flex:1;display:flex;flex-direction:column;gap:10px;background:#ffffff}
+        .comp-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1.1rem;color:#1e293b;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px}
+        .comp-cat{font-size:0.85rem;color:#0f3460;font-weight:700;display:flex;align-items:center;gap:6px}
+        .comp-loc{font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px}
+        .comp-date{font-size:0.75rem;color:#94a3b8}
+        
+        /* Footer */
+        .comp-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid #f0f0f0}
+        .comp-status{padding:5px 12px;border-radius:4px;font-size:0.75rem;font-weight:700;font-family:'Urbanist',sans-serif}
+        .status-FILED{background:#fef3c7;color:#92400e}
+        .status-IN_PROGRESS{background:#dbeafe;color:#1e40af}
+        .status-RESOLVED{background:#d1fae5;color:#065f46}
+        .status-REJECTED{background:#f3f4f6;color:#6b7280}
+        
+        /* Empty State */
+        .empty{text-align:center;padding:100px 20px;color:#94a3b8;grid-column:1/-1}
+        .empty svg{margin-bottom:20px;opacity:0.3}
+        .empty h3{font-family:'Urbanist',sans-serif;font-size:1.4rem;color:#64748b;margin-bottom:12px;font-weight:800}
+        .empty p{font-size:0.95rem;margin-bottom:24px}
+        .empty a{display:inline-block;background:#0f3460;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-family:'Urbanist',sans-serif;transition:all 0.2s}
+        .empty a:hover{background:#16213e;transform:translateY(-2px)}
     </style>
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="db">
-    <a href="/citizen/dashboard" class="back-link">← Back to Dashboard</a>
+    <a href="/citizen/dashboard" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Back to Dashboard
+    </a>
+    
     <div class="pg-head">
         <div>
-            <h2>My Complaints</h2>
-            <p>All civic issues you've reported · click any card to track status</p>
+            <h2>My Reports</h2>
+            <p>All civic issues you've reported · Track status and updates</p>
         </div>
-        <a href="/citizen/report" class="fab">+ Report Issue</a>
+        <a href="/citizen/report" class="fab">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Report New Issue
+        </a>
     </div>
 
+    <!-- Stats Bar -->
+    <div class="stats-bar" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
+        <div class="stat-mini">
+            <div class="value" th:text="${totalComplaints != null ? totalComplaints : 0}">0</div>
+            <div class="label">Total Reports</div>
+        </div>
+        <div class="stat-mini">
+            <div class="value" th:text="${openComplaints != null ? openComplaints : 0}">0</div>
+            <div class="label">Pending</div>
+        </div>
+        <div class="stat-mini">
+            <div class="value" th:text="${inProgressComplaints != null ? inProgressComplaints : 0}">0</div>
+            <div class="label">In Progress</div>
+        </div>
+        <div class="stat-mini">
+            <div class="value" th:text="${resolvedComplaints != null ? resolvedComplaints : 0}">0</div>
+            <div class="label">Resolved</div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
+        <button class="filter-tab active" onclick="filterStatus(this, 'all')">All</button>
+        <button class="filter-tab" onclick="filterStatus(this, 'FILED')">Pending</button>
+        <button class="filter-tab" onclick="filterStatus(this, 'IN_PROGRESS')">In Progress</button>
+        <button class="filter-tab" onclick="filterStatus(this, 'RESOLVED')">Resolved</button>
+    </div>
+
+    <!-- Cards Grid -->
     <div class="comp-grid" th:if="${complaints != null and !#lists.isEmpty(complaints)}">
         <a th:each="c : ${complaints}"
            th:href="@{/citizen/track(id=${c.id})}"
-           th:class="'comp-card sev-' + ${!#strings.isEmpty(c.severity) ? #strings.toUpperCase(#strings.trim(c.severity)) : 'LOW'}">
+           th:class="|comp-card sev-${c.severity != null ? c.severity : 'LOW'}|"
+           th:data-status="${c.status}">
             <div class="comp-img">
-                <img th:if="${c.mediaUrl != null and c.mediaUrl != 'null' and !#strings.isEmpty(c.mediaUrl)}"
+                <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}"
                      th:src="${#strings.split(c.mediaUrl,',')[0]}"
-                     alt="Photo" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
-                <div th:if="${c.mediaUrl == null or c.mediaUrl == 'null' or #strings.isEmpty(c.mediaUrl)}"
-                     class="comp-img-ph">
-                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                     alt="Photo" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.comp-img-ph').style.display='flex';"/>
+                <div th:class="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'comp-img-ph' : 'comp-img-ph'}"
+                     th:style="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'display:none;' : 'display:flex;'}">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
-                <span class="img-sev" th:text="${!#strings.isEmpty(c.severity) ? c.severity : 'LOW'}"></span>
-                <span class="img-id" th:text="'#CL-' + ${c.id}"></span>
+                <span class="img-sev" th:text="${c.severity != null ? c.severity : 'LOW'}">LOW</span>
+                <span class="img-id" th:text="|#CL-${c.id}|">#CL-0</span>
             </div>
             <div class="comp-body">
-                <div class="comp-title" th:text="${!#strings.isEmpty(c.title) ? c.title : 'Untitled Issue'}">Title</div>
+                <div class="comp-title" th:text="${c.title != null ? c.title : 'Untitled Report'}">Title</div>
                 <div class="comp-cat">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                    <span th:text="${!#strings.isEmpty(c.category) ? c.category : 'General'}"></span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span th:text="${c.category != null ? c.category : 'General'}">General</span>
                 </div>
-                <div class="comp-loc" style="display:flex;align-items:center;gap:4px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    <span th:text="${!#strings.isEmpty(c.location) ? #strings.abbreviate(c.location,40) : 'Location unknown'}"></span>
+                <div class="comp-loc">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span th:text="${c.location != null ? #strings.abbreviate(c.location,45) : 'Location not specified'}">Location</span>
                 </div>
-                <div class="comp-date" th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}"></div>
+                <div class="comp-date" th:if="${c.createdAt != null}" th:text="${#temporals.format(c.createdAt,'MMM dd, yyyy')}">Date</div>
+                <div class="comp-date" th:if="${c.createdAt == null and c.filedAt != null}" th:text="${#temporals.format(c.filedAt,'MMM dd, yyyy')}">Date</div>
                 <div class="comp-foot">
-                    <span class="comp-status" th:classappend="'status-' + ${c.status}" th:text="${c.status}">FILED</span>
-                    <span style="font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-                        <span th:text="${c.upvoteCount}">0</span>
+                    <span class="comp-status" th:classappend="|status-${c.status != null ? c.status : 'FILED'}|" th:text="${c.status != null ? c.status : 'FILED'}">FILED</span>
+                    <span style="font-size:0.8rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                        <span th:text="${c.upvoteCount != null ? c.upvoteCount : 0}">0</span>
                     </span>
                 </div>
             </div>
         </a>
     </div>
 
+    <!-- Empty State -->
     <div th:if="${complaints == null or #lists.isEmpty(complaints)}" class="empty">
-        <div style="margin-bottom:16px">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        </div>
-        <h3>No complaints filed yet</h3>
-        <p>Report your first civic issue and it will appear here.</p>
-        <a href="/citizen/report">+ Report an Issue</a>
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <h3>No reports filed yet</h3>
+        <p>Start making a difference by reporting your first civic issue</p>
+        <a href="/citizen/report">Report an Issue</a>
     </div>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+function filterStatus(btn, status) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.comp-card').forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
 </body>
 </html>
-
-
-

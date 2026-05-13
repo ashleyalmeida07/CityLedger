@@ -204,6 +204,9 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
           </div>
           <span class="feed-vote-cnt" th:text="${c.upvoteCount}">0</span>
           <span th:text="'(' + ${commentCounts != null and commentCounts[c.id] != null ? commentCounts[c.id] : 0} + ' comments)'"></span>
+          <span th:if="${duplicateCounts != null and duplicateCounts[c.id] != null}" 
+                style="color:#f59e0b;font-weight:700;margin-left:4px;"
+                th:text="'+ ' + ${duplicateCounts[c.id]} + ' similar'"></span>
         </div>
 
         <div class="feed-loc" th:text="${c.location != null ? #strings.abbreviate(c.location,40) : 'Unknown location'}">Location</div>

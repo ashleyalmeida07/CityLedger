@@ -13,11 +13,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,37 +79,70 @@ public class HomeController {
             long openCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.FILED).count();
             long inProgressCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.IN_PROGRESS).count();
             long resolvedCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.RESOLVED).count();
+            
+            // Category breakdown
+            java.util.Map<String, Long> categoryBreakdown = myComplaints.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                    c -> c.getCategory() != null ? c.getCategory() : "Other",
+                    java.util.stream.Collectors.counting()
+                ));
+            
+            // Severity breakdown
+            java.util.Map<String, Long> severityBreakdown = myComplaints.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                    c -> c.getSeverity() != null ? c.getSeverity() : "LOW",
+                    java.util.stream.Collectors.counting()
+                ));
+            
             model.addAttribute("totalComplaints", myComplaints.size());
             model.addAttribute("openComplaints", openCount);
             model.addAttribute("inProgressComplaints", inProgressCount);
             model.addAttribute("resolvedComplaints", resolvedCount);
-            model.addAttribute("recentComplaints", myComplaints);
+            model.addAttribute("recentComplaints", myComplaints.stream().limit(5).toList());
+            model.addAttribute("categoryBreakdown", categoryBreakdown);
+            model.addAttribute("severityBreakdown", severityBreakdown);
         }
         model.addAttribute("user", principal);
         return "citizen/dashboard";
     }
 
-    @GetMapping("/citizen/complaints")
-    public String citizenComplaints(@AuthenticationPrincipal OAuth2User principal, Model model) {
+    @GetMapping("/citizen/reports")
+    public String citizenReports(@AuthenticationPrincipal OAuth2User principal, Model model) {
         if (principal == null) return "redirect:/login";
         String email = principal.getAttribute("email");
         AppUser citizen = userRepository.findByEmail(email).orElse(null);
         if (citizen != null) {
-            model.addAttribute("complaints", complaintRepository.findByCitizenOrderByCreatedAtDesc(citizen));
+            List<Complaint> myComplaints = complaintRepository.findByCitizenOrderByCreatedAtDesc(citizen);
+            List<ComplaintCard> cards = myComplaints.stream()
+                    .map(ComplaintCard::from)
+                    .toList();
+            
+            // Calculate statistics
+            long openCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.FILED).count();
+            long inProgressCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.IN_PROGRESS).count();
+            long resolvedCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.RESOLVED).count();
+            
+            model.addAttribute("complaints", cards);
+            model.addAttribute("totalComplaints", myComplaints.size());
+            model.addAttribute("openComplaints", openCount);
+            model.addAttribute("inProgressComplaints", inProgressCount);
+            model.addAttribute("resolvedComplaints", resolvedCount);
         }
         model.addAttribute("user", principal);
-        return "citizen/complaints";
+        return "citizen/reports";
+    }
+
+    @GetMapping("/citizen/complaints")
+    public String citizenComplaintsRedirect() {
+        return "redirect:/citizen/reports";
     }
 
     @GetMapping("/citizen/track")
-    public String citizenTrack(@RequestParam(required = false) Long id, @AuthenticationPrincipal OAuth2User principal, Model model) {
-        if (principal == null) return "redirect:/login";
+    public String citizenTrackRedirect(@RequestParam(required = false) Long id) {
         if (id != null) {
-            Complaint complaint = complaintRepository.findById(id).orElse(null);
-            model.addAttribute("complaint", complaint);
+            return "redirect:/citizen/reports?id=" + id;
         }
-        model.addAttribute("user", principal);
-        return "citizen/track";
+        return "redirect:/citizen/reports";
     }
 
     @GetMapping("/citizen/map")
@@ -116,6 +151,86 @@ public class HomeController {
         model.addAttribute("complaints", complaintRepository.findAll());
         model.addAttribute("user", principal);
         return "citizen/map";
+    }
+
+    @GetMapping("/api/citizen/complaint/{id}")
+    @ResponseBody
+    public ResponseEntity<?> getComplaintDetail(@PathVariable Long id, @AuthenticationPrincipal OAuth2User principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        
+        String email = principal.getAttribute("email");
+        AppUser citizen = userRepository.findByEmail(email).orElse(null);
+        if (citizen == null) return ResponseEntity.status(401).build();
+        
+        Complaint complaint = complaintRepository.findById(id).orElse(null);
+        if (complaint == null) return ResponseEntity.notFound().build();
+        
+        // Verify the complaint belongs to this citizen
+        if (!complaint.getCitizen().getId().equals(citizen.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("id", complaint.getId());
+        response.put("title", complaint.getTitle());
+        response.put("description", complaint.getDescription());
+        response.put("category", complaint.getCategory());
+        response.put("severity", complaint.getSeverity());
+        response.put("status", complaint.getStatus().name());
+        response.put("location", complaint.getLocation());
+        response.put("latitude", complaint.getLatitude());
+        response.put("longitude", complaint.getLongitude());
+        response.put("mediaUrl", complaint.getMediaUrl());
+        response.put("createdAt", complaint.getCreatedAt());
+        response.put("updatedAt", complaint.getUpdatedAt());
+        response.put("filedAt", complaint.getFiledAt());
+        response.put("blockchainHash", complaint.getBlockchainHash());
+        response.put("aiSummary", complaint.getAiSummary());
+        response.put("aiReason", complaint.getAiReason());
+        response.put("upvoteCount", complaint.getUpvoteCount());
+        response.put("assignedWorker", complaint.getAssignedWorker() != null ? 
+            java.util.Map.of("id", complaint.getAssignedWorker().getId(), 
+                           "name", complaint.getAssignedWorker().getName()) : null);
+        
+        return ResponseEntity.ok(response);
+    }
+
+    private record ComplaintCard(
+            Long id,
+            String title,
+            String category,
+            String location,
+            String severity,
+            String status,
+            String mediaUrl,
+            LocalDateTime createdAt,
+            int upvoteCount
+    ) {
+        private static ComplaintCard from(Complaint complaint) {
+            String title = StringUtils.hasText(complaint.getTitle()) ? complaint.getTitle().trim() : "Untitled Issue";
+            String category = StringUtils.hasText(complaint.getCategory()) ? complaint.getCategory().trim() : "General";
+            String location = StringUtils.hasText(complaint.getLocation()) ? complaint.getLocation().trim() : "Location unknown";
+            String severity = StringUtils.hasText(complaint.getSeverity())
+                    ? complaint.getSeverity().trim().toUpperCase()
+                    : "LOW";
+            String status = complaint.getStatus() != null ? complaint.getStatus().name() : "FILED";
+            String mediaUrl = StringUtils.hasText(complaint.getMediaUrl())
+                    && !"null".equalsIgnoreCase(complaint.getMediaUrl().trim())
+                    ? complaint.getMediaUrl().trim()
+                    : null;
+
+            return new ComplaintCard(
+                    complaint.getId(),
+                    title,
+                    category,
+                    location,
+                    severity,
+                    status,
+                    mediaUrl,
+                    complaint.getCreatedAt(),
+                    complaint.getUpvoteCount()
+            );
+        }
     }
 
     // ══════════════════════════════════════════════════

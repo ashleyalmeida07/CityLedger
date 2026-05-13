@@ -44,15 +44,24 @@ public class FeedController {
         // Build upvote status map for this user
         Map<Long, Boolean> upvotedByMe = new java.util.HashMap<>();
         Map<Long, Long> commentCounts = new java.util.HashMap<>();
+        Map<Long, Long> duplicateCounts = new java.util.HashMap<>();
+        
         for (Complaint c : feed) {
             upvotedByMe.put(c.getId(), upvoteRepository.existsByComplaintAndCitizen(c, user));
             commentCounts.put(c.getId(), commentRepository.countByComplaint(c));
+            
+            // Count duplicates for this complaint
+            long dupCount = complaintRepository.countByDuplicateOfId(c.getId());
+            if (dupCount > 0) {
+                duplicateCounts.put(c.getId(), dupCount);
+            }
         }
 
         model.addAttribute("feed", feed);
         model.addAttribute("trending", trending);
         model.addAttribute("upvotedByMe", upvotedByMe);
         model.addAttribute("commentCounts", commentCounts);
+        model.addAttribute("duplicateCounts", duplicateCounts);
         model.addAttribute("currentRadius", radius);
         model.addAttribute("currentSort", sort);
         model.addAttribute("currentCategory", category);

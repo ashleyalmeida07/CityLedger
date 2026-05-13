@@ -63,7 +63,40 @@ public class FeedService {
                     .collect(Collectors.toList());
         }
 
-        return complaints;
+        // Remove duplicates - keep only the original complaint
+        // Group by duplicateOfId and keep only the original (the one that others point to)
+        Map<Long, List<Complaint>> duplicateGroups = new HashMap<>();
+        List<Complaint> uniqueComplaints = new ArrayList<>();
+        
+        for (Complaint c : complaints) {
+            if (c.getDuplicateOfId() != null) {
+                // This is a duplicate, add to the group
+                duplicateGroups.computeIfAbsent(c.getDuplicateOfId(), k -> new ArrayList<>()).add(c);
+            } else {
+                // This is an original complaint
+                uniqueComplaints.add(c);
+            }
+        }
+        
+        // For each original complaint, aggregate upvotes from duplicates
+        for (Complaint original : uniqueComplaints) {
+            List<Complaint> duplicates = duplicateGroups.get(original.getId());
+            if (duplicates != null && !duplicates.isEmpty()) {
+                // Sum up upvotes from all duplicates
+                int totalUpvotes = original.getUpvoteCount();
+                for (Complaint dup : duplicates) {
+                    totalUpvotes += dup.getUpvoteCount();
+                }
+                original.setUpvoteCount(totalUpvotes);
+                
+                // Store duplicate count in a transient field or use a custom DTO
+                // For now, we'll add it to the title temporarily
+                log.info("Complaint #{} has {} duplicates with total {} upvotes", 
+                    original.getId(), duplicates.size(), totalUpvotes);
+            }
+        }
+
+        return uniqueComplaints;
     }
 
     public List<Complaint> getTrending() {

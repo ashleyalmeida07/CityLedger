@@ -84,7 +84,7 @@
                     <th:block sec:authorize="isAuthenticated()">
                         <div class="profile-dropdown" style="position: relative; display: inline-block; cursor: pointer;" onclick="document.getElementById('profileDropdown').classList.toggle('show-dropdown')">
                             <div class="profile-dropdown-trigger" style="display: flex; align-items: center; gap: 10px; color: #0f3460; font-weight: 400; padding: 5px;">
-                                <img th:src="@{https://ui-avatars.com/api/(name=${#authentication.name},background='0f3460',color='fff')}" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid #0f3460; object-fit: cover;">
+                                <img th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=0f3460&color=fff'" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid #0f3460; object-fit: cover;">
                                 <span th:text="${#authentication.name}">User</span>
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: -2px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </div>
