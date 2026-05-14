@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>How It Works - CityLedger</title>
+    <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Urbanist:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Lato',sans-serif;background:#f8fafc;color:#1e293b}
+        .container{max-width:1200px;margin:0 auto;padding:120px 24px 80px}
+        
+        /* Hero Section */
+        .hero{text-align:center;margin-bottom:80px}
+        .hero h1{font-family:'Urbanist',sans-serif;font-size:3.5rem;font-weight:900;color:#0f3460;margin-bottom:20px;line-height:1.2}
+        .hero p{font-size:1.2rem;color:#64748b;max-width:700px;margin:0 auto;line-height:1.7}
+        
+        /* Process Flow */
+        .process-section{margin-bottom:100px}
+        .section-title{font-family:'Urbanist',sans-serif;font-size:2.5rem;font-weight:900;color:#0f3460;text-align:center;margin-bottom:60px}
+        
+        .flow-container{position:relative;max-width:900px;margin:0 auto}
+        .flow-step{display:flex;gap:32px;margin-bottom:60px;align-items:flex-start}
+        .flow-step:nth-child(even){flex-direction:row-reverse}
+        
+        .step-number{flex-shrink:0;width:80px;height:80px;border-radius:8px;background:linear-gradient(135deg,#0f3460,#1a1a2e);color:white;display:flex;align-items:center;justify-content:center;font-family:'Urbanist',sans-serif;font-size:2rem;font-weight:900;box-shadow:0 8px 24px rgba(15,52,96,0.3);position:relative}
+        
+        .step-content{flex:1;background:white;padding:32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #e2e8f0}
+        .step-content h3{font-family:'Urbanist',sans-serif;font-size:1.6rem;font-weight:800;color:#0f3460;margin-bottom:12px}
+        .step-content p{color:#64748b;line-height:1.7;font-size:1.05rem}
+        .step-content ul{margin-top:16px;padding-left:24px;color:#64748b}
+        .step-content li{margin-bottom:8px;line-height:1.6}
+        
+        /* Roles Section */
+        .roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;margin-bottom:100px}
+        .role-card{background:white;padding:36px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #e2e8f0;transition:all 0.3s}
+        .role-card:hover{transform:translateY(-8px);box-shadow:0 12px 36px rgba(0,0,0,0.12)}
+        .role-icon{width:64px;height:64px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:2rem}
+        .role-icon.citizen{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+        .role-icon.officer{background:linear-gradient(135deg,#f59e0b,#d97706)}
+        .role-icon.worker{background:linear-gradient(135deg,#10b981,#059669)}
+        .role-card h3{font-family:'Urbanist',sans-serif;font-size:1.4rem;font-weight:800;color:#0f3460;margin-bottom:12px}
+        .role-card p{color:#64748b;line-height:1.7;margin-bottom:16px}
+        .role-card ul{padding-left:20px;color:#64748b}
+        .role-card li{margin-bottom:8px;line-height:1.6}
+        
+        /* Tech Stack */
+        .tech-section{background:linear-gradient(135deg,#0f3460,#1a1a2e);padding:60px 40px;border-radius:16px;margin-bottom:100px;color:white}
+        .tech-section h2{font-family:'Urbanist',sans-serif;font-size:2.5rem;font-weight:900;text-align:center;margin-bottom:40px}
+        .tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px}
+        .tech-item{background:rgba(255,255,255,0.1);padding:24px;border-radius:8px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2)}
+        .tech-item h4{font-family:'Urbanist',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:8px}
+        .tech-item p{color:rgba(255,255,255,0.8);font-size:0.95rem;line-height:1.6}
+        
+        /* CTA Section */
+        .cta-section{text-align:center;background:white;padding:60px 40px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.08)}
+        .cta-section h2{font-family:'Urbanist',sans-serif;font-size:2.5rem;font-weight:900;color:#0f3460;margin-bottom:20px}
+        .cta-section p{font-size:1.1rem;color:#64748b;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto}
+        .cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+        .btn{padding:16px 32px;border-radius:8px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:1rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s}
+        .btn-primary{background:#0f3460;color:white}
+        .btn-primary:hover{background:#16213e;transform:translateY(-2px)}
+        .btn-secondary{background:white;color:#0f3460;border:2px solid #0f3460}
+        .btn-secondary:hover{background:#f8fafc}
+        
+        @media(max-width:768px){
+            .hero h1{font-size:2.5rem}
+            .flow-step{flex-direction:column!important}
+            .step-number{width:60px;height:60px;font-size:1.5rem}
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container">
+    <!-- Hero -->
+    <div class="hero">
+        <h1>How CityLedger Works</h1>
+        <p>A transparent, AI-powered, blockchain-verified civic complaint management system that connects citizens with their municipal corporations</p>
+    </div>
+
+    <!-- Process Flow -->
+    <div class="process-section">
+        <h2 class="section-title">The Complete Process</h2>
+        <div class="flow-container">
+            <div class="flow-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Citizen Reports an Issue</h3>
+                    <p>Citizens file complaints through an intuitive guided wizard that captures:</p>
+                    <ul>
+                        <li>Photos/videos of the issue</li>
+                        <li>GPS location (auto-captured)</li>
+                        <li>Detailed description through smart questions</li>
+                        <li>Contact information</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>AI Analysis & Classification</h3>
+                    <p>NVIDIA Llama 3.3 70B AI model instantly analyzes the complaint:</p>
+                    <ul>
+                        <li>Detects category (Pothole, Street Lamp, Garbage, Water Leak, etc.)</li>
+                        <li>Assigns severity level (LOW, MEDIUM, HIGH, CRITICAL)</li>
+                        <li>Identifies duplicates to prevent redundancy</li>
+                        <li>Generates summary for officers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Blockchain Verification</h3>
+                    <p>The complaint is recorded on Ethereum blockchain:</p>
+                    <ul>
+                        <li>Immutable proof of submission</li>
+                        <li>Tamper-proof timestamp</li>
+                        <li>Public verification via Etherscan</li>
+                        <li>Ensures accountability and transparency</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Officer Triage & Assignment</h3>
+                    <p>Municipal officers review and assign complaints:</p>
+                    <ul>
+                        <li>View AI-generated summaries and recommendations</li>
+                        <li>Prioritize based on severity and SLA timers</li>
+                        <li>Assign to appropriate field workers</li>
+                        <li>Monitor queue and track progress</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>Field Worker Resolution</h3>
+                    <p>Field workers receive tasks and resolve issues:</p>
+                    <ul>
+                        <li>GPS navigation to complaint location</li>
+                        <li>Real-time status updates</li>
+                        <li>Upload completion photos</li>
+                        <li>AI validates work quality (before/after comparison)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h3>Citizen Tracking & Feedback</h3>
+                    <p>Citizens stay informed throughout the process:</p>
+                    <ul>
+                        <li>Real-time status updates</li>
+                        <li>Timeline view of progress</li>
+                        <li>View completion photos</li>
+                        <li>Upvote similar issues to escalate priority</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roles -->
+    <h2 class="section-title">User Roles</h2>
+    <div class="roles-grid">
+        <div class="role-card">
+            <div class="role-icon citizen">👤</div>
+            <h3>Citizens</h3>
+            <p>Report civic issues and track resolution progress</p>
+            <ul>
+                <li>File complaints with photos/videos</li>
+                <li>Track status in real-time</li>
+                <li>View city-wide feed</li>
+                <li>Upvote similar issues</li>
+                <li>Access blockchain receipts</li>
+            </ul>
+        </div>
+
+        <div class="role-card">
+            <div class="role-icon officer">👔</div>
+            <h3>Municipal Officers</h3>
+            <p>Triage complaints and manage field operations</p>
+            <ul>
+                <li>Review AI-analyzed complaints</li>
+                <li>Assign tasks to field workers</li>
+                <li>Monitor SLA compliance</li>
+                <li>View analytics dashboard</li>
+                <li>Manage complaint queue</li>
+            </ul>
+        </div>
+
+        <div class="role-card">
+            <div class="role-icon worker">🔧</div>
+            <h3>Field Workers</h3>
+            <p>Resolve issues on-site with mobile tools</p>
+            <ul>
+                <li>Receive assigned tasks</li>
+                <li>GPS navigation to location</li>
+                <li>Update status in real-time</li>
+                <li>Upload completion photos</li>
+                <li>AI quality verification</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Technology Stack -->
+    <div class="tech-section">
+        <h2>Powered by Cutting-Edge Technology</h2>
+        <div class="tech-grid">
+            <div class="tech-item">
+                <h4>🤖 AI Analysis</h4>
+                <p>NVIDIA Llama 3.3 70B model for intelligent categorization, severity detection, and quality assessment</p>
+            </div>
+            <div class="tech-item">
+                <h4>⛓️ Blockchain</h4>
+                <p>Ethereum blockchain for immutable, tamper-proof complaint records and public verification</p>
+            </div>
+            <div class="tech-item">
+                <h4>📍 GPS Integration</h4>
+                <p>Automatic location capture and Google Maps integration for precise issue tracking</p>
+            </div>
+            <div class="tech-item">
+                <h4>☁️ Cloud Storage</h4>
+                <p>Supabase for secure media storage and fast content delivery</p>
+            </div>
+            <div class="tech-item">
+                <h4>📊 Real-time Analytics</h4>
+                <p>Interactive dashboards with Chart.js for data-driven decision making</p>
+            </div>
+            <div class="tech-item">
+                <h4>🔐 Secure Authentication</h4>
+                <p>OAuth 2.0 with Google Sign-In for secure, passwordless access</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2>Ready to Make a Difference?</h2>
+        <p>Join thousands of citizens using CityLedger to improve their communities. Report issues, track progress, and hold your municipality accountable.</p>
+        <div class="cta-buttons">
+            <a href="/signup" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                Sign Up Now
+            </a>
+            <a href="/citizen/feed" class="btn btn-secondary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                View City Feed
+            </a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

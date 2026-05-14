@@ -123,6 +123,28 @@
         .qassign button{background:#0f172a;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:.75rem;white-space:nowrap;font-family:'Urbanist',sans-serif;transition:0.2s}
         .qassign button:hover{background:#334155}
         .qworker{font-size:.78rem;color:#64748b;font-weight:600}
+        
+        /* Status Tab Active States */
+        .status-tab.active[onclick*="'All'"] {
+            background: #0f3460 !important;
+            color: #fff !important;
+            border-color: #0f3460 !important;
+        }
+        .status-tab.active[onclick*="'FILED'"] {
+            background: #92400e !important;
+            color: #fff !important;
+            border-color: #92400e !important;
+        }
+        .status-tab.active[onclick*="'IN_PROGRESS'"] {
+            background: #ca8a04 !important;
+            color: #fff !important;
+            border-color: #ca8a04 !important;
+        }
+        .status-tab.active[onclick*="'RESOLVED'"] {
+            background: #16a34a !important;
+            color: #fff !important;
+            border-color: #16a34a !important;
+        }
     </style>
 </head>
 <body>
@@ -149,11 +171,20 @@
             <button class="cat-tab" onclick="filterQueue('Other', this)" style="padding:8px 16px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;color:#475569;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif;white-space:nowrap;transition:.2s;">Other</button>
         </div>
 
+        <!-- Status Filter Tabs -->
+        <div class="status-wrap" style="margin-bottom:20px;display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;border-top:1px solid #e2e8f0;padding-top:20px;">
+            <button class="status-tab active" onclick="filterByStatus('All', this)" style="padding:8px 16px;border-radius:8px;border:2px solid #0f3460;background:#0f3460;color:#fff;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif;white-space:nowrap;transition:.2s;">All Status</button>
+            <button class="status-tab" onclick="filterByStatus('FILED', this)" style="padding:8px 16px;border-radius:8px;border:2px solid #fef3c7;background:#fef3c7;color:#92400e;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif;white-space:nowrap;transition:.2s;">Not Submitted</button>
+            <button class="status-tab" onclick="filterByStatus('IN_PROGRESS', this)" style="padding:8px 16px;border-radius:8px;border:2px solid #fefce8;background:#fefce8;color:#ca8a04;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif;white-space:nowrap;transition:.2s;">In Progress</button>
+            <button class="status-tab" onclick="filterByStatus('RESOLVED', this)" style="padding:8px 16px;border-radius:8px;border:2px solid #f0fdf4;background:#f0fdf4;color:#16a34a;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif;white-space:nowrap;transition:.2s;">Resolved</button>
+        </div>
+
         <!-- Card Grid -->
         <div class="qgrid" id="queueGrid" th:if="${!#lists.isEmpty(complaints)}">
             <div th:each="item : ${complaints}"
                  th:class="'qcard sev-' + ${!#strings.isEmpty(item.complaint.severity) ? #strings.toUpperCase(#strings.trim(item.complaint.severity)) : 'LOW'}"
-                 th:data-category="${!#strings.isEmpty(item.complaint.category) ? item.complaint.category : 'General'}">
+                 th:data-category="${!#strings.isEmpty(item.complaint.category) ? item.complaint.category : 'General'}"
+                 th:data-status="${item.complaint.status != null ? item.complaint.status.name() : 'FILED'}">
 
                 <!-- Image zone — click goes to details -->
                 <div class="qimg"
@@ -192,6 +223,14 @@
 
                     <div class="qfoot">
                         <span class="qstatus" th:classappend="'status-' + ${item.complaint.status != null ? #strings.toLowerCase(item.complaint.status.name()) : 'filed'}" th:text="${item.complaint.status != null ? item.complaint.status : 'FILED'}">FILED</span>
+                        
+                        <!-- AI Completion Score Badge -->
+                        <span th:if="${item.complaint.completionScore != null}" 
+                              th:style="${item.complaint.completionScore >= 70 ? 'font-size:.75rem;background:#dcfce7;color:#15803d;padding:4px 10px;border-radius:6px;font-weight:700;display:flex;align-items:center;gap:6px;' : 'font-size:.75rem;background:#fed7aa;color:#c2410c;padding:4px 10px;border-radius:6px;font-weight:700;display:flex;align-items:center;gap:6px;'}">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <span th:text="'AI: ' + ${item.complaint.completionScore} + '/100'">AI: 85/100</span>
+                        </span>
+                        
                         <span style="font-size:.75rem;color:#94a3b8;display:flex;align-items:center;gap:4px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
                             <span th:text="${item.complaint.upvoteCount}">0</span>
@@ -256,8 +295,47 @@
             btn.style.color = '#fff';
             btn.style.borderColor = '#0f3460';
 
+            applyFilters();
+        }
+
+        function filterByStatus(status, btn) {
+            document.querySelectorAll('.status-tab').forEach(b => {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const activeCategory = document.querySelector('.cat-tab.active') ? 
+                document.querySelector('.cat-tab.active').textContent.trim() : 'All Complaints';
+            const activeStatus = document.querySelector('.status-tab.active') ? 
+                document.querySelector('.status-tab.active').textContent.trim() : 'All Status';
+
+            // Map display names to actual values
+            const categoryMap = {
+                'All Complaints': 'All',
+                'Water Leak': 'Water Leakage'
+            };
+            const statusMap = {
+                'All Status': 'All',
+                'Not Submitted': 'FILED',
+                'In Progress': 'IN_PROGRESS',
+                'Resolved': 'RESOLVED'
+            };
+
+            const category = categoryMap[activeCategory] || activeCategory;
+            const status = statusMap[activeStatus] || activeStatus;
+
             document.querySelectorAll('.qcard').forEach(card => {
-                if (cat === 'All' || card.dataset.category === cat) {
+                const cardCategory = card.dataset.category;
+                const cardStatus = card.dataset.status;
+                
+                const categoryMatch = category === 'All' || cardCategory === category;
+                const statusMatch = status === 'All' || cardStatus === status;
+                
+                if (categoryMatch && statusMatch) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';

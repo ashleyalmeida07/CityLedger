@@ -55,7 +55,18 @@
     <script src="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/js/webflow.2ed69b183.js" type="text/javascript"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script th:inline="javascript">
-        var complaints = /*[[${complaints}]]*/ [];
+        var complaints = [];
+        /*[# th:each="c : ${complaints}"]*/
+        complaints.push({
+            id: [[${c.id}]],
+            title: [[${c.title}]],
+            category: [[${c.category}]],
+            status: [[${c.status}]],
+            severity: [[${c.severity}]],
+            latitude: [[${c.latitude}]],
+            longitude: [[${c.longitude}]]
+        });
+        /*[/]*/
         var map = L.map('map').setView([19.0760, 72.8777], 12); // Default: Mumbai
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -76,12 +87,13 @@
                 if (catFilter && c.category !== catFilter) return;
                 if (statusFilter && c.status !== statusFilter) return;
 
-                // Try to parse lat,lng from location string
-                var coords = c.location ? c.location.split(',') : null;
-                if (!coords || coords.length < 2 || isNaN(parseFloat(coords[0]))) return;
-
-                var lat = parseFloat(coords[0].trim());
-                var lng = parseFloat(coords[1].trim());
+                // Use latitude and longitude fields
+                if (!c.latitude || !c.longitude) return;
+                
+                var lat = parseFloat(c.latitude);
+                var lng = parseFloat(c.longitude);
+                if (isNaN(lat) || isNaN(lng)) return;
+                
                 var color = getColor(c.severity);
 
                 var marker = L.circleMarker([lat, lng], {
@@ -94,7 +106,7 @@
                     '<span>' + (c.title || 'No title') + '</span><br>' +
                     '<span style="color: #666;">Category: ' + (c.category || 'N/A') + '</span><br>' +
                     '<span style="color: #666;">Status: ' + c.status + '</span><br>' +
-                    '<a href="/citizen/track?id=' + c.id + '" style="color: #0f3460; font-weight: 700;">Track →</a>' +
+                    '<a href="/citizen/reports?id=' + c.id + '" style="color: #0f3460; font-weight: 700;">View Details →</a>' +
                     '</div>'
                 );
                 markers.push(marker);

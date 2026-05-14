@@ -7,7 +7,10 @@ import com.cityledger.cityledger.model.ComplaintStatus;
 import com.cityledger.cityledger.model.Role;
 import com.cityledger.cityledger.repository.AppUserRepository;
 import com.cityledger.cityledger.repository.ComplaintRepository;
+import com.cityledger.cityledger.service.AIService;
+import com.cityledger.cityledger.service.BlockchainService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,14 +31,22 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class HomeController {
 
     private final AppUserRepository userRepository;
     private final ComplaintRepository complaintRepository;
+    private final AIService aiService;
+    private final BlockchainService blockchainService;
 
     @GetMapping("/")
     public String home() {
         return "index";
+    }
+
+    @GetMapping("/how-it-works")
+    public String howItWorks() {
+        return "how-it-works";
     }
 
     @GetMapping("/ai-features")
@@ -115,16 +127,13 @@ public class HomeController {
         AppUser citizen = userRepository.findByEmail(email).orElse(null);
         if (citizen != null) {
             List<Complaint> myComplaints = complaintRepository.findByCitizenOrderByCreatedAtDesc(citizen);
-            List<ComplaintCard> cards = myComplaints.stream()
-                    .map(ComplaintCard::from)
-                    .toList();
             
             // Calculate statistics
             long openCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.FILED).count();
             long inProgressCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.IN_PROGRESS).count();
             long resolvedCount = myComplaints.stream().filter(c -> c.getStatus() == ComplaintStatus.RESOLVED).count();
             
-            model.addAttribute("complaints", cards);
+            model.addAttribute("complaints", myComplaints);
             model.addAttribute("totalComplaints", myComplaints.size());
             model.addAttribute("openComplaints", openCount);
             model.addAttribute("inProgressComplaints", inProgressCount);
@@ -150,7 +159,14 @@ public class HomeController {
     @GetMapping("/citizen/map")
     public String citizenMap(@AuthenticationPrincipal OAuth2User principal, Model model) {
         if (principal == null) return "redirect:/login";
-        model.addAttribute("complaints", complaintRepository.findAll());
+        
+        // Only pass complaints that have valid coordinates
+        List<Complaint> allComplaints = complaintRepository.findAll();
+        List<Complaint> complaintsWithCoords = allComplaints.stream()
+            .filter(c -> c.getLatitude() != null && c.getLongitude() != null)
+            .collect(java.util.stream.Collectors.toList());
+        
+        model.addAttribute("complaints", complaintsWithCoords);
         model.addAttribute("user", principal);
         return "citizen/map";
     }
@@ -288,8 +304,13 @@ public class HomeController {
         if (principal == null) return "redirect:/login";
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Complaint not found"));
+        
+        // Verify blockchain integrity
+        BlockchainService.VerificationResult verification = blockchainService.verifyComplaintDetailed(complaint);
+        
         model.addAttribute("complaint", complaint);
         model.addAttribute("fieldWorkers", userRepository.findByRole(Role.FIELD_WORKER));
+        model.addAttribute("verification", verification);
         model.addAttribute("user", principal);
         return "officer/complaint-detail";
     }
@@ -332,13 +353,51 @@ public class HomeController {
             List<Complaint> myTasks = complaintRepository.findByAssignedWorker(worker);
             long pendingCount = myTasks.stream().filter(c -> c.getStatus() == ComplaintStatus.IN_PROGRESS || c.getStatus() == ComplaintStatus.FILED).count();
             long completedCount = myTasks.stream().filter(c -> c.getStatus() == ComplaintStatus.RESOLVED).count();
+            
+            // Category breakdown
+            java.util.Map<String, Long> categoryBreakdown = myTasks.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                    c -> c.getCategory() != null ? c.getCategory() : "Other",
+                    java.util.stream.Collectors.counting()
+                ));
+            
+            // Severity breakdown
+            java.util.Map<String, Long> severityBreakdown = myTasks.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                    c -> c.getSeverity() != null ? c.getSeverity() : "N/A",
+                    java.util.stream.Collectors.counting()
+                ));
+            
+            // AI Score statistics (for completed tasks)
+            long tasksWithScore = myTasks.stream()
+                .filter(c -> c.getCompletionScore() != null)
+                .count();
+            double avgScore = myTasks.stream()
+                .filter(c -> c.getCompletionScore() != null)
+                .mapToInt(Complaint::getCompletionScore)
+                .average()
+                .orElse(0.0);
+            long approvedTasks = myTasks.stream()
+                .filter(c -> c.getCompletionScore() != null && c.getCompletionScore() >= 70)
+                .count();
+            
             model.addAttribute("totalTasks", (long) myTasks.size());
             model.addAttribute("pendingTasks", pendingCount);
             model.addAttribute("completedTasks", completedCount);
+            model.addAttribute("categoryBreakdown", categoryBreakdown);
+            model.addAttribute("severityBreakdown", severityBreakdown);
+            model.addAttribute("tasksWithScore", tasksWithScore);
+            model.addAttribute("avgScore", Math.round(avgScore));
+            model.addAttribute("approvedTasks", approvedTasks);
         } else {
             model.addAttribute("totalTasks", 0L);
             model.addAttribute("pendingTasks", 0L);
             model.addAttribute("completedTasks", 0L);
+            model.addAttribute("categoryBreakdown", new java.util.HashMap<>());
+            model.addAttribute("severityBreakdown", new java.util.HashMap<>());
+            model.addAttribute("tasksWithScore", 0L);
+            model.addAttribute("avgScore", 0);
+            model.addAttribute("approvedTasks", 0L);
         }
         model.addAttribute("user", principal);
         return "field-worker/dashboard";
@@ -366,15 +425,74 @@ public class HomeController {
     }
 
     @PostMapping("/field-worker/task/{id}/status")
-    public String updateTaskStatus(@PathVariable Long id, @RequestParam String newStatus) {
+    public String updateTaskStatus(@PathVariable Long id, @RequestParam String newStatus,
+                                   @RequestParam(required = false) MultipartFile completionPhoto) {
         Complaint task = complaintRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+        
+        // If marking as RESOLVED, require completion photo and run AI comparison
+        if ("RESOLVED".equals(newStatus)) {
+            if (completionPhoto != null && !completionPhoto.isEmpty()) {
+                try {
+                    // Upload completion photo (you can integrate with your storage service)
+                    String completionPhotoUrl = uploadCompletionPhoto(completionPhoto, id);
+                    task.setCompletionPhotoUrl(completionPhotoUrl);
+                    
+                    // Run AI comparison between before and after images
+                    if (task.getMediaUrl() != null && !task.getMediaUrl().isEmpty()) {
+                        String beforeImageUrl = task.getMediaUrl().split(",")[0]; // Get first image
+                        
+                        boolean isCheat = false;
+                        try {
+                            org.springframework.web.client.RestTemplate rest = new org.springframework.web.client.RestTemplate();
+                            byte[] beforeBytes = rest.getForObject(beforeImageUrl, byte[].class);
+                            byte[] afterBytes = completionPhoto.getBytes();
+                            if (java.util.Arrays.equals(beforeBytes, afterBytes)) {
+                                isCheat = true;
+                            }
+                        } catch (Exception ex) {
+                            log.warn("Could not download before image for cheat detection", ex);
+                        }
+                        
+                        if (isCheat) {
+                            task.setCompletionScore(0);
+                            task.setCompletionAssessment("Fraudulent submission detected. The completion photo uploaded is identical to the original complaint photo. Please upload a real photo showing the completed work.");
+                            task.setCompletionObservations("Exact same image uploaded as the original complaint. Work cannot be verified.");
+                            log.warn("Field worker uploaded identical image for task {}", id);
+                        } else {
+                            AIService.ImageComparisonResult comparison = aiService.compareBeforeAfterImages(
+                                beforeImageUrl,
+                                completionPhotoUrl,
+                                task.getCategory(),
+                                task.getDescription()
+                            );
+                            
+                            task.setCompletionScore(comparison.score());
+                            task.setCompletionAssessment(comparison.assessment());
+                            task.setCompletionObservations(comparison.observations());
+                            
+                            log.info("AI Completion Score for task {}: {}/100 - {}", 
+                                    id, comparison.score(), comparison.recommendation());
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Failed to process completion photo: {}", e.getMessage());
+                }
+            }
+        }
+        
         switch (newStatus) {
             case "IN_PROGRESS" -> task.setStatus(ComplaintStatus.IN_PROGRESS);
             case "RESOLVED" -> task.setStatus(ComplaintStatus.RESOLVED);
         }
         complaintRepository.save(task);
         return "redirect:/field-worker/task/" + id + "?updated=true";
+    }
+    
+    private String uploadCompletionPhoto(MultipartFile file, Long taskId) {
+        // For now, return a placeholder URL
+        // In production, integrate with your storage service (Supabase, S3, etc.)
+        return "/uploads/completion_" + taskId + "_" + System.currentTimeMillis() + ".jpg";
     }
 
     // ══════════════════════════════════════════════════

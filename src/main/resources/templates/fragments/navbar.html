@@ -21,8 +21,8 @@
                         
                         <!-- Public links (before login) -->
                         <th:block sec:authorize="!isAuthenticated()">
-                            <a href="/#departments" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Departments</a>
-                            <a href="/#live-map" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Live Map</a>
+                            <a href="/citizen/feed" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">City Feed</a>
+                            <a href="/how-it-works" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">How It Works</a>
                         </th:block>
                         
                         <!-- CITIZEN links -->
@@ -30,14 +30,14 @@
                             <a href="/citizen/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Dashboard</a>
                             <a href="/citizen/feed" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Feed</a>
                             <a href="/citizen/report" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Report</a>
-                            <a href="/citizen/complaints" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">My Complaints</a>
-                            <a href="/citizen/track" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Track</a>
+                            <a href="/citizen/reports" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">My Reports</a>
                             <a href="/citizen/map" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Map</a>
                         </th:block>
 
                         <!-- OFFICER links -->
                         <th:block sec:authorize="hasRole('OFFICER')">
                             <a href="/officer/dashboard" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Dashboard</a>
+                            <a href="/citizen/feed" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">City Feed</a>
                             <a href="/officer/queue" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Queue</a>
                             <a href="/officer/alerts" class="nav-link w-nav-link" style="color: #0f3460; font-weight: 400;">Alerts</a>
                         </th:block>

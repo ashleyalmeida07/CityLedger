@@ -134,11 +134,11 @@
            th:class="|comp-card sev-${c.severity != null ? c.severity : 'LOW'}|"
            th:data-status="${c.status}">
             <div class="comp-img">
-                <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}"
-                     th:src="${#strings.split(c.mediaUrl,',')[0]}"
+                <img th:if="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != ''}"
+                     th:src="${#strings.arraySplit(c.mediaUrl,',')[0]}"
                      alt="Photo" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.comp-img-ph').style.display='flex';"/>
-                <div th:class="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'comp-img-ph' : 'comp-img-ph'}"
-                     th:style="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'display:none;' : 'display:flex;'}">
+                <div class="comp-img-ph"
+                     th:style="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != '' ? 'display:none;' : 'display:flex;'}">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
                 <span class="img-sev" th:text="${c.severity != null ? c.severity : 'LOW'}">LOW</span>

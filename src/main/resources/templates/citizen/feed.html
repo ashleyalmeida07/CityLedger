@@ -174,8 +174,8 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 
       <!-- Category + Severity banner or Image -->
       <div class="feed-img-wrap" onclick="location.href='/citizen/feed/' + this.closest('.feed-card').dataset.id">
-        <img th:if="${c.mediaUrl != null and !c.mediaUrl.isBlank()}" th:src="${#strings.arraySplit(c.mediaUrl, ',')[0]}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-        <div class="feed-img-ph" th:style="${c.mediaUrl != null and !c.mediaUrl.isBlank() ? 'display:none;' : 'display:flex;'}" th:data-cat="${c.category}">
+        <img th:if="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != ''}" th:src="${#strings.arraySplit(c.mediaUrl, ',')[0]}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="feed-img-ph" th:style="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != '' ? 'display:none;' : 'display:flex;'}" th:data-cat="${c.category}">
           <div class="feed-cat-badge" th:text="${c.category != null ? c.category : 'General'}">Category</div>
         </div>
         <!-- Severity badge top-left -->

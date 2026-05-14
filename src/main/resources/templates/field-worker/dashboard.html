@@ -8,31 +8,37 @@
     <style>
         body { font-family: 'Lato', sans-serif; background: #f4f7f6; margin: 0; }
         .dash-body { padding: 120px 5% 80px 5%; min-height: 70vh; max-width: 1200px; margin: 0 auto; }
-        .role-badge { background: #ca8a04; color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-left: 12px; }
-        h2 { font-family: 'Urbanist', sans-serif; color: #1a1a2e; font-size: 2.4rem; font-weight: 800; margin-bottom: 8px; }
-        .avatar { width: 48px; height: 48px; border-radius: 50%; margin-right: 12px; border: 2px solid #ca8a04; }
-        .dash-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 30px; }
+        .role-badge { background: #ca8a04; color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-left: 12px; vertical-align: middle; }
+        h2 { font-family: 'Urbanist', sans-serif; color: #1a1a2e; font-size: 2.4rem; margin-bottom: 8px; font-weight: 800; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; margin-right: 12px; vertical-align: middle; border: 2px solid #1a1a2e; }
+        .dash-header-section { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 30px; }
         .user-info { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 24px; }
 
-        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
-        .kpi-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center; transition: transform 0.2s; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 30px; }
+        .kpi-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center; transition: transform 0.2s; }
         .kpi-card:hover { transform: translateY(-4px); }
-        .kpi-card h3 { font-size: 3rem; font-weight: 800; color: #1a1a2e; font-family: 'Urbanist', sans-serif; margin: 0 0 8px; }
-        .kpi-card p { color: #666; font-weight: 600; margin: 0; }
+        .kpi-card h3 { font-size: 2.8rem; font-weight: 800; color: #1a1a2e; font-family: 'Urbanist', sans-serif; margin: 0 0 8px; }
+        .kpi-card p { color: #666; font-weight: 600; margin: 0; font-size: 1rem; }
 
-        .quick-link { display: flex; align-items: center; gap: 16px; background: #ca8a04; color: white; border-radius: 14px; padding: 20px 28px; text-decoration: none; font-weight: 700; font-family: 'Urbanist', sans-serif; font-size: 1.1rem; transition: all 0.2s; margin-top: 30px; }
-        .quick-link:hover { background: #a16207; transform: translateY(-2px); }
-        .quick-link svg { flex-shrink: 0; }
+        .quick-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+        .quick-link { display: flex; align-items: center; gap: 16px; background: white; border-radius: 14px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); text-decoration: none; color: #1a1a2e; font-weight: 700; font-family: 'Urbanist', sans-serif; font-size: 1.1rem; transition: all 0.2s; border: 2px solid transparent; }
+        .quick-link:hover { border-color: #0f3460; transform: translateY(-2px); }
+        .quick-link .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 30px; }
+        .chart-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); height: 350px; display: flex; flex-direction: column; }
+        .chart-card h3 { font-family: 'Urbanist', sans-serif; color: #1a1a2e; font-size: 1.4rem; font-weight: 800; margin-bottom: 16px; margin-top: 0; }
+        .chart-container { flex-grow: 1; position: relative; width: 100%; min-height: 250px; }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="dash-body">
-        <div class="dash-header">
+        <div class="dash-header-section">
             <div>
                 <h2>Field Operations</h2>
-                <p style="color:#666; font-size:1.1rem; max-width: 600px; line-height: 1.6;">Welcome back, <strong th:text="${user != null ? user.attributes['name'] : 'Worker'}">Worker</strong>. View your assigned tasks, update statuses, and resolve civic complaints on-site.</p>
+                <p style="color:#666; font-size:1.1rem; max-width: 600px; line-height: 1.6;">Welcome back, <strong th:text="${user != null ? user.attributes['name'] : 'Worker'}">Worker</strong>! View your assigned tasks, update statuses, and resolve civic complaints on-site.</p>
             </div>
             <div style="text-align: right;">
                 <div class="user-info">
@@ -41,35 +47,73 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="kpi-grid">
             <div class="kpi-card">
-                <h3 th:text="${totalTasks}">0</h3>
+                <h3 th:text="${totalTasks != null ? totalTasks : 0}">0</h3>
                 <p>Total Assigned</p>
             </div>
             <div class="kpi-card">
-                <h3 th:text="${pendingTasks}" style="color: #ca8a04;">0</h3>
+                <h3 th:text="${pendingTasks != null ? pendingTasks : 0}" style="color: #ca8a04;">0</h3>
                 <p>Pending / Active</p>
             </div>
             <div class="kpi-card">
-                <h3 th:text="${completedTasks}" style="color: #16a34a;">0</h3>
+                <h3 th:text="${completedTasks != null ? completedTasks : 0}" style="color: #27ae60;">0</h3>
                 <p>Completed</p>
+            </div>
+            <div class="kpi-card">
+                <h3 th:text="${avgScore != null ? avgScore : 0}" style="color: #0f3460;">0</h3>
+                <p>Avg AI Quality Score</p>
             </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr; gap:24px; margin-top:30px;">
-            <div style="background:white; border-radius:16px; padding:32px; box-shadow:0 4px 20px rgba(0,0,0,0.05); height: 350px; display:flex; flex-direction:column; align-items:center;">
-                <h3 style="font-family:'Urbanist',sans-serif; color:#1a1a2e; font-size:1.4rem; font-weight:800; margin-bottom:16px;">Task Completion Progress</h3>
-                <div style="width:100%; max-width:400px; flex-grow:1; position:relative;">
+        <div class="quick-links">
+            <a href="/field-worker/tasks" class="quick-link">
+                <div class="icon" style="background: #fef08a;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a16207" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                </div>
+                View My Tasks
+            </a>
+            <a href="/citizen/feed" class="quick-link">
+                <div class="icon" style="background: #e0f2fe;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+                </div>
+                City Feed
+            </a>
+            <a href="/citizen/map" class="quick-link">
+                <div class="icon" style="background: #dcfce7;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                </div>
+                Map View
+            </a>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Task Completion Progress</h3>
+                <div class="chart-container">
                     <canvas id="fwTaskChart"></canvas>
                 </div>
             </div>
+            <div class="chart-card">
+                <h3>Tasks by Category</h3>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Tasks by Severity</h3>
+                <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>AI Quality Performance</h3>
+                <div class="chart-container">
+                    <canvas id="qualityChart"></canvas>
+                </div>
+            </div>
         </div>
-
-        <a href="/field-worker/tasks" class="quick-link">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-            View My Task List →
-        </a>
     </div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -79,18 +123,133 @@
     <script th:inline="javascript">
         const pending = [[${pendingTasks != null ? pendingTasks : 0}]];
         const completed = [[${completedTasks != null ? completedTasks : 0}]];
+        const categoryData = [[${categoryBreakdown}]];
+        const severityData = [[${severityBreakdown}]];
+        const avgScore = [[${avgScore != null ? avgScore : 0}]];
+        const approvedTasks = [[${approvedTasks != null ? approvedTasks : 0}]];
+        const tasksWithScore = [[${tasksWithScore != null ? tasksWithScore : 0}]];
         
+        const chartDefaults = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { family: "'Urbanist', sans-serif", size: 12 },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                }
+            }
+        };
+        
+        // Task Completion Progress
         new Chart(document.getElementById('fwTaskChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Pending / Active Tasks', 'Completed Tasks'],
+                labels: ['Pending / Active', 'Completed'],
                 datasets: [{
                     data: [pending, completed],
-                    backgroundColor: ['#ca8a04', '#16a34a'],
-                    borderWidth: 0
+                    backgroundColor: ['#f59e0b', '#16a34a'],
+                    borderWidth: 0,
+                    hoverOffset: 8
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: "'Urbanist', sans-serif" } } } } }
+            options: chartDefaults
+        });
+        
+        // Category Breakdown
+        const categoryLabels = Object.keys(categoryData);
+        const categoryValues = Object.values(categoryData);
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'bar',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Tasks',
+                    data: categoryValues,
+                    backgroundColor: '#667eea',
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                ...chartDefaults,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, font: { family: "'Lato', sans-serif" } },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        ticks: { font: { family: "'Lato', sans-serif", size: 11 } },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+        
+        // Severity Distribution
+        const severityLabels = Object.keys(severityData);
+        const severityValues = Object.values(severityData);
+        const severityColors = {
+            'CRITICAL': '#dc2626',
+            'HIGH': '#ea580c',
+            'MEDIUM': '#ca8a04',
+            'LOW': '#2563eb',
+            'N/A': '#94a3b8'
+        };
+        const severityBgColors = severityLabels.map(label => severityColors[label] || '#94a3b8');
+        
+        new Chart(document.getElementById('severityChart'), {
+            type: 'pie',
+            data: {
+                labels: severityLabels,
+                datasets: [{
+                    data: severityValues,
+                    backgroundColor: severityBgColors,
+                    borderWidth: 0,
+                    hoverOffset: 8
+                }]
+            },
+            options: chartDefaults
+        });
+        
+        // AI Quality Performance
+        const needsReview = tasksWithScore - approvedTasks;
+        new Chart(document.getElementById('qualityChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Approved (≥70)', 'Needs Review (<70)', 'Not Assessed'],
+                datasets: [{
+                    data: [approvedTasks, needsReview, completed - tasksWithScore],
+                    backgroundColor: ['#16a34a', '#f59e0b', '#e2e8f0'],
+                    borderWidth: 0,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                ...chartDefaults,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                return label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
         });
     </script>
 </body>

@@ -251,7 +251,25 @@ function submitWizard(){
         
         setTimeout(function() {
             progOv.remove();
-            window.location.href = res.url || '/citizen/report?success=true';
+            
+            // Extract parameters from URL
+            var url = new URL(res.url || window.location.href);
+            var complaintId = url.searchParams.get('id') || '—';
+            var category = url.searchParams.get('category') || picked || '—';
+            var severity = url.searchParams.get('severity') || 'MEDIUM';
+            var reason = url.searchParams.get('reason') || 'Your report has been successfully submitted and is being processed.';
+            
+            // Show success modal
+            var modal = document.getElementById('successModal');
+            if (modal) {
+                document.getElementById('modalComplaintId').textContent = '#CL-' + complaintId;
+                document.getElementById('modalCategory').textContent = category;
+                document.getElementById('modalSeverity').textContent = severity;
+                document.getElementById('modalCategoryBadge').textContent = category;
+                document.getElementById('modalSeverityBadge').textContent = severity;
+                document.getElementById('modalReason').textContent = reason;
+                modal.style.display = 'flex';
+            }
         }, 800);
      } else if(res.redirected) {
         setTimeout(function() {

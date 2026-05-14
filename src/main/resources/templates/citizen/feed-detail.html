@@ -134,7 +134,7 @@
                 <div class="desc-text" th:text="${complaint.description}">Description text</div>
 
                 <!-- Media -->
-                <div th:if="${complaint.mediaUrl != null and !complaint.mediaUrl.isBlank()}" class="media-grid">
+                <div th:if="${complaint.mediaUrl != null and complaint.mediaUrl != 'null' and complaint.mediaUrl != ''}" class="media-grid">
                     <div th:each="url : ${#strings.arraySplit(complaint.mediaUrl, ',')}">
                         <img th:if="${!url.contains('.mp4') and !url.contains('.mov')}"
                              th:src="${url}" alt="Evidence" loading="lazy" onerror="this.style.display='none'"/>

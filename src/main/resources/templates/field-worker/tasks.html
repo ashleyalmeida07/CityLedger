@@ -80,10 +80,14 @@
                         <span th:class="'badge status-' + ${t.status.name()}" th:text="${t.status}"></span>
                     </div>
                 </div>
-                <div class="task-right">
-                    <div class="sla-timer" th:data-created="${t.createdAt}">—</div>
-                    <div class="distance" th:data-location="${t.location}">Calculating...</div>
-                </div>
+                    <div class="task-right">
+                        <div class="sla-timer" th:data-created="${t.createdAt}">—</div>
+                        <div class="distance" th:data-location="${t.location}">Calculating...</div>
+                        <!-- AI Completion Score -->
+                        <div th:if="${t.status.name() == 'RESOLVED' and t.completionScore != null}" style="margin-top:8px;padding:6px 12px;border-radius:6px;font-weight:700;font-size:0.85rem;text-align:center;font-family:'Urbanist',sans-serif;" th:classappend="${t.completionScore >= 70 ? 'background:#d1fae5;color:#065f46;' : 'background:#fed7aa;color:#c2410c;'}">
+                            <span th:text="'AI Score: ' + ${t.completionScore} + '/100'">AI Score: 0/100</span>
+                        </div>
+                    </div>
             </a>
         </div>
 

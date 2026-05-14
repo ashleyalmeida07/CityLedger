@@ -159,4 +159,87 @@ public class BlockchainService {
     public boolean isEnabled() {
         return enabled;
     }
+
+    /**
+     * Verifies if the complaint data has been tampered with by comparing
+     * the current hash with the stored hash.
+     * 
+     * @param complaint The complaint to verify
+     * @return true if the complaint is authentic (hash matches), false if tampered
+     */
+    public boolean verifyComplaintIntegrity(Complaint complaint) {
+        if (complaint.getComplaintHash() == null || complaint.getComplaintHash().isEmpty()) {
+            log.warn("Complaint #{} has no stored hash - cannot verify", complaint.getId());
+            return false;
+        }
+        
+        try {
+            String currentHash = generateComplaintHashHex(complaint);
+            boolean isValid = currentHash.equals(complaint.getComplaintHash());
+            
+            if (!isValid) {
+                log.warn("INTEGRITY VIOLATION: Complaint #{} hash mismatch! Stored: {}, Current: {}", 
+                    complaint.getId(), 
+                    complaint.getComplaintHash().substring(0, 16) + "...", 
+                    currentHash.substring(0, 16) + "...");
+            } else {
+                log.debug("Complaint #{} integrity verified ✓", complaint.getId());
+            }
+            
+            return isValid;
+        } catch (Exception e) {
+            log.error("Error verifying complaint #{}: {}", complaint.getId(), e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verification result with detailed information
+     */
+    public static class VerificationResult {
+        private final boolean isValid;
+        private final String storedHash;
+        private final String currentHash;
+        private final String blockchainTxHash;
+        private final String message;
+
+        public VerificationResult(boolean isValid, String storedHash, String currentHash, 
+                                String blockchainTxHash, String message) {
+            this.isValid = isValid;
+            this.storedHash = storedHash;
+            this.currentHash = currentHash;
+            this.blockchainTxHash = blockchainTxHash;
+            this.message = message;
+        }
+
+        public boolean isValid() { return isValid; }
+        public String getStoredHash() { return storedHash; }
+        public String getCurrentHash() { return currentHash; }
+        public String getBlockchainTxHash() { return blockchainTxHash; }
+        public String getMessage() { return message; }
+    }
+
+    /**
+     * Performs detailed verification and returns comprehensive result
+     */
+    public VerificationResult verifyComplaintDetailed(Complaint complaint) {
+        if (complaint.getComplaintHash() == null || complaint.getComplaintHash().isEmpty()) {
+            return new VerificationResult(false, null, null, complaint.getBlockchainHash(),
+                "No stored hash found - complaint may predate blockchain integration");
+        }
+
+        String currentHash = generateComplaintHashHex(complaint);
+        String storedHash = complaint.getComplaintHash();
+        boolean isValid = currentHash.equals(storedHash);
+
+        String message;
+        if (isValid) {
+            message = "✓ Verified - Complaint data is authentic and has not been tampered with";
+        } else {
+            message = "⚠ WARNING - Complaint data has been modified after blockchain submission";
+        }
+
+        return new VerificationResult(isValid, storedHash, currentHash, 
+            complaint.getBlockchainHash(), message);
+    }
 }

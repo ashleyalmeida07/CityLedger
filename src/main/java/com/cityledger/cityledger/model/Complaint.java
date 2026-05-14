@@ -84,6 +84,21 @@ public class Complaint {
     @Column(nullable = false, columnDefinition = "integer default 0")
     private int upvoteCount = 0;
 
+    // Field worker completion photo URL
+    @Column(columnDefinition = "TEXT")
+    private String completionPhotoUrl;
+
+    // AI quality score for completion (0-100)
+    private Integer completionScore;
+
+    // AI assessment of the completion work
+    @Column(columnDefinition = "TEXT")
+    private String completionAssessment;
+
+    // AI observations about the work
+    @Column(columnDefinition = "TEXT")
+    private String completionObservations;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt; // DB record creation time

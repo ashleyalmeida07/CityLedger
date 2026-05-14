@@ -31,7 +31,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 // Public pages — no login needed
-                .requestMatchers("/", "/login", "/signup", "/ai-features", "/api/ai/demo", "/css/**", "/js/**", "/images/**", "/*.png", "/webjars/**").permitAll()
+                .requestMatchers("/", "/login", "/signup", "/how-it-works", "/ai-features", "/api/ai/demo", "/css/**", "/js/**", "/images/**", "/*.png", "/webjars/**").permitAll()
                 // OAuth2 flow must be publicly accessible
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 // Role-specific dashboard routes
