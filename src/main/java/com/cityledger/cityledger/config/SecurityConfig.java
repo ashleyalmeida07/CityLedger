@@ -36,9 +36,9 @@ public class SecurityConfig {
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 // Role-specific dashboard routes
                 .requestMatchers("/officer/**").hasAnyRole("OFFICER", "ADMIN")
-                .requestMatchers("/api/**").hasAnyRole("OFFICER", "ADMIN", "CITIZEN")
+                .requestMatchers("/api/**").hasAnyRole("OFFICER", "ADMIN", "CITIZEN", "FIELD_WORKER")
                 .requestMatchers("/field-worker/**").hasAnyRole("FIELD_WORKER", "ADMIN")
-                .requestMatchers("/citizen/**").hasAnyRole("CITIZEN", "ADMIN", "OFFICER")
+                .requestMatchers("/citizen/**").hasAnyRole("CITIZEN", "ADMIN", "OFFICER", "FIELD_WORKER")
                 // Any other request needs to be authenticated
                 .anyRequest().authenticated()
             )

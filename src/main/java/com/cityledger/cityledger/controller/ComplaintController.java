@@ -35,6 +35,7 @@ public class ComplaintController {
     private final BlockchainService blockchainService;
     private final SupabaseStorageService supabaseStorageService;
     private final AIService aiService;
+    private final com.cityledger.cityledger.service.EmailService emailService;
 
     @GetMapping("/citizen/report")
     public String showReportForm() {
@@ -150,6 +151,42 @@ public class ComplaintController {
         // 5. Persist everything back to DB
         complaintRepository.save(saved);
         log.info("Complaint #{} complete — Category: {}, Severity: {}, TX: {}", saved.getId(), finalCategory, severity, txHash);
+
+        // 6. Send confirmation email to citizen
+        try {
+            String emailSubject = "Report Submitted Successfully - CityLedger #" + saved.getId();
+            String emailBody = String.format(
+                "Dear %s,\n\n" +
+                "Thank you for reporting an issue to CityLedger. Your report has been successfully submitted and recorded on the blockchain.\n\n" +
+                "Report Details:\n" +
+                "- Report ID: #CL-%d\n" +
+                "- Category: %s\n" +
+                "- Severity: %s\n" +
+                "- Location: %s\n" +
+                "- Status: Filed\n\n" +
+                "What happens next?\n" +
+                "1. Our AI system has analyzed your report\n" +
+                "2. An officer will review and assign it to a field worker\n" +
+                "3. The field worker will address the issue\n" +
+                "4. You'll receive an email when the issue is resolved\n\n" +
+                "Action will be taken immediately. You can track your report at: %s/citizen/reports\n\n" +
+                "Blockchain Transaction: %s\n\n" +
+                "Thank you for helping make our city better!\n\n" +
+                "Best regards,\n" +
+                "CityLedger Team",
+                citizen.getName(),
+                saved.getId(),
+                finalCategory,
+                severity,
+                location,
+                "https://cityledger.com", // Replace with actual domain
+                txHash != null ? "https://sepolia.etherscan.io/tx/" + txHash : "Processing..."
+            );
+            emailService.sendEmail(citizen.getEmail(), emailSubject, emailBody);
+            log.info("Confirmation email sent to citizen: {}", citizen.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send confirmation email to citizen", e);
+        }
 
         return "redirect:/citizen/report?success=true&id=" + saved.getId()
                 + "&hash=" + (txHash != null ? txHash : "")

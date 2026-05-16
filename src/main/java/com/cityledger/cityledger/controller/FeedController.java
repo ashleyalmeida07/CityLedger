@@ -38,6 +38,10 @@ public class FeedController {
                            Authentication auth, Model model) {
 
         AppUser user = getCurrentUser(auth);
+        if (user == null) {
+            return "redirect:/login?error=user_not_found";
+        }
+        
         List<Complaint> feed = feedService.getFeed(lat, lon, radius, sort, category);
         List<Complaint> trending = feedService.getTrending();
 
@@ -77,6 +81,10 @@ public class FeedController {
                 .orElseThrow(() -> new IllegalArgumentException("Not found: " + id));
 
         AppUser user = getCurrentUser(auth);
+        if (user == null) {
+            return "redirect:/login?error=user_not_found";
+        }
+        
         boolean upvotedByMe = upvoteRepository.existsByComplaintAndCitizen(complaint, user);
         List<Comment> comments = feedService.getComments(id);
 
@@ -94,6 +102,9 @@ public class FeedController {
     public ResponseEntity<Map<String, Object>> upvote(@RequestParam Long complaintId,
                                                        Authentication auth) {
         AppUser user = getCurrentUser(auth);
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+        }
         Map<String, Object> result = feedService.toggleUpvote(complaintId, user);
         return ResponseEntity.ok(result);
     }
@@ -107,6 +118,9 @@ public class FeedController {
             return ResponseEntity.badRequest().body(Map.of("error", "Comment must be 1–500 chars"));
         }
         AppUser user = getCurrentUser(auth);
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+        }
         boolean isOfficial = user.getRole() == Role.OFFICER || user.getRole() == Role.ADMIN;
         Comment comment = feedService.addComment(complaintId, user, text, isOfficial);
 
@@ -124,6 +138,9 @@ public class FeedController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getDetail(@RequestParam Long id, Authentication auth) {
         AppUser user = getCurrentUser(auth);
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+        }
         Complaint c = complaintRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Complaint not found: " + id));
 
@@ -167,8 +184,10 @@ public class FeedController {
     // ── Helper ────────────────────────────────────────────────────────
 
     private AppUser getCurrentUser(Authentication auth) {
-        return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new IllegalStateException("User not found"));
+        if (auth == null || auth.getName() == null) {
+            return null;
+        }
+        return userRepository.findByEmail(auth.getName()).orElse(null);
     }
 
     private String formatTimeAgo(LocalDateTime dt) {

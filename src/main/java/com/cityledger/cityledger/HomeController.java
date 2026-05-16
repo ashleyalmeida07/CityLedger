@@ -38,6 +38,7 @@ public class HomeController {
     private final ComplaintRepository complaintRepository;
     private final AIService aiService;
     private final BlockchainService blockchainService;
+    private final com.cityledger.cityledger.service.EmailService emailService;
 
     @GetMapping("/")
     public String home() {
@@ -324,6 +325,9 @@ public class HomeController {
         complaint.setAssignedWorker(worker);
         complaint.setStatus(ComplaintStatus.IN_PROGRESS);
         complaintRepository.save(complaint);
+        
+        emailService.sendEmail(worker.getEmail(), "New Task Assigned", "A new task '" + complaint.getTitle() + "' has been assigned to you. Please check your dashboard.");
+        
         return "redirect:/officer/queue?assigned=true";
     }
 
@@ -415,6 +419,44 @@ public class HomeController {
         return "field-worker/tasks";
     }
 
+    @GetMapping("/field-worker/map")
+    public String fieldWorkerMap(@AuthenticationPrincipal OAuth2User principal, Model model) {
+        if (principal == null) return "redirect:/login";
+        String email = principal.getAttribute("email");
+        AppUser worker = userRepository.findByEmail(email).orElse(null);
+        if (worker != null) {
+            List<Complaint> myTasks = complaintRepository.findByAssignedWorker(worker);
+            
+            // Only pass tasks with valid coordinates
+            List<Complaint> tasksWithCoords = myTasks.stream()
+                .filter(c -> c.getLatitude() != null && c.getLongitude() != null)
+                .collect(java.util.stream.Collectors.toList());
+            
+            // Calculate stats
+            long pendingCount = myTasks.stream()
+                .filter(c -> c.getStatus() == ComplaintStatus.FILED)
+                .count();
+            long inProgressCount = myTasks.stream()
+                .filter(c -> c.getStatus() == ComplaintStatus.IN_PROGRESS)
+                .count();
+            long completedCount = myTasks.stream()
+                .filter(c -> c.getStatus() == ComplaintStatus.RESOLVED)
+                .count();
+            
+            model.addAttribute("tasks", tasksWithCoords);
+            model.addAttribute("pendingTasks", pendingCount);
+            model.addAttribute("inProgressTasks", inProgressCount);
+            model.addAttribute("completedTasks", completedCount);
+        } else {
+            model.addAttribute("tasks", new java.util.ArrayList<>());
+            model.addAttribute("pendingTasks", 0L);
+            model.addAttribute("inProgressTasks", 0L);
+            model.addAttribute("completedTasks", 0L);
+        }
+        model.addAttribute("user", principal);
+        return "field-worker/map";
+    }
+
     @GetMapping("/field-worker/task/{id}")
     public String fieldWorkerTaskDetail(@PathVariable Long id, @AuthenticationPrincipal OAuth2User principal, Model model) {
         if (principal == null) return "redirect:/login";
@@ -483,7 +525,12 @@ public class HomeController {
         
         switch (newStatus) {
             case "IN_PROGRESS" -> task.setStatus(ComplaintStatus.IN_PROGRESS);
-            case "RESOLVED" -> task.setStatus(ComplaintStatus.RESOLVED);
+            case "RESOLVED" -> {
+                task.setStatus(ComplaintStatus.RESOLVED);
+                if (task.getCitizen() != null && task.getCitizen().getEmail() != null) {
+                    emailService.sendEmail(task.getCitizen().getEmail(), "Your Issue Has Been Resolved", "Good news! Your reported issue '" + task.getTitle() + "' has been resolved by our field worker.");
+                }
+            }
         }
         complaintRepository.save(task);
         return "redirect:/field-worker/task/" + id + "?updated=true";
