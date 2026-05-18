@@ -103,7 +103,7 @@ public class ApiRestController {
     // ══════════════════════════════════════════════════
 
     @GetMapping("/auth/me")
-    public ResponseEntity<?> getCurrentUser(Authentication auth) {
+    public ResponseEntity<?> getAuthMe(Authentication auth) {
         AppUser user = getCurrentUser(auth);
         if (user == null) return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
         return ResponseEntity.ok(userToMap(user));
@@ -112,6 +112,44 @@ public class ApiRestController {
     @PostMapping("/auth/logout")
     public ResponseEntity<?> logout() {
         return ResponseEntity.ok(Map.of("success", true));
+    }
+
+    @PostMapping("/auth/signup")
+    public ResponseEntity<?> signup(
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam(required = false, defaultValue = "CITIZEN") String role) {
+        
+        // Check if user already exists
+        if (userRepository.findByEmail(email).isPresent()) {
+            return ResponseEntity.status(400).body(Map.of(
+                "success", false,
+                "message", "Email already exists"
+            ));
+        }
+
+        // Create new user
+        AppUser user = new AppUser();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password); // Note: Should be encoded by UserService if you have one
+        user.setEnabled(true);
+        
+        // Set role
+        try {
+            user.setRole(Role.valueOf(role.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            user.setRole(Role.CITIZEN);
+        }
+        
+        userRepository.save(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Registration successful");
+        response.put("user", userToMap(user));
+        return ResponseEntity.ok(response);
     }
 
     // ══════════════════════════════════════════════════
@@ -390,10 +428,10 @@ public class ApiRestController {
         response.put("complaint", complaintToMap(complaint));
         response.put("verification", Map.of(
                 "isValid", verification.isValid(),
-                "storedHash", verification.storedHash() != null ? verification.storedHash() : "",
-                "currentHash", verification.currentHash() != null ? verification.currentHash() : "",
-                "blockchainTxHash", verification.blockchainTxHash() != null ? verification.blockchainTxHash() : "",
-                "message", verification.message() != null ? verification.message() : ""
+                "storedHash", verification.getStoredHash() != null ? verification.getStoredHash() : "",
+                "currentHash", verification.getCurrentHash() != null ? verification.getCurrentHash() : "",
+                "blockchainTxHash", verification.getBlockchainTxHash() != null ? verification.getBlockchainTxHash() : "",
+                "message", verification.getMessage() != null ? verification.getMessage() : ""
         ));
         return ResponseEntity.ok(response);
     }
