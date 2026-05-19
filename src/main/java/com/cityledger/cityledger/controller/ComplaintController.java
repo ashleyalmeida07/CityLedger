@@ -7,6 +7,7 @@ import com.cityledger.cityledger.repository.AppUserRepository;
 import com.cityledger.cityledger.repository.ComplaintRepository;
 import com.cityledger.cityledger.service.AIService;
 import com.cityledger.cityledger.service.BlockchainService;
+import com.cityledger.cityledger.service.EmailTemplates;
 import com.cityledger.cityledger.service.SupabaseStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
