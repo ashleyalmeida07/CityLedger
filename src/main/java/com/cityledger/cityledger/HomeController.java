@@ -326,7 +326,15 @@ public class HomeController {
         complaint.setStatus(ComplaintStatus.IN_PROGRESS);
         complaintRepository.save(complaint);
         
-        emailService.sendEmail(worker.getEmail(), "New Task Assigned", "A new task '" + complaint.getTitle() + "' has been assigned to you. Please check your dashboard.");
+        String htmlAssignment = com.cityledger.cityledger.service.EmailTemplates.taskAssigned(
+            worker.getName() != null ? worker.getName() : "Field Worker",
+            complaint.getTitle(),
+            complaint.getId(),
+            complaint.getCategory(),
+            complaint.getSeverity(),
+            complaint.getLocation()
+        );
+        emailService.sendHtmlEmail(worker.getEmail(), "🔧 New Task Assigned — CityLedger #CL-" + complaint.getId(), htmlAssignment);
         
         return "redirect:/officer/queue?assigned=true";
     }
@@ -528,7 +536,12 @@ public class HomeController {
             case "RESOLVED" -> {
                 task.setStatus(ComplaintStatus.RESOLVED);
                 if (task.getCitizen() != null && task.getCitizen().getEmail() != null) {
-                    emailService.sendEmail(task.getCitizen().getEmail(), "Your Issue Has Been Resolved", "Good news! Your reported issue '" + task.getTitle() + "' has been resolved by our field worker.");
+                    String htmlResolved = com.cityledger.cityledger.service.EmailTemplates.issueResolved(
+                        task.getCitizen().getName() != null ? task.getCitizen().getName() : "Citizen",
+                        task.getTitle(),
+                        task.getId()
+                    );
+                    emailService.sendHtmlEmail(task.getCitizen().getEmail(), "✅ Your Issue Has Been Resolved — CityLedger", htmlResolved);
                 }
             }
         }

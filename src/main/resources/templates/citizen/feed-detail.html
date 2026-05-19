@@ -6,132 +6,132 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title th:text="${complaint.title} + ' — CityFeed'">Complaint Detail</title>
     <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Urbanist:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Urbanist:wght@600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Lato', sans-serif; background: #f0f2f5; margin: 0; }
-        .detail-body { padding: 100px 5% 80px; max-width: 760px; margin: 0 auto; }
-        .back-link { display: inline-flex; align-items: center; gap: 6px; color: #0f3460; font-weight: 700; text-decoration: none; font-size: 0.88rem; margin-bottom: 20px; }
-        .back-link:hover { text-decoration: underline; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fa; margin: 0; color: #374151; }
+        .page-wrap { padding: 96px 20px 80px; max-width: 820px; margin: 0 auto; }
+
+        /* Back */
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: #0f3460; font-weight: 600; text-decoration: none; font-size: 0.85rem; margin-bottom: 24px; padding: 8px 14px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; transition: all .2s; }
+        .back-link:hover { border-color: #0f3460; box-shadow: 0 2px 8px rgba(15,52,96,.1); }
 
         /* Main card */
-        .detail-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .sev-banner { height: 6px; }
-        .sev-CRITICAL .sev-banner { background: linear-gradient(90deg, #dc2626, #f87171); }
-        .sev-HIGH .sev-banner { background: linear-gradient(90deg, #ea580c, #fb923c); }
-        .sev-MEDIUM .sev-banner { background: linear-gradient(90deg, #ca8a04, #facc15); }
-        .sev-LOW .sev-banner { background: linear-gradient(90deg, #2563eb, #60a5fa); }
-        .card-pad { padding: 28px 32px; }
+        .detail-card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.07); margin-bottom: 20px; border: 1px solid #eef1f6; }
+        .sev-stripe { height: 5px; }
+        .sev-CRITICAL .sev-stripe { background: linear-gradient(90deg,#dc2626,#f87171); }
+        .sev-HIGH    .sev-stripe { background: linear-gradient(90deg,#ea580c,#fb923c); }
+        .sev-MEDIUM  .sev-stripe { background: linear-gradient(90deg,#ca8a04,#facc15); }
+        .sev-LOW     .sev-stripe { background: linear-gradient(90deg,#2563eb,#60a5fa); }
 
-        /* Badges row */
-        .badges-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-        .cat-badge { background: #f0f4ff; color: #1d4ed8; padding: 5px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
-        .sev-badge { padding: 5px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
-        .sev-badge-CRITICAL { background: #fef2f2; color: #dc2626; }
-        .sev-badge-HIGH { background: #fff7ed; color: #ea580c; }
-        .sev-badge-MEDIUM { background: #fefce8; color: #ca8a04; }
-        .sev-badge-LOW { background: #eff6ff; color: #2563eb; }
-        .status-badge { background: #f1f5f9; color: #475569; padding: 5px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; font-family: 'Urbanist', sans-serif; }
-        .esc-badge { background: linear-gradient(135deg, #dc2626, #9f1239); color: white; padding: 4px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; font-family: 'Urbanist', sans-serif; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+        .card-inner { padding: 28px 32px; }
 
-        /* Title */
-        .detail-title { font-family: 'Urbanist', sans-serif; font-size: 1.7rem; font-weight: 900; color: #0f3460; margin: 0 0 10px; line-height: 1.25; }
-        .detail-meta { font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px; }
-        .detail-meta strong { color: #475569; }
+        /* Badges */
+        .badges-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; font-family: 'Urbanist', sans-serif; letter-spacing: .3px; }
+        .badge-cat  { background: #eff6ff; color: #1d4ed8; }
+        .badge-CRITICAL { background: #fef2f2; color: #dc2626; }
+        .badge-HIGH     { background: #fff7ed; color: #ea580c; }
+        .badge-MEDIUM   { background: #fefce8; color: #b45309; }
+        .badge-LOW      { background: #eff6ff; color: #2563eb; }
+        .badge-status   { background: #f1f5f9; color: #475569; }
+        .badge-id       { background: transparent; color: #94a3b8; border: 1px solid #e2e8f0; font-weight: 600; }
+        .badge-escalated { background: linear-gradient(135deg,#dc2626,#9f1239); color: #fff; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.75} }
 
-        /* AI Summary card */
-        .ai-card { background: linear-gradient(135deg, #0f3460, #1a1a2e); border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; color: white; position: relative; overflow: hidden; }
-        .ai-card::before { content:''; position:absolute; top:-30px; right:-30px; width:100px; height:100px; background:rgba(255,255,255,0.03); border-radius:50%; }
-        .ai-chip { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.12); padding:4px 12px; border-radius:16px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; font-family:'Urbanist',sans-serif; margin-bottom:12px; }
-        .ai-dot { width:5px; height:5px; border-radius:50%; background:#4ade80; animation:blink 1.5s ease-in-out infinite; display:inline-block; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .ai-text { font-size:0.95rem; color:rgba(255,255,255,0.85); line-height:1.65; }
-        .ai-reason { font-size:0.82rem; color:rgba(255,255,255,0.5); font-style:italic; margin-top:10px; }
-        .ai-reason::before { content:'"'; }
-        .ai-reason::after { content:'"'; }
-
-        /* Description */
-        .desc-label { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#94a3b8; font-family:'Urbanist',sans-serif; margin-bottom:8px; }
-        .desc-text { color:#374151; font-size:0.95rem; line-height:1.7; margin-bottom:20px; }
+        /* Title + meta */
+        .detail-title { font-family: 'Urbanist', sans-serif; font-size: 1.65rem; font-weight: 900; color: #0f1f3d; margin: 0 0 10px; line-height: 1.25; letter-spacing: -.3px; }
+        .detail-meta { font-size: 0.83rem; color: #94a3b8; margin-bottom: 24px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .detail-meta strong { color: #374151; font-weight: 600; }
+        .meta-dot { color: #cbd5e1; }
 
         /* Media */
-        .media-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:10px; margin-bottom:20px; }
-        .media-grid img, .media-grid video { width:100%; border-radius:10px; object-fit:cover; max-height:200px; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 10px; margin-bottom: 24px; border-radius: 12px; overflow: hidden; }
+        .media-grid img, .media-grid video { width: 100%; border-radius: 10px; object-fit: cover; max-height: 220px; display: block; }
+
+        /* AI card */
+        .ai-card { background: linear-gradient(135deg,#0f2d5e,#1a1a2e); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; color: #fff; position: relative; overflow: hidden; }
+        .ai-card::after { content:''; position:absolute; top:-40px; right:-40px; width:120px; height:120px; background:rgba(255,255,255,.03); border-radius:50%; pointer-events:none; }
+        .ai-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.12); padding: 4px 12px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; font-family: 'Urbanist',sans-serif; margin-bottom: 12px; }
+        .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: blink 1.5s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+        .ai-text { font-size: 0.93rem; color: rgba(255,255,255,.88); line-height: 1.7; }
+        .ai-reason { font-size: 0.8rem; color: rgba(255,255,255,.45); font-style: italic; margin-top: 10px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 10px; }
+
+        /* Description */
+        .section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-family: 'Urbanist',sans-serif; margin-bottom: 8px; }
+        .desc-text { color: #374151; font-size: 0.93rem; line-height: 1.75; margin-bottom: 24px; white-space: pre-line; }
 
         /* Upvote section */
-        .vote-section { display:flex; align-items:center; gap:16px; padding: 20px 0; border-top:1px solid #f1f5f9; border-bottom:1px solid #f1f5f9; margin-bottom:24px; }
-        .big-upvote { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; border-radius:10px; border:2px solid #e2e8f0; background:white; color:#374151; font-family:'Urbanist',sans-serif; font-weight:800; font-size:1rem; cursor:pointer; transition:all 0.2s; }
-        .big-upvote:hover { border-color:#16a34a; color:#16a34a; }
-        .big-upvote.upvoted { background:#16a34a; color:white; border-color:#16a34a; }
-        .vote-count { font-family:'Urbanist',sans-serif; font-size:1.3rem; font-weight:900; color:#0f3460; }
-        .vote-label { font-size:0.82rem; color:#94a3b8; }
-        .blockchain-note { font-size:0.75rem; color:#94a3b8; margin-left:auto; text-align:right; }
-        .blockchain-note a { color:#2563eb; font-weight:700; text-decoration:none; }
+        .vote-row { display: flex; align-items: center; gap: 16px; padding: 20px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; margin-bottom: 24px; flex-wrap: wrap; }
+        .upvote-btn { display: inline-flex; align-items: center; gap: 10px; padding: 11px 24px; border-radius: 10px; border: 2px solid #e2e8f0; background: #fff; color: #374151; font-family: 'Urbanist',sans-serif; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all .2s; }
+        .upvote-btn:hover { border-color: #0f3460; color: #0f3460; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(15,52,96,.1); }
+        .upvote-btn.upvoted { background: #0f3460; color: #fff; border-color: #0f3460; }
+        .upvote-btn .arrow { font-size: 1rem; }
+        .vote-count-block { display: flex; flex-direction: column; }
+        .vote-number { font-family: 'Urbanist',sans-serif; font-size: 1.5rem; font-weight: 900; color: #0f1f3d; line-height: 1; }
+        .vote-label { font-size: 0.75rem; color: #94a3b8; margin-top: 3px; }
+        .vote-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .action-btn { display: inline-flex; align-items: center; gap: 6px; color: #0f3460; font-weight: 600; font-size: 0.83rem; text-decoration: none; border: 2px solid #e2e8f0; padding: 8px 14px; border-radius: 8px; transition: all .2s; background: #fff; }
+        .action-btn:hover { border-color: #0f3460; box-shadow: 0 2px 8px rgba(15,52,96,.1); }
+        .chain-note { font-size: 0.73rem; color: #94a3b8; text-align: right; }
+        .chain-note a { color: #2563eb; font-weight: 700; text-decoration: none; }
 
-        /* Comments */
-        .comments-section { background:white; border-radius:20px; padding:28px 32px; box-shadow:0 4px 24px rgba(0,0,0,0.06); margin-bottom:20px; }
-        .comments-title { font-family:'Urbanist',sans-serif; font-size:1.2rem; font-weight:800; color:#0f3460; margin:0 0 20px; }
-        .comment { padding:14px 0; border-bottom:1px solid #f8fafc; }
-        .comment:last-of-type { border-bottom:none; }
-        .comment-author { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-        .author-avatar { width:32px; height:32px; border-radius:50%; background:#0f3460; color:white; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; font-family:'Urbanist',sans-serif; flex-shrink:0; }
-        .author-name { font-weight:700; font-size:0.88rem; color:#374151; }
-        .official-badge { background:#0f3460; color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; font-family:'Urbanist',sans-serif; }
-        .comment-time { font-size:0.75rem; color:#94a3b8; margin-left:auto; }
-        .comment-text { font-size:0.9rem; color:#475569; line-height:1.6; padding-left:40px; }
-        .comment-form { margin-top:20px; padding-top:20px; border-top:1px solid #f1f5f9; }
-        .comment-input { width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:10px; font-size:0.9rem; font-family:'Lato',sans-serif; resize:vertical; min-height:80px; box-sizing:border-box; transition:border-color 0.2s; }
-        .comment-input:focus { outline:none; border-color:#0f3460; }
-        .comment-submit { margin-top:10px; background:#0f3460; color:white; border:none; padding:10px 24px; border-radius:8px; font-family:'Urbanist',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; transition:all 0.2s; }
-        .comment-submit:hover { background:#16213e; }
+        /* Comments card */
+        .comments-card { background: #fff; border-radius: 20px; padding: 28px 32px; box-shadow: 0 4px 24px rgba(0,0,0,.06); margin-bottom: 20px; border: 1px solid #eef1f6; }
+        .comments-header { font-family: 'Urbanist',sans-serif; font-size: 1.1rem; font-weight: 800; color: #0f1f3d; margin: 0 0 20px; display: flex; align-items: center; gap: 8px; }
+        .comment-count-pill { background: #f0f4ff; color: #1d4ed8; padding: 2px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 800; }
+        .comment-item { padding: 14px 0; border-bottom: 1px solid #f8fafc; }
+        .comment-item:last-of-type { border-bottom: none; }
+        .comment-author-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .c-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#0f3460,#1e4e8c); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; font-family: 'Urbanist',sans-serif; flex-shrink: 0; }
+        .c-name { font-weight: 600; font-size: 0.88rem; color: #1f2937; }
+        .official-pill { background: #0f3460; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.63rem; font-weight: 800; font-family: 'Urbanist',sans-serif; }
+        .c-time { font-size: 0.73rem; color: #94a3b8; margin-left: auto; }
+        .c-text { font-size: 0.9rem; color: #475569; line-height: 1.65; padding-left: 40px; }
+        .no-comments { color: #94a3b8; font-size: 0.9rem; padding: 16px 0; }
 
-        /* Map link */
-        .map-btn { display:inline-flex; align-items:center; gap:6px; color:#0f3460; font-weight:700; text-decoration:none; font-size:0.88rem; border:2px solid #e2e8f0; padding:8px 16px; border-radius:8px; transition:all 0.2s; }
-        .map-btn:hover { border-color:#0f3460; }
+        /* Comment form */
+        .comment-form { margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
+        .comment-input { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; font-family: 'Inter',sans-serif; resize: vertical; min-height: 80px; transition: border-color .2s; }
+        .comment-input:focus { outline: none; border-color: #0f3460; }
+        .comment-submit { margin-top: 10px; background: #0f3460; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-family: 'Urbanist',sans-serif; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all .2s; }
+        .comment-submit:hover { background: #0a2540; transform: translateY(-1px); }
 
-        /* Complaint ID */
-        .cl-id { font-family:'Urbanist',sans-serif; font-size:0.78rem; color:#94a3b8; font-weight:700; letter-spacing:0.5px; }
+        @media(max-width:600px){ .card-inner,.comments-card { padding: 20px 18px; } .vote-actions { margin-left: 0; } }
     </style>
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="detail-body">
+    <div class="page-wrap">
         <a href="/citizen/feed" class="back-link">← Back to CityFeed</a>
 
-        <!-- Main complaint card -->
+        <!-- Main card -->
         <div class="detail-card" th:classappend="'sev-' + ${complaint.severity != null ? complaint.severity : 'LOW'}">
-            <div class="sev-banner"></div>
-            <div class="card-pad">
-                <!-- Badges -->
+            <div class="sev-stripe"></div>
+            <div class="card-inner">
+
+                <!-- Badges row -->
                 <div class="badges-row">
-                    <span class="cat-badge" th:data-cat="${complaint.category}" th:text="${complaint.category != null ? complaint.category : 'General'}">Pothole</span>
-                    <span class="sev-badge" th:classappend="'sev-badge-' + ${complaint.severity != null ? complaint.severity : 'LOW'}"
+                    <span class="badge badge-cat" th:data-cat="${complaint.category}" th:text="${complaint.category != null ? complaint.category : 'General'}">Category</span>
+                    <span class="badge" th:classappend="'badge-' + ${complaint.severity != null ? complaint.severity : 'LOW'}"
                           th:text="${complaint.severity != null ? complaint.severity : 'N/A'}"></span>
-                    <span class="status-badge" th:text="${complaint.status}">FILED</span>
-                    <span th:if="${complaint.upvoteCount >= 25}" class="esc-badge"> Community Escalated</span>
-                    <span class="cl-id" th:text="'#CL-' + ${complaint.id}"></span>
+                    <span class="badge badge-status" th:text="${complaint.status}">FILED</span>
+                    <span th:if="${complaint.upvoteCount >= 25}" class="badge badge-escalated">⚡ Community Escalated</span>
+                    <span class="badge badge-id" th:text="'#CL-' + ${complaint.id}"></span>
                 </div>
 
                 <!-- Title -->
                 <h1 class="detail-title" th:text="${complaint.title}">Complaint Title</h1>
                 <div class="detail-meta">
-                    Filed by <strong th:text="${complaint.citizen != null ? complaint.citizen.name : 'Anonymous'}"></strong> ·
-                    <span data-time="" th:data-time="${complaint.createdAt}">recently</span> ·
-                     <span th:text="${complaint.location}"></span>
+                    <span>Filed by</span>
+                    <strong th:text="${complaint.citizen != null ? complaint.citizen.name : 'Anonymous'}"></strong>
+                    <span class="meta-dot">·</span>
+                    <span data-time="" th:data-time="${complaint.createdAt}">recently</span>
+                    <span class="meta-dot">·</span>
+                    <span th:text="${complaint.location}"></span>
                 </div>
-
-                <!-- AI Summary -->
-                <div class="ai-card" th:if="${complaint.aiSummary != null}">
-                    <div class="ai-chip"><span class="ai-dot"></span> AI Summary — Llama 3.3 70B</div>
-                    <div class="ai-text" th:text="${complaint.aiSummary}"></div>
-                    <div class="ai-reason" th:if="${complaint.aiReason != null}" th:text="${complaint.aiReason}"></div>
-                </div>
-
-                <!-- Description -->
-                <div class="desc-label">Description</div>
-                <div class="desc-text" th:text="${complaint.description}">Description text</div>
 
                 <!-- Media -->
                 <div th:if="${complaint.mediaUrl != null and complaint.mediaUrl != 'null' and complaint.mediaUrl != ''}" class="media-grid">
@@ -143,52 +143,71 @@
                     </div>
                 </div>
 
-                <!-- Upvote + Map -->
-                <div class="vote-section">
-                    <button class="big-upvote"
+                <!-- AI Summary -->
+                <div class="ai-card" th:if="${complaint.aiSummary != null}">
+                    <div class="ai-chip"><span class="ai-dot"></span> AI Summary — Llama 3.3 70B</div>
+                    <div class="ai-text" th:text="${complaint.aiSummary}"></div>
+                    <div class="ai-reason" th:if="${complaint.aiReason != null}" th:text="${complaint.aiReason}"></div>
+                </div>
+
+                <!-- Description -->
+                <div class="section-label">Description</div>
+                <div class="desc-text" th:text="${complaint.description}">Description text</div>
+
+                <!-- Upvote + actions -->
+                <div class="vote-row">
+                    <button class="upvote-btn"
                             th:classappend="${upvotedByMe} ? ' upvoted' : ''"
                             th:id="'upvote-' + ${complaint.id}"
                             th:data-id="${complaint.id}"
                             onclick="toggleUpvote(this)">
-                        <span th:text="${upvotedByMe} ? ' Upvoted' : ' Upvote'"> Upvote</span>
+                        <span class="arrow">▲</span>
+                        <span th:text="${upvotedByMe} ? 'Upvoted' : 'Upvote'">Upvote</span>
                     </button>
-                    <div>
-                        <div class="vote-count" id="voteCount" th:text="${complaint.upvoteCount}">0</div>
-                        <div class="vote-label">community upvotes</div>
+                    <div class="vote-count-block">
+                        <span class="vote-number" id="voteCount" th:text="${complaint.upvoteCount}">0</span>
+                        <span class="vote-label">community upvotes</span>
                     </div>
-                    <a th:if="${complaint.latitude != null}"
-                       class="map-btn"
-                       th:href="'https://www.google.com/maps?q=' + ${complaint.latitude} + ',' + ${complaint.longitude}"
-                       target="_blank"> View on Map</a>
-                    <div class="blockchain-note" th:if="${complaint.blockchainHash != null}">
-                        ️ On-chain verified<br/>
-                        <a th:href="'https://sepolia.etherscan.io/tx/' + ${complaint.blockchainHash}" target="_blank">View TX</a>
+                    <div class="vote-actions">
+                        <a th:if="${complaint.latitude != null}"
+                           class="action-btn"
+                           th:href="'https://www.google.com/maps?q=' + ${complaint.latitude} + ',' + ${complaint.longitude}"
+                           target="_blank">
+                            📍 View on Map
+                        </a>
+                        <div class="chain-note" th:if="${complaint.blockchainHash != null}">
+                            🔗 On-chain verified<br/>
+                            <a th:href="'https://sepolia.etherscan.io/tx/' + ${complaint.blockchainHash}" target="_blank">View TX →</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Comments -->
-        <div class="comments-section">
-            <div class="comments-title" th:text="' Comments (' + ${#lists.size(comments)} + ')'">Comments</div>
+        <div class="comments-card">
+            <div class="comments-header">
+                💬 Comments
+                <span class="comment-count-pill" th:text="${#lists.size(comments)}">0</span>
+            </div>
 
-            <div th:if="${#lists.isEmpty(comments)}" style="color:#94a3b8;font-size:0.9rem;padding:20px 0;">
+            <div th:if="${#lists.isEmpty(comments)}" class="no-comments">
                 No comments yet. Be the first to comment!
             </div>
 
-            <div th:each="cm : ${comments}" class="comment">
-                <div class="comment-author">
-                    <div class="author-avatar" th:text="${cm.citizen.name.substring(0,1).toUpperCase()}">A</div>
-                    <span class="author-name" th:text="${cm.citizen.name}">Citizen</span>
-                    <span th:if="${cm.official}" class="official-badge">️ Official</span>
-                    <span class="comment-time" th:data-time="${cm.createdAt}">recently</span>
+            <div th:each="cm : ${comments}" class="comment-item">
+                <div class="comment-author-row">
+                    <div class="c-avatar" th:text="${cm.citizen.name.substring(0,1).toUpperCase()}">A</div>
+                    <span class="c-name" th:text="${cm.citizen.name}">Citizen</span>
+                    <span th:if="${cm.official}" class="official-pill">✓ Official</span>
+                    <span class="c-time" th:data-time="${cm.createdAt}">recently</span>
                 </div>
-                <div class="comment-text" th:text="${cm.text}">Comment text</div>
+                <div class="c-text" th:text="${cm.text}">Comment text</div>
             </div>
 
             <!-- Comment form -->
             <div class="comment-form">
-                <textarea class="comment-input" id="commentInput" placeholder="Add a comment..." maxlength="500"></textarea>
+                <textarea class="comment-input" id="commentInput" placeholder="Share your thoughts or add information..." maxlength="500"></textarea>
                 <button class="comment-submit" onclick="submitComment()">Post Comment</button>
             </div>
         </div>
@@ -201,85 +220,71 @@
         var COMPLAINT_ID = /*[[${complaint.id}]]*/ 0;
 
         var catEmojis = {
-            'Pothole':'️','Street Lamp':'','Garbage':'️',
-            'Water Leakage':'','Road Damage':'️','Tree Fall':'',
-            'Noise':'','Stray Animals':'','Water Supply':''
+            'Pothole':'🕳️','Street Lamp':'💡','Garbage':'🗑️',
+            'Water Leakage':'💧','Road Damage':'🛣️','Tree Fall':'🌳',
+            'Noise':'🔊','Stray Animals':'🐕','Water Supply':'🚰'
         };
 
-        // Emoji badge
-        document.querySelectorAll('.cat-badge[data-cat]').forEach(function(el) {
+        document.querySelectorAll('.badge-cat[data-cat]').forEach(function(el){
             var cat = el.getAttribute('data-cat');
-            el.textContent = (catEmojis[cat] || '') + ' ' + el.textContent;
+            el.textContent = (catEmojis[cat] || '') + ' ' + el.textContent.trim();
         });
 
         // Time ago
-        document.querySelectorAll('[data-time]').forEach(function(el) {
+        document.querySelectorAll('[data-time]').forEach(function(el){
             var raw = el.getAttribute('data-time');
-            if (!raw) return;
-            var d = new Date(raw);
-            var diff = (Date.now() - d.getTime()) / 1000;
-            var s;
-            if (diff < 60) s = 'just now';
-            else if (diff < 3600) s = Math.floor(diff/60) + 'm ago';
-            else if (diff < 86400) s = Math.floor(diff/3600) + 'h ago';
-            else s = Math.floor(diff/86400) + 'd ago';
-            el.textContent = s;
+            if(!raw) return;
+            var diff = (Date.now() - new Date(raw).getTime()) / 1000;
+            if(diff < 60) el.textContent = 'just now';
+            else if(diff < 3600) el.textContent = Math.floor(diff/60) + 'm ago';
+            else if(diff < 86400) el.textContent = Math.floor(diff/3600) + 'h ago';
+            else el.textContent = Math.floor(diff/86400) + 'd ago';
         });
 
         // Upvote
-        function toggleUpvote(btn) {
+        function toggleUpvote(btn){
             btn.disabled = true;
-            var id = btn.getAttribute('data-id');
-            fetch('/api/feed/upvote?complaintId=' + id, {
+            fetch('/api/feed/upvote?complaintId=' + btn.getAttribute('data-id'), {
                 method: 'POST',
                 headers: { [CSRF_HEADER]: CSRF_TOKEN }
             })
             .then(r => r.json())
             .then(data => {
                 btn.classList.toggle('upvoted', data.upvoted);
-                btn.querySelector('span').textContent = data.upvoted ? ' Upvoted' : ' Upvote';
+                btn.querySelector('span:last-child').textContent = data.upvoted ? 'Upvoted' : 'Upvote';
                 document.getElementById('voteCount').textContent = data.count;
             })
             .finally(() => { btn.disabled = false; });
         }
 
         // Comment
-        function submitComment() {
+        function submitComment(){
             var text = document.getElementById('commentInput').value.trim();
-            if (!text) return;
-            var params = new URLSearchParams({ complaintId: COMPLAINT_ID, text: text });
-            fetch('/api/feed/comment?' + params.toString(), {
+            if(!text) return;
+            fetch('/api/feed/comment?' + new URLSearchParams({complaintId: COMPLAINT_ID, text: text}), {
                 method: 'POST',
                 headers: { [CSRF_HEADER]: CSRF_TOKEN }
             })
             .then(r => r.json())
             .then(data => {
-                if (data.error) { alert(data.error); return; }
-                // Append new comment to list
-                var section = document.querySelector('.comments-section');
-                var noComments = section.querySelector('[style*="No comments"]');
-                if (noComments) noComments.remove();
-
+                if(data.error){ alert(data.error); return; }
                 var div = document.createElement('div');
-                div.className = 'comment';
+                div.className = 'comment-item';
                 div.innerHTML =
-                    '<div class="comment-author">' +
-                    '<div class="author-avatar">' + data.author.charAt(0).toUpperCase() + '</div>' +
-                    '<span class="author-name">' + data.author + '</span>' +
-                    (data.official ? '<span class="official-badge">️ Official</span>' : '') +
-                    '<span class="comment-time">just now</span>' +
-                    '</div>' +
-                    '<div class="comment-text">' + data.text + '</div>';
-
-                // Insert before form
-                var form = section.querySelector('.comment-form');
-                section.insertBefore(div, form);
+                    '<div class="comment-author-row">' +
+                    '<div class="c-avatar">' + data.author.charAt(0).toUpperCase() + '</div>' +
+                    '<span class="c-name">' + data.author + '</span>' +
+                    (data.official ? '<span class="official-pill">✓ Official</span>' : '') +
+                    '<span class="c-time">just now</span></div>' +
+                    '<div class="c-text">' + data.text + '</div>';
+                var form = document.querySelector('.comment-form');
+                form.parentNode.insertBefore(div, form);
                 document.getElementById('commentInput').value = '';
-
-                // Update count
-                var titleEl = section.querySelector('.comments-title');
-                var count = section.querySelectorAll('.comment').length;
-                titleEl.textContent = ' Comments (' + count + ')';
+                var pill = document.querySelector('.comment-count-pill');
+                pill.textContent = parseInt(pill.textContent || 0) + 1;
+                // Remove "no comments" message
+                var none = document.querySelector('.no-comments');
+                if(none) none.remove();
             })
             .catch(e => console.error('Comment failed', e));
         }

@@ -154,35 +154,16 @@ public class ComplaintController {
 
         // 6. Send confirmation email to citizen
         try {
-            String emailSubject = "Report Submitted Successfully - CityLedger #" + saved.getId();
-            String emailBody = String.format(
-                "Dear %s,\n\n" +
-                "Thank you for reporting an issue to CityLedger. Your report has been successfully submitted and recorded on the blockchain.\n\n" +
-                "Report Details:\n" +
-                "- Report ID: #CL-%d\n" +
-                "- Category: %s\n" +
-                "- Severity: %s\n" +
-                "- Location: %s\n" +
-                "- Status: Filed\n\n" +
-                "What happens next?\n" +
-                "1. Our AI system has analyzed your report\n" +
-                "2. An officer will review and assign it to a field worker\n" +
-                "3. The field worker will address the issue\n" +
-                "4. You'll receive an email when the issue is resolved\n\n" +
-                "Action will be taken immediately. You can track your report at: %s/citizen/reports\n\n" +
-                "Blockchain Transaction: %s\n\n" +
-                "Thank you for helping make our city better!\n\n" +
-                "Best regards,\n" +
-                "CityLedger Team",
+            String emailSubject = "✅ Report #CL-" + saved.getId() + " Submitted — CityLedger";
+            String htmlBody = EmailTemplates.reportSubmitted(
                 citizen.getName(),
                 saved.getId(),
                 finalCategory,
                 severity,
                 location,
-                "https://cityledger.com", // Replace with actual domain
-                txHash != null ? "https://sepolia.etherscan.io/tx/" + txHash : "Processing..."
+                txHash
             );
-            emailService.sendEmail(citizen.getEmail(), emailSubject, emailBody);
+            emailService.sendHtmlEmail(citizen.getEmail(), emailSubject, htmlBody);
             log.info("Confirmation email sent to citizen: {}", citizen.getEmail());
         } catch (Exception e) {
             log.error("Failed to send confirmation email to citizen", e);

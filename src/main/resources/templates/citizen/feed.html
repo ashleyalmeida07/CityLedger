@@ -6,117 +6,96 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <title>CityFeed — CityLedger</title>
 <link href="https://cdn.prod.website-files.com/67a4c8dcc89e958da293d681/css/city-connect-wcopilot.webflow.633e33f7b.css" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Lato',sans-serif;background:#f0f2f5}
-.fb{max-width:1100px;margin:0 auto;padding:100px 24px 80px}
+body{font-family:'Inter',sans-serif;background:#f5f7fa}
+.fb{max-width:1140px;margin:0 auto;padding:100px 24px 80px}
+
 /* Header */
-.fh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.fh h1{font-family:'Urbanist',sans-serif;font-size:2rem;font-weight:900;color:#0f3460}
-.fh p{color:#64748b;font-size:.88rem;margin-top:4px}
-.fab{background:#0f3460;color:#fff;padding:11px 22px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.2s}
-.fab:hover{background:#16213e;transform:translateY(-1px)}
+.fh{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px}
+.fh h1{font-family:'Urbanist',sans-serif;font-size:2.1rem;font-weight:900;color:#0f1f3d;letter-spacing:-0.5px}
+.fh p{color:#64748b;font-size:.86rem;margin-top:5px}
+.fab{background:linear-gradient(135deg,#0f3460,#1e4e8c);color:#fff;padding:11px 22px;border-radius:10px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.2s;box-shadow:0 4px 14px rgba(15,52,96,.25)}
+.fab:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,52,96,.3)}
+
 /* GPS bar */
-.gbar{background:#fff;border-radius:12px;padding:10px 18px;margin-bottom:16px;font-size:.85rem;color:#475569;display:flex;align-items:center;gap:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.gbar{background:#fff;border-radius:12px;padding:10px 18px;margin-bottom:20px;font-size:.85rem;color:#475569;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.05);border:1px solid #e9eef5}
 .gbar button{background:#0f3460;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Urbanist',sans-serif}
+
 /* Category tabs */
 .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
 .cat-tabs::-webkit-scrollbar{display:none}
-.ctab{flex-shrink:0;padding:8px 18px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;transition:.15s;white-space:nowrap}
+.ctab{flex-shrink:0;padding:7px 18px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;transition:.15s;white-space:nowrap}
 .ctab:hover{border-color:#0f3460;color:#0f3460}
 .ctab.active{background:#0f3460;color:#fff;border-color:#0f3460}
+
 /* Sort bar */
-.sbar{display:flex;gap:8px;align-items:center;margin-bottom:20px}
+.sbar{display:flex;gap:8px;align-items:center;margin-bottom:24px}
 .spill{padding:6px 14px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.78rem;text-decoration:none;white-space:nowrap;transition:.15s}
 .spill:hover,.spill.active{background:#0f3460;color:#fff;border-color:#0f3460}
+
 /* Card grid */
-.feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
-/* Product-style card */
-.feed-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.08);cursor:pointer;transition:.22s;display:flex;flex-direction:column;border:1px solid #f0f0f0}
-.feed-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
+
+/* Card */
+.feed-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);cursor:pointer;transition:all .22s;display:flex;flex-direction:column;border:1px solid #eef1f6}
+.feed-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(0,0,0,.12);border-color:#dce4f0}
+
+/* Severity top stripe */
+.sev-stripe{height:4px;width:100%}
+.sev-CRITICAL .sev-stripe{background:linear-gradient(90deg,#dc2626,#f87171)}
+.sev-HIGH .sev-stripe{background:linear-gradient(90deg,#ea580c,#fb923c)}
+.sev-MEDIUM .sev-stripe{background:linear-gradient(90deg,#ca8a04,#facc15)}
+.sev-LOW .sev-stripe,.sev-null .sev-stripe{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+
 /* Image zone */
-.feed-img-wrap{position:relative;width:100%;height:240px;overflow:hidden;flex-shrink:0}
-.feed-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.feed-card:hover .feed-img-wrap img{transform:scale(1.04)}
-.feed-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f1f5f9,#e2e8f0)}
-.feed-cat-badge{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.9rem;color:#475569;text-transform:uppercase;letter-spacing:.5px;padding:8px 16px;background:rgba(255,255,255,.7);border-radius:6px;border:1px solid #cbd5e1}
-.sev-CRITICAL .feed-img-ph{background:linear-gradient(135deg,#fef2f2,#fecaca)}
-.sev-HIGH .feed-img-ph{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
-.sev-MEDIUM .feed-img-ph{background:linear-gradient(135deg,#fefce8,#fde68a)}
-.sev-LOW .feed-img-ph,.sev-null .feed-img-ph{background:linear-gradient(135deg,#eff6ff,#bfdbfe)}
-/* Floating buttons on image */
-.img-btn-tr{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:.2s;z-index:2}
-.img-btn-tr:hover{background:#fff;transform:scale(1.1)}
-.img-btn-tr.upvoted{background:#ef4444;color:#fff}
-.img-btn-br{position:absolute;bottom:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(15,52,96,.88);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:.2s;z-index:2;text-decoration:none}
-.img-btn-br:hover{background:#0f3460;transform:scale(1.1)}
-/* Severity badge on image top-left */
-.img-sev{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(4px);z-index:2}
-.sev-CRITICAL .img-sev{background:rgba(220,38,38,.85);color:#fff}
-.sev-HIGH .img-sev{background:rgba(234,88,12,.85);color:#fff}
-.sev-MEDIUM .img-sev{background:rgba(202,138,4,.85);color:#fff}
-.sev-LOW .img-sev,.sev-null .img-sev{background:rgba(37,99,235,.85);color:#fff}
+.feed-img-wrap{position:relative;width:100%;height:220px;overflow:hidden;flex-shrink:0}
+.feed-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.feed-card:hover .feed-img-wrap img{transform:scale(1.05)}
+.feed-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.sev-CRITICAL .feed-img-ph{background:linear-gradient(135deg,#fff5f5,#fee2e2)}
+.sev-HIGH .feed-img-ph{background:linear-gradient(135deg,#fff7ed,#ffedd5)}
+.sev-MEDIUM .feed-img-ph{background:linear-gradient(135deg,#fefce8,#fef9c3)}
+.sev-LOW .feed-img-ph,.sev-null .feed-img-ph{background:linear-gradient(135deg,#eff6ff,#dbeafe)}
+.feed-cat-badge{font-family:'Urbanist',sans-serif;font-weight:800;font-size:.88rem;color:#475569;text-transform:uppercase;letter-spacing:.5px;padding:8px 16px;background:rgba(255,255,255,.75);border-radius:8px;border:1px solid rgba(0,0,0,.08)}
+
+/* Severity badge top-left */
+.img-sev{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:'Urbanist',sans-serif;backdrop-filter:blur(6px);z-index:2;letter-spacing:.4px}
+.sev-CRITICAL .img-sev{background:rgba(220,38,38,.9);color:#fff}
+.sev-HIGH .img-sev{background:rgba(234,88,12,.9);color:#fff}
+.sev-MEDIUM .img-sev{background:rgba(202,138,4,.9);color:#fff}
+.sev-LOW .img-sev,.sev-null .img-sev{background:rgba(37,99,235,.9);color:#fff}
+
+/* Upvote pill — top right of image */
+.upvote-pill{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:5px;padding:5px 12px 5px 10px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:20px;border:none;cursor:pointer;font-family:'Urbanist',sans-serif;font-weight:800;font-size:.8rem;color:#374151;box-shadow:0 2px 10px rgba(0,0,0,.12);transition:all .2s;z-index:2}
+.upvote-pill:hover{background:#fff;transform:scale(1.05);box-shadow:0 4px 14px rgba(0,0,0,.16)}
+.upvote-pill.upvoted{background:#0f3460;color:#fff}
+.upvote-pill.upvoted .pill-arrow{color:#fff}
+.pill-arrow{font-size:.9rem;line-height:1;color:#0f3460;transition:color .2s}
+.upvote-pill.upvoted .pill-arrow{color:#fff}
+.pill-count{font-size:.82rem;font-weight:800}
+
 /* Card body */
-.feed-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
-.feed-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#1a1a2e;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:2px}
-.feed-rating{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#94a3b8}
-.feed-stars{display:flex;gap:1px}
-.feed-star{width:12px;height:12px;color:#e2e8f0}
-.feed-star.filled{color:#f59e0b}
-.feed-vote-cnt{color:#374151;font-weight:700;font-size:.78rem}
-.feed-loc{font-size:.82rem;color:#0f3460;font-weight:700;margin-top:2px}
-.feed-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
-.feed-status{background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif}
-.feed-views{display:flex;align-items:center;gap:4px;font-size:.78rem;color:#94a3b8}
-.ctime{font-size:.72rem;color:#94a3b8}
+.feed-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column;gap:8px}
+.feed-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#0f1f3d;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.feed-loc{font-size:.8rem;color:#64748b;display:flex;align-items:center;gap:4px}
+.feed-loc-text{color:#0f3460;font-weight:600}
+.feed-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:10px;border-top:1px solid #f1f5f9}
+.feed-status{padding:3px 10px;border-radius:6px;font-size:.7rem;font-weight:700;font-family:'Urbanist',sans-serif;letter-spacing:.3px}
+.status-FILED{background:#f0f4ff;color:#1d4ed8}
+.status-IN_PROGRESS{background:#fff7ed;color:#c2410c}
+.status-RESOLVED{background:#f0fdf4;color:#15803d}
+.status-CLOSED{background:#f8fafc;color:#64748b}
+.feed-meta-row{display:flex;align-items:center;gap:10px;font-size:.77rem;color:#94a3b8}
+.feed-comments{display:flex;align-items:center;gap:3px}
+.feed-similar{color:#f59e0b;font-weight:700}
+
 /* Empty */
 .empty{text-align:center;padding:60px 20px;color:#94a3b8;grid-column:1/-1}
 .empty h3{font-family:'Urbanist',sans-serif;font-size:1.2rem;color:#64748b;margin-bottom:8px}
-/* Overlay + Drawer */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998;animation:fadein .2s}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
-.drawer{position:fixed;top:0;right:0;width:480px;max-width:100vw;height:100vh;background:#fff;z-index:9999;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(0,0,0,.15)}
-.drawer.open{transform:translateX(0)}
-.dhead{padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px;position:sticky;top:0;background:#fff;z-index:1}
-.dclose{margin-left:auto;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#94a3b8;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center}
-.dclose:hover{background:#f1f5f9}
-.dbody{padding:24px}
-.dcat{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1.05rem;color:#0f3460}
-.dtitle{font-family:'Urbanist',sans-serif;font-weight:900;font-size:1.4rem;color:#0f3460;line-height:1.25;margin-bottom:8px}
-.dmeta{font-size:.82rem;color:#94a3b8;margin-bottom:16px}
-.dmeta strong{color:#475569}
-.ai-card{background:linear-gradient(135deg,#0f3460,#1a1a2e);border-radius:14px;padding:18px 20px;margin-bottom:18px;color:#fff}
-.ai-chip{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.5);margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.ai-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.ai-text{font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.6}
-.ddesc{font-size:.9rem;color:#475569;line-height:1.7;margin-bottom:18px}
-.dvote{display:flex;align-items:center;gap:16px;padding:16px 0;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;margin-bottom:20px}
-.vbtn{display:inline-flex;align-items:center;gap:7px;padding:10px 24px;border-radius:8px;border:2px solid #e2e8f0;background:#fff;color:#374151;font-family:'Urbanist',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:.2s}
-.vbtn:hover{border-color:#16a34a;color:#16a34a}
-.vbtn.upvoted{background:#16a34a;color:#fff;border-color:#16a34a}
-.vcnt{font-family:'Urbanist',sans-serif;font-size:1.4rem;font-weight:900;color:#0f3460}
-.vlab{font-size:.75rem;color:#94a3b8}
-.vmaplink{margin-left:auto;color:#0f3460;font-size:.82rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;border:2px solid #e2e8f0;padding:6px 12px;border-radius:6px}
-.coms-title{font-family:'Urbanist',sans-serif;font-weight:800;font-size:1rem;color:#0f3460;margin-bottom:14px}
-.com{padding:12px 0;border-bottom:1px solid #f8fafc}
-.com:last-of-type{border-bottom:none}
-.cauth{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.cavatar{width:30px;height:30px;border-radius:50%;background:#0f3460;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:'Urbanist',sans-serif;flex-shrink:0}
-.caname{font-weight:700;font-size:.85rem;color:#374151}
-.offb{background:#0f3460;color:#fff;padding:2px 7px;border-radius:4px;font-size:.6rem;font-weight:800;font-family:'Urbanist',sans-serif}
-.ctime2{margin-left:auto;font-size:.72rem;color:#94a3b8}
-.ctext{font-size:.88rem;color:#475569;line-height:1.6;padding-left:38px}
-.cform{margin-top:18px;padding-top:16px;border-top:1px solid #f1f5f9}
-.cinput{width:100%;padding:10px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:.88rem;font-family:'Lato',sans-serif;resize:vertical;min-height:72px;transition:.2s}
-.cinput:focus{outline:none;border-color:#0f3460}
-.csubmit{margin-top:8px;background:#0f3460;color:#fff;border:none;padding:9px 22px;border-radius:8px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer}
-.dthumb{width:100%;border-radius:10px;max-height:200px;object-fit:cover;margin-bottom:16px}
-.dloading{text-align:center;padding:40px;color:#94a3b8}
-.chain-note{font-size:.72rem;color:#94a3b8;margin-top:12px}
-.chain-note a{color:#2563eb;font-weight:700;text-decoration:none}
-@media(max-width:600px){.drawer{width:100vw}.feed-grid{grid-template-columns:1fr}}
+
+@media(max-width:600px){.feed-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -133,18 +112,19 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
 
   <!-- GPS bar -->
   <div class="gbar">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0f3460" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
     <span th:if="${lat != null}">Showing within <strong th:text="${currentRadius}">5</strong>km · <a href="/citizen/feed" style="color:#0f3460;font-weight:700;text-decoration:none">Show all</a></span>
     <span th:if="${lat == null}" style="flex:1">Showing all recent complaints</span>
-    <button th:if="${lat == null}" onclick="useGPS()" id="gpsBtn">Use My Location</button>
+    <button th:if="${lat == null}" onclick="useGPS()" id="gpsBtn">📍 Use My Location</button>
   </div>
 
   <div class="cat-tabs">
     <button class="ctab active" onclick="filterTab(this,'all')">All</button>
-    <button class="ctab" onclick="filterTab(this,'Pothole')">Pothole</button>
-    <button class="ctab" onclick="filterTab(this,'Garbage')">Garbage</button>
-    <button class="ctab" onclick="filterTab(this,'Street Lamp')">Street Lamp</button>
-    <button class="ctab" onclick="filterTab(this,'Water')">Water</button>
-    <button class="ctab" onclick="filterTab(this,'Road Damage')">Road</button>
+    <button class="ctab" onclick="filterTab(this,'Pothole')">🕳 Pothole</button>
+    <button class="ctab" onclick="filterTab(this,'Garbage')">🗑 Garbage</button>
+    <button class="ctab" onclick="filterTab(this,'Street Lamp')">💡 Street Lamp</button>
+    <button class="ctab" onclick="filterTab(this,'Water')">💧 Water</button>
+    <button class="ctab" onclick="filterTab(this,'Road Damage')">🛣 Road</button>
     <button class="ctab" onclick="filterTab(this,'other')">Other</button>
   </div>
 
@@ -164,75 +144,68 @@ body{font-family:'Lato',sans-serif;background:#f0f2f5}
       <h3>No complaints yet</h3>
       <p>Be the first to report a civic issue.</p>
     </div>
+
     <div th:each="c : ${feed}"
          th:class="'feed-card sev-' + ${c.severity != null ? c.severity : 'LOW'}"
          th:data-category="${c.category}"
          th:data-id="${c.id}"
          th:data-upvoted="${upvotedByMe != null and upvotedByMe[c.id] != null ? upvotedByMe[c.id] : false}"
-         th:data-votes="${c.upvoteCount}">
+         th:data-votes="${c.upvoteCount}"
+         onclick="location.href='/citizen/feed/' + this.dataset.id">
 
-      <!-- Category + Severity banner or Image -->
-      <div class="feed-img-wrap" onclick="location.href='/citizen/feed/' + this.closest('.feed-card').dataset.id">
-        <img th:if="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != ''}" th:src="${#strings.arraySplit(c.mediaUrl, ',')[0]}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-        <div class="feed-img-ph" th:style="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != '' ? 'display:none;' : 'display:flex;'}" th:data-cat="${c.category}">
+      <!-- Severity stripe -->
+      <div class="sev-stripe"></div>
+
+      <!-- Image zone -->
+      <div class="feed-img-wrap">
+        <img th:if="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != ''}"
+             th:src="${#strings.arraySplit(c.mediaUrl, ',')[0]}"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="feed-img-ph"
+             th:style="${c.mediaUrl != null and c.mediaUrl != 'null' and c.mediaUrl != '' ? 'display:none;' : 'display:flex;'}"
+             th:data-cat="${c.category}">
           <div class="feed-cat-badge" th:text="${c.category != null ? c.category : 'General'}">Category</div>
         </div>
+
         <!-- Severity badge top-left -->
         <span class="img-sev" th:text="${c.severity != null ? c.severity : 'LOW'}"></span>
-        <!-- Upvote btn top-right -->
-        <button class="img-btn-tr"
-                th:class="'img-btn-tr' + (${upvotedByMe != null and upvotedByMe[c.id] != null and upvotedByMe[c.id]} ? ' upvoted' : '')"
+
+        <!-- Upvote pill top-right -->
+        <button class="upvote-pill"
+                th:class="'upvote-pill' + (${upvotedByMe != null and upvotedByMe[c.id] != null and upvotedByMe[c.id]} ? ' upvoted' : '')"
                 th:data-id="${c.id}"
+                th:data-votes="${c.upvoteCount}"
                 onclick="event.stopPropagation();quickUpvote(this)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          <span class="pill-arrow">▲</span>
+          <span class="pill-count" th:text="${c.upvoteCount}">0</span>
         </button>
       </div>
 
       <!-- Card body -->
-      <div class="feed-body" onclick="location.href='/citizen/feed/' + this.closest('.feed-card').dataset.id">
+      <div class="feed-body">
         <div class="feed-title" th:text="${c.title}">Complaint Title</div>
 
-        <!-- Stars = upvote score (max 5 filled = 25+ votes) -->
-        <div class="feed-rating">
-          <div class="feed-stars" th:data-votes="${c.upvoteCount}">
-            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="feed-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <span class="feed-vote-cnt" th:text="${c.upvoteCount}">0</span>
-          <span th:text="'(' + ${commentCounts != null and commentCounts[c.id] != null ? commentCounts[c.id] : 0} + ' comments)'"></span>
-          <span th:if="${duplicateCounts != null and duplicateCounts[c.id] != null}" 
-                style="color:#f59e0b;font-weight:700;margin-left:4px;"
-                th:text="'+ ' + ${duplicateCounts[c.id]} + ' similar'"></span>
+        <div class="feed-loc">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="feed-loc-text" th:text="${c.location != null ? #strings.abbreviate(c.location,42) : 'Unknown location'}">Location</span>
         </div>
 
-        <div class="feed-loc" th:text="${c.location != null ? #strings.abbreviate(c.location,40) : 'Unknown location'}">Location</div>
-
         <div class="feed-foot">
-          <span class="feed-status" th:text="${c.status}">FILED</span>
-          <div class="feed-views">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <span th:text="${c.upvoteCount}">0</span>
+          <span class="feed-status"
+                th:class="'feed-status status-' + ${c.status}"
+                th:text="${c.status}">FILED</span>
+          <div class="feed-meta-row">
+            <span class="feed-comments">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span th:text="${commentCounts != null and commentCounts[c.id] != null ? commentCounts[c.id] : 0}">0</span>
+            </span>
+            <span th:if="${duplicateCounts != null and duplicateCounts[c.id] != null}"
+                  class="feed-similar"
+                  th:text="'+ ' + ${duplicateCounts[c.id]} + ' similar'"></span>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- Overlay -->
-<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
-
-<!-- Drawer -->
-<div class="drawer" id="drawer">
-  <div class="dhead">
-    <span class="dcat" id="dCat">Category</span>
-    <button class="dclose" onclick="closeDrawer()"></button>
-  </div>
-  <div class="dbody" id="dBody">
-    <div class="dloading">Loading…</div>
   </div>
 </div>
 
@@ -243,157 +216,48 @@ var CSRF = document.querySelector('meta[name="_csrf"]').content;
 var CHEAD = document.querySelector('meta[name="_csrf_header"]').content;
 var MAJOR = ['Pothole','Garbage','Street Lamp','Water Leakage','Water Supply','Road Damage'];
 
-// Category enrichment (SVG placeholders)
-document.querySelectorAll('.feed-img-ph[data-cat]').forEach(function(el){
-    el.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
-});
-
-// Star fill: 1 star per 5 upvotes (max 5)
-document.querySelectorAll('.feed-stars[data-votes]').forEach(function(wrap){
-  var v=parseInt(wrap.dataset.votes)||0;
-  var filled=Math.min(5,Math.ceil(v/5));
-  wrap.querySelectorAll('.feed-star').forEach(function(s,i){if(i<filled)s.classList.add('filled');});
-});
-
-// Quick upvote from card heart button
+// Quick upvote from card pill button
 function quickUpvote(btn){
-  btn.disabled=true;
-  var id=btn.dataset.id;
-  fetch('/api/feed/upvote?complaintId='+id,{method:'POST',headers:{[CHEAD]:CSRF}})
+  btn.disabled = true;
+  var id = btn.dataset.id;
+  fetch('/api/feed/upvote?complaintId='+id, {method:'POST', headers:{[CHEAD]:CSRF}})
   .then(function(r){return r.json();})
   .then(function(d){
-    btn.classList.toggle('upvoted',d.upvoted);
-    btn.querySelector('svg').style.fill = d.upvoted ? '#ef4444' : 'currentColor';
-    // Update vote count + stars in card body
-    var card=btn.closest('.feed-card');
-    if(card){
-      card.querySelector('.feed-vote-cnt').textContent=d.count;
-      card.querySelector('.feed-views span').textContent=d.count;
-      var stars=card.querySelectorAll('.feed-star');
-      var filled=Math.min(5,Math.ceil(d.count/5));
-      stars.forEach(function(s,i){s.classList.toggle('filled',i<filled);});
-    }
+    btn.classList.toggle('upvoted', d.upvoted);
+    btn.querySelector('.pill-count').textContent = d.count;
+    btn.dataset.votes = d.count;
   })
-  .finally(function(){btn.disabled=false;});
+  .finally(function(){btn.disabled = false;});
 }
 
-// Time ago
-function timeAgo(str){if(!str)return'';var d=new Date(str),s=(Date.now()-d)/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
-document.querySelectorAll('[data-time]').forEach(function(el){el.textContent=timeAgo(el.dataset.time);});
-
 // Category tab filter
-function filterTab(btn,filter){
+function filterTab(btn, filter){
   document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('active');});
   btn.classList.add('active');
   document.querySelectorAll('.feed-card').forEach(function(c){
-    var cat=c.dataset.category||'';
-    var show=false;
-    if(filter==='all'){show=true;}
-    else if(filter==='Water'){show=cat==='Water Leakage'||cat==='Water Supply';}
-    else if(filter==='other'){show=!MAJOR.includes(cat);}
-    else{show=cat===filter;}
-    c.style.display=show?'':'none';
+    var cat = c.dataset.category || '';
+    var show = false;
+    if(filter === 'all'){show = true;}
+    else if(filter === 'Water'){show = cat === 'Water Leakage' || cat === 'Water Supply';}
+    else if(filter === 'other'){show = !MAJOR.includes(cat);}
+    else{show = cat === filter;}
+    c.style.display = show ? '' : 'none';
   });
 }
 
 // GPS
 function useGPS(){
-  var btn=document.getElementById('gpsBtn');btn.textContent='⏳…';btn.disabled=true;
+  var btn = document.getElementById('gpsBtn');
+  btn.textContent = '⏳ Locating…';
+  btn.disabled = true;
   navigator.geolocation.getCurrentPosition(function(p){
-    var u=new URL(location.href);u.searchParams.set('lat',p.coords.latitude.toFixed(6));u.searchParams.set('lon',p.coords.longitude.toFixed(6));u.searchParams.set('radius','5');location.href=u;
-  },function(){btn.textContent=' Denied';btn.disabled=false;});
-}
-
-// Drawer
-var currentId=null;
-function openDrawer(id){
-  currentId=id;
-  document.getElementById('overlay').style.display='block';
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('dBody').innerHTML='<div class="dloading">Loading…</div>';
-  fetch('/api/feed/detail?id='+id,{headers:{[CHEAD]:CSRF}})
-  .then(function(r){return r.json();})
-  .then(function(d){renderDrawer(d);})
-  .catch(function(){document.getElementById('dBody').innerHTML='<p style="color:red;padding:20px">Failed to load.</p>';});
-}
-
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('overlay').style.display='none';
-  currentId=null;
-}
-
-function renderDrawer(d){
-  var emoji=EMOJIS[d.category]||'';
-  document.getElementById('dCatEmoji').textContent=emoji;
-  document.getElementById('dCat').textContent=d.category;
-
-  var sevCls={'CRITICAL':'#dc2626','HIGH':'#ea580c','MEDIUM':'#ca8a04','LOW':'#2563eb'};
-  var sc=sevCls[d.severity]||'#2563eb';
-
-  var media='';
-  if(d.mediaUrl){d.mediaUrl.split(',').forEach(function(u){u=u.trim();if(u)media+='<img class="dthumb" src="'+u+'" onerror="this.style.display=\'none\'" loading="lazy"/>';});}
-
-  var ai=d.aiSummary?'<div class="ai-card"><div class="ai-chip"><span class="ai-dot"></span>AI Summary — Llama 3.3</div><div class="ai-text">'+esc(d.aiSummary)+'</div>'+(d.aiReason?'<div style="font-size:.78rem;color:rgba(255,255,255,.5);font-style:italic;margin-top:8px">"'+esc(d.aiReason)+'"</div>':'')+'</div>':'';
-
-  var upBtn='<button class="vbtn'+(d.upvotedByMe?' upvoted':'')+'" id="dVBtn" onclick="drawerUpvote('+d.id+')">'+(d.upvotedByMe?' Upvoted':' Upvote')+'</button>';
-  var mapLink=d.latitude?'<a class="vmaplink" href="https://www.google.com/maps?q='+d.latitude+','+d.longitude+'" target="_blank"> Map</a>':'';
-
-  var chain=d.blockchainHash?'<div class="chain-note">️ On-chain: <a href="https://sepolia.etherscan.io/tx/'+d.blockchainHash+'" target="_blank">View TX</a></div>':'';
-
-  var comHtml='';
-  (d.comments||[]).forEach(function(c){
-    comHtml+='<div class="com"><div class="cauth"><div class="cavatar">'+esc(c.author.charAt(0).toUpperCase())+'</div><span class="caname">'+esc(c.author)+'</span>'+(c.official?'<span class="offb">️ Official</span>':'')+'<span class="ctime2">'+c.time+'</span></div><div class="ctext">'+esc(c.text)+'</div></div>';
-  });
-
-  document.getElementById('dBody').innerHTML=
-    '<div style="height:4px;background:'+sc+';border-radius:4px;margin-bottom:20px"></div>'+
-    '<div class="dtitle">'+esc(d.title)+'</div>'+
-    '<div class="dmeta">Filed by <strong>'+esc(d.citizenName)+'</strong> ·  '+esc(d.location)+'</div>'+
-    media+ai+
-    '<div class="ddesc" id="dDesc">'+esc(d.description)+'</div>'+
-    '<div class="dvote">'+upBtn+'<div><div class="vcnt" id="dVCnt">'+d.upvoteCount+'</div><div class="vlab">upvotes</div></div>'+mapLink+'</div>'+
-    chain+
-    '<div class="coms-title"> Comments ('+((d.comments||[]).length)+')</div>'+
-    (comHtml||'<p style="color:#94a3b8;font-size:.88rem;padding:8px 0">No comments yet.</p>')+
-    '<div class="cform"><textarea class="cinput" id="dComInput" placeholder="Add a comment…" maxlength="500"></textarea><br/><button class="csubmit" onclick="drawerComment('+d.id+')">Post Comment</button></div>';
-}
-
-function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-function drawerUpvote(id){
-  var btn=document.getElementById('dVBtn');if(!btn)return;btn.disabled=true;
-  fetch('/api/feed/upvote?complaintId='+id,{method:'POST',headers:{[CHEAD]:CSRF}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    btn.className='vbtn'+(d.upvoted?' upvoted':'');
-    btn.textContent=d.upvoted?' Upvoted':' Upvote';
-    document.getElementById('dVCnt').textContent=d.count;
-    // Update grid card too
-    var card=document.querySelector('.feed-card[data-id="'+id+'"]');
-    if(card){card.querySelector('.vcount').textContent=d.count;}
-  })
-  .finally(function(){btn.disabled=false;});
-}
-
-function drawerComment(id){
-  var inp=document.getElementById('dComInput');if(!inp)return;
-  var txt=inp.value.trim();if(!txt)return;
-  var p=new URLSearchParams({complaintId:id,text:txt});
-  fetch('/api/feed/comment?'+p,{method:'POST',headers:{[CHEAD]:CSRF}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(d.error){alert(d.error);return;}
-    var cform=document.querySelector('.cform');
-    var div=document.createElement('div');div.className='com';
-    div.innerHTML='<div class="cauth"><div class="cavatar">'+d.author.charAt(0).toUpperCase()+'</div><span class="caname">'+esc(d.author)+'</span>'+(d.official?'<span class="offb">️ Official</span>':'')+'<span class="ctime2">just now</span></div><div class="ctext">'+esc(d.text)+'</div>';
-    cform.parentNode.insertBefore(div,cform);
-    inp.value='';
-  });
+    var u = new URL(location.href);
+    u.searchParams.set('lat', p.coords.latitude.toFixed(6));
+    u.searchParams.set('lon', p.coords.longitude.toFixed(6));
+    u.searchParams.set('radius','5');
+    location.href = u;
+  }, function(){btn.textContent = '📍 Denied'; btn.disabled = false;});
 }
 </script>
 </body>
 </html>
-
-
-

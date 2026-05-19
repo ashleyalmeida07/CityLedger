@@ -91,27 +91,38 @@ body{font-family:'Lato',sans-serif;background:#f8fafc;min-height:100vh}
 .toast-warning{border-left-color:#f59e0b}.toast-error{border-left-color:#dc2626}.toast-success{border-left-color:#16a34a}
 @keyframes tin{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 /* Success overlay */
-.sov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.8);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
-.scard{background:#fff;border-radius:8px;padding:48px;max-width:540px;width:90%;text-align:center;box-shadow:0 24px 48px rgba(0,0,0,.3);animation:sup .3s ease}
-@keyframes sup{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.scheck{width:72px;height:72px;background:#f0fdf4;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:24px;border:2px solid #bbf7d0}
-.scard h3{font-family:'Urbanist',sans-serif;font-size:1.8rem;color:#0f3460;font-weight:900;margin-bottom:10px}
-.srow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:.95rem}
+.sov{display:none;position:fixed;inset:0;background:rgba(10,18,38,.85);z-index:9999;justify-content:center;align-items:center;backdrop-filter:blur(8px);padding:16px}
+.scard{background:#fff;border-radius:16px;padding:32px 28px;max-width:500px;width:100%;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.35);animation:sup .35s cubic-bezier(.34,1.56,.64,1);max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:0;scrollbar-width:thin;scrollbar-color:#e2e8f0 transparent}
+.scard::-webkit-scrollbar{width:4px}
+.scard::-webkit-scrollbar-track{background:transparent}
+.scard::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:4px}
+@keyframes sup{from{transform:translateY(24px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.scheck{width:60px;height:60px;background:#f0fdf4;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;border:2px solid #bbf7d0;flex-shrink:0}
+.scard h3{font-family:'Urbanist',sans-serif;font-size:1.5rem;color:#0f1f3d;font-weight:900;margin-bottom:6px;line-height:1.25}
+.scard .smeta{color:#64748b;font-size:.9rem;margin-bottom:6px;line-height:1.5}
+.scard .saction{color:#0f3460;font-size:.95rem;font-weight:700;margin-bottom:20px}
+.snext{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;text-align:left;margin-bottom:16px;width:100%}
+.snext-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.snext-head span{font-weight:700;color:#166534;font-size:.88rem;font-family:'Urbanist',sans-serif}
+.snext ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px}
+.snext li{color:#166534;font-size:.84rem;display:flex;align-items:center;gap:6px}
+.sdetails{background:#f8fafc;border-radius:10px;padding:14px 16px;text-align:left;margin-bottom:16px;width:100%}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f4f8;font-size:.88rem}
 .srow:last-child{border-bottom:none}
-.slabel{color:#666}.sval{font-weight:700;color:#1a1a2e;text-align:right;max-width:220px;word-break:break-all}
-.sbtn-row{display:flex;gap:12px;margin-top:24px;justify-content:center}
-.sbtn{padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-family:'Urbanist',sans-serif;font-size:1rem;display:inline-block;transition:.2s}
-.sbtn-p{background:#0f3460;color:#fff}.sbtn-p:hover{background:#1a1a2e;transform:translateY(-2px)}
+.slabel{color:#64748b}.sval{font-weight:700;color:#0f1f3d;text-align:right;max-width:200px;word-break:break-all}
+.sbtn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding-top:4px}
+.sbtn{padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:700;font-family:'Urbanist',sans-serif;font-size:.9rem;display:inline-block;transition:.2s;white-space:nowrap}
+.sbtn-p{background:#0f3460;color:#fff}.sbtn-p:hover{background:#0a2540;transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,52,96,.25)}
 .sbtn-s{background:#f1f5f9;color:#0f3460;border:2px solid #e2e8f0}.sbtn-s:hover{background:#e2e8f0}
-.ai-result{background:linear-gradient(135deg,#0f3460,#1a1a2e);border-radius:6px;padding:20px;margin-top:20px;color:#fff;text-align:left}
-.ai-chip{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;margin-bottom:10px}
-.aidot{width:6px;height:6px;border-radius:2px;background:#4ade80;display:inline-block;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.ai-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.ai-b{padding:8px 16px;border-radius:4px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.85rem}
+.ai-result{background:linear-gradient(135deg,#0f2d5e,#1a1a2e);border-radius:10px;padding:14px 16px;margin-bottom:16px;color:#fff;text-align:left;width:100%}
+.ai-chip{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.aidot{width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.ai-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.ai-b{padding:5px 12px;border-radius:4px;font-family:'Urbanist',sans-serif;font-weight:700;font-size:.8rem}
 .ai-b-cat{background:rgba(59,130,246,.25);color:#93c5fd;border:1px solid rgba(59,130,246,.3)}
 .ai-b-sev{background:rgba(250,204,21,.2);color:#fde68a;border:1px solid rgba(250,204,21,.25)}
-.ai-reason{font-size:.9rem;color:rgba(255,255,255,.75);line-height:1.5}
+.ai-reason{font-size:.84rem;color:rgba(255,255,255,.7);line-height:1.5}
 </style>
 </head>
 <body>
@@ -244,45 +255,51 @@ body{font-family:'Lato',sans-serif;background:#f8fafc;min-height:100vh}
 <!-- Success Modal -->
 <div class="sov" id="successModal" style="display:none">
   <div class="scard">
+    <!-- Check icon -->
     <div class="scheck">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     </div>
-    <h3>Report Submitted Successfully!</h3>
-    <p style="color:#64748b;font-size:1.05rem;margin-bottom:12px;line-height:1.6">Your complaint has been filed and recorded on the blockchain.</p>
-    <p style="color:#0f3460;font-size:1.1rem;font-weight:700;margin-bottom:28px">Action will be taken immediately.</p>
-    
-    <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;padding:20px;text-align:left;margin-bottom:24px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <span style="font-weight:700;color:#166534;font-size:1rem">What happens next?</span>
+
+    <h3>Report Submitted!</h3>
+    <p class="smeta">Filed and recorded on the blockchain.</p>
+    <p class="saction">✅ Action will be taken within 24–48 hours.</p>
+
+    <!-- What happens next -->
+    <div class="snext">
+      <div class="snext-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>What happens next?</span>
       </div>
-      <ul style="list-style:none;padding:0;margin:0;color:#166534;font-size:0.95rem;line-height:2">
-        <li style="display:flex;align-items:center;gap:8px">✓ AI is analyzing and categorizing your report</li>
-        <li style="display:flex;align-items:center;gap:8px">✓ Municipal officer will review within 24 hours</li>
-        <li style="display:flex;align-items:center;gap:8px">✓ Field worker will be assigned to resolve</li>
-        <li style="display:flex;align-items;center;gap:8px">✓ You'll receive updates on progress</li>
+      <ul>
+        <li>▸ AI is analyzing &amp; categorizing your report</li>
+        <li>▸ Officer will review within 24 hours</li>
+        <li>▸ Field worker assigned to resolve</li>
+        <li>▸ You'll get updates via email</li>
       </ul>
     </div>
-    
-    <div style="background:#f8fafc;border-radius:12px;padding:20px;text-align:left;margin-bottom:24px">
-      <div class="srow"><span class="slabel">Complaint ID</span><span class="sval" id="modalComplaintId">#CL-—</span></div>
+
+    <!-- Complaint details -->
+    <div class="sdetails">
+      <div class="srow"><span class="slabel">Complaint ID</span><span class="sval" id="modalComplaintId">#CL—</span></div>
       <div class="srow"><span class="slabel">Category</span><span class="sval" id="modalCategory">—</span></div>
       <div class="srow"><span class="slabel">Severity</span><span class="sval" id="modalSeverity">—</span></div>
       <div class="srow"><span class="slabel">Response SLA</span><span class="sval">48 hours</span></div>
     </div>
-    
+
+    <!-- AI result -->
     <div class="ai-result">
-      <div class="ai-chip"><span class="aidot"></span>AI Analysis — Powered by Llama 3.3 70B</div>
+      <div class="ai-chip"><span class="aidot"></span>CityLedger AI Analysis</div>
       <div class="ai-badges">
         <span class="ai-b ai-b-cat" id="modalCategoryBadge">—</span>
         <span class="ai-b ai-b-sev" id="modalSeverityBadge">—</span>
       </div>
-      <div class="ai-reason" id="modalReason">AI is analyzing your report...</div>
+      <div class="ai-reason" id="modalReason">Analyzing your report...</div>
     </div>
-    
+
+    <!-- Actions -->
     <div class="sbtn-row">
       <a href="/citizen/dashboard" class="sbtn sbtn-p">Go to Dashboard</a>
-      <a href="/citizen/reports" class="sbtn sbtn-s">View My Reports</a>
+      <a href="/citizen/reports" class="sbtn sbtn-s">My Reports</a>
     </div>
   </div>
 </div>
